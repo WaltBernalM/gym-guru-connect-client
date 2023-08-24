@@ -16,6 +16,8 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"
 
 function Navbar() {
   const { isLoggedIn, user, logout } = useContext(AuthContext)
+
+  console.log(isLoggedIn, user, )
   
   const defaultTheme = createTheme()
   return (
@@ -44,7 +46,7 @@ function Navbar() {
               href="/"
               variant="button"
               color="text.primary"
-              sx={{ my: 1, mx: 1.5 , textDecoration: 'none'}}
+              sx={{ my: 1, mx: 1.5, textDecoration: "none" }}
             >
               GymGuru Connect
             </Link>
@@ -75,12 +77,29 @@ function Navbar() {
               Support
             </Link>
           </nav>
-          <Button href="/signup" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-            Signup
-          </Button>
-          <Button href="/login" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-            Login
-          </Button>
+
+          {!isLoggedIn && (
+            <>
+              <Button href="/signup" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+                Signup
+              </Button>
+              <Button href="/login" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+                Login
+              </Button>
+            </>
+          )}
+
+          {isLoggedIn && (
+            <>
+              <Button
+                onClick={logout}
+                variant="contained"
+                sx={{ my: 1, mx: 1.5 }}
+              >
+                Logout
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </ThemeProvider>
