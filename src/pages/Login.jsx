@@ -1,10 +1,46 @@
 import LockOutlined from "@mui/icons-material/LockOutlined"
 import { Avatar, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, Link, TextField, Typography } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
+import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
+
+import { useState, useContext } from "react"
+import authService from "../services/auth.service"
+import { AuthContext } from "../context/auth.context"
+import { useNavigate } from 'react-router-dom'
 
 const defaultTheme = createTheme()
 
+const initForm = {
+  email: '',
+  password: '',
+  isTrainer: false,
+}
+
 function Login() {
+  const [formData, setFormData] = useState(initForm)
+  const [ errorMessage, setErrorMessage] = useState(undefined)
+  const { authenticateUser } = useContext(AuthContext)
+  const navigate = useNavigate()
+
+  const handleOnChange = (field, value) => {
+    setFormData(prevData => ({...prevData, [field]: value}))
+  }
+
+  const handleOnSubmit = (e) => {
+    e.preventDefault()
+    const submitForm = async () => { 
+      try {
+        await authService.login(formData)
+        authenticateUser()
+        navigate('/')
+      } catch (error) {
+        console.log(error)
+        setErrorMessage(error.response.data.message)
+      }
+    }
+    submitForm()
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -25,7 +61,7 @@ function Login() {
           </Typography>
           <Box
             component="form"
-            onSubmit={"handleSubmit"}
+            onSubmit={handleOnSubmit}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -38,6 +74,8 @@ function Login() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={(e) => handleOnChange("email", e.target.value)}
+              value={formData.email}
             />
             <TextField
               margin="normal"
@@ -48,11 +86,31 @@ function Login() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={(e) => handleOnChange("password", e.target.value)}
+              value={formData.password}
             />
             <FormControlLabel
               control={<Checkbox value="isTrainer" color="primary" />}
               label="I'm a Trainer"
+              checked={formData.isTrainer}
+              onChange={(e) => handleOnChange("isTrainer", e.target.checked)}
             />
+            {errorMessage && (
+              <Grid
+                container
+                sx={{
+                  color: "red",
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  textAlign: "justify",
+                }}
+              >
+                <ReportProblemOutlinedIcon />
+                <span>{errorMessage}</span>
+              </Grid>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -68,7 +126,7 @@ function Login() {
                 </Link>
               </Grid> */}
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
