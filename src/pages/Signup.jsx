@@ -1,11 +1,23 @@
 import { useState } from "react"
-import { API_URL } from '../utils/constants'
 import { ThemeProvider } from "@emotion/react"
-import { Avatar, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, TextField, Typography, createTheme } from "@mui/material"
+import {
+  Avatar,
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  CssBaseline,
+  FormControlLabel,
+  Grid,
+  TextField,
+  Typography,
+  createTheme,
+  Link,
+} from "@mui/material"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
 
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import authService from "../services/auth.service"
 
 const initForm = {
@@ -154,8 +166,8 @@ function Signup() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
+                <Link href="/login" variant="body2">
+                  Already have an account? Log in
                 </Link>
               </Grid>
             </Grid>
