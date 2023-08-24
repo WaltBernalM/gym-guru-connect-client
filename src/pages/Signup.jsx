@@ -3,7 +3,9 @@ import { API_URL } from '../utils/constants'
 import { ThemeProvider } from "@emotion/react"
 import { Avatar, Box, Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, TextField, Typography, createTheme } from "@mui/material"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import { Link } from "react-router-dom"
+import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
+
+import { Link, useNavigate } from "react-router-dom"
 import authService from "../services/auth.service"
 
 const initForm = {
@@ -20,6 +22,7 @@ function Signup() {
   const [formData, setFormData] = useState(initForm)
   const [errorMessage, setErrorMessage] = useState(undefined)
 
+  const navigate = useNavigate()
 
   const handleOnChange = (field, value) => {
     setFormData((prevValue) => ({...prevValue, [field]:value}))
@@ -29,10 +32,11 @@ function Signup() {
     e.preventDefault()
     const submitForm = async () => {
       try {
-        const response = await authService.signup(formData)
-        // console.log(response)
+        await authService.signup(formData)
+        setFormData(initForm)
+        navigate('/login')
       } catch (error) {
-        // setErrorMessage(error)
+        setErrorMessage(error.response.data.message)
       }
     }
     submitForm()
@@ -123,6 +127,23 @@ function Signup() {
                 />
               </Grid>
             </Grid>
+
+            {errorMessage && (
+              <Grid
+                container
+                sx={{
+                  color: "red",
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  textAlign: 'justify'
+                }}
+              >
+                <ReportProblemOutlinedIcon />
+                <span>{errorMessage}</span>
+              </Grid>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -140,7 +161,6 @@ function Signup() {
             </Grid>
           </Box>
         </Box>
-        {/* {errorMessage && <span>{errorMessage}</span>} */}
       </Container>
     </ThemeProvider>
   )
