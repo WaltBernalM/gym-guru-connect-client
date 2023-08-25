@@ -16,9 +16,6 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"
 
 function Navbar() {
   const { isLoggedIn, user, logout } = useContext(AuthContext)
-
-  console.log(isLoggedIn, user, )
-  
   const defaultTheme = createTheme()
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -52,30 +49,48 @@ function Navbar() {
             </Link>
           </Typography>
           <nav>
-            <Link
-              variant="button"
-              color="text.primary"
-              href="#"
-              sx={{ my: 1, mx: 1.5 }}
-            >
-              Features
-            </Link>
-            <Link
-              variant="button"
-              color="text.primary"
-              href="#"
-              sx={{ my: 1, mx: 1.5 }}
-            >
-              Enterprise
-            </Link>
-            <Link
-              variant="button"
-              color="text.primary"
-              href="#"
-              sx={{ my: 1, mx: 1.5 }}
-            >
-              Support
-            </Link>
+            {isLoggedIn && (
+              <Link
+                variant="button"
+                color="text.primary"
+                href="#"
+                sx={{ my: 1, mx: 1.5 }}
+              >
+                Exercises
+              </Link>
+            )}
+
+            {isLoggedIn && user.isTrainer && (
+              <Link
+                variant="button"
+                color="text.primary"
+                href={`/trainers/${user._id}`}
+                sx={{ my: 1, mx: 1.5 }}
+              >
+                My Customers
+              </Link>
+            )}
+
+            {isLoggedIn && !user.isTrainer && (
+              <>
+                <Link
+                  variant="button"
+                  color="text.primary"
+                  href="/trainers"
+                  sx={{ my: 1, mx: 1.5 }}
+                >
+                  Trainers
+                </Link>
+                <Link
+                  variant="button"
+                  color="text.primary"
+                  href={`/trainees/${user._id}`}
+                  sx={{ my: 1, mx: 1.5 }}
+                >
+                  My Plan
+                </Link>
+              </>
+            )}
           </nav>
 
           {!isLoggedIn && (
@@ -89,12 +104,12 @@ function Navbar() {
             </>
           )}
 
-          {isLoggedIn && (
+          {isLoggedIn && user && (
             <>
               <Button
                 onClick={logout}
                 variant="contained"
-                sx={{ my: 1, mx: 1.5 }}
+                sx={{ my: 1, mx: 1.5, bgcolor: "purple" }}
               >
                 Logout
               </Button>

@@ -6,6 +6,8 @@ import { BrowserRouter as Router } from "react-router-dom"
 import { AuthProvider } from './context/auth.context'
 
 import { StyledEngineProvider } from "@mui/material/styles"
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +15,9 @@ root.render(
     <Router>
       <StyledEngineProvider injectFirst>
         <AuthProvider>
-          <App />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <App />
+          </LocalizationProvider>
         </AuthProvider>
       </StyledEngineProvider>
     </Router>
