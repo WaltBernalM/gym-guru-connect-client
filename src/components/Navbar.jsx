@@ -67,7 +67,7 @@ function Navbar() {
                 href={`/trainers/${user._id}`}
                 sx={{ my: 1, mx: 1.5 }}
               >
-                My Customers
+                My Schedule
               </Link>
             )}
 
