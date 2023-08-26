@@ -12,7 +12,7 @@ import dayjs from "dayjs"
 import appointmentService from "../services/appointment.service"
 
 function AppointmentsList(props) {
-  const { trainerSchedule, setTrainerSchedule, getTrainerSchedule } = props
+  const { trainerSchedule } = props
   const { user } = useContext(AuthContext)
   
   const [dateFilter, setDateFilter] = useState(null)
