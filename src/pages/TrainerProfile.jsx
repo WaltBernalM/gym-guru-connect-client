@@ -9,15 +9,10 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable"
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
 import appointmentService from "../services/appointment.service"
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 
-import dayjs from "dayjs"
 import NewAppointmentForm from "../components/NewAppointmentForm"
 import AppointmentsList from "../components/AppointmentsList"
 
-
-const initialHours = [dayjs("2022-04-07T07:00"), dayjs("2022-04-17T19:00")]
-const initialDay = dayjs().add(48, 'hour')
 
 function TrainerProfile() {
   const [trainerInfo, setTrainerInfo] = useState(null)
@@ -27,10 +22,6 @@ function TrainerProfile() {
   const { user } = useContext(AuthContext)
   const navigate = useNavigate()
   
-  const [hourRange, setHourRange] = useState(() => initialHours)
-  const [date, setDate] = useState(initialDay)
-  const [appointmentError, setAppointmentError] = useState(null)
-
   const getTrainer = async () => {
     try {
       const trainerFromDB = await trainerService.getTrainerInfo(trainerId)
@@ -68,60 +59,21 @@ function TrainerProfile() {
         appointmentId, trainerId, traineeId
       )
       setAppointmentStatus(response.data.message)
+      getTrainer()
       setTimeout(() => navigate("/"), 2000)
     } catch (error) {
-      setAppointmentStatus(error.response.data.message)
+      console.log(error.response.data.message)
     }
   }
-
-  const handleCreateBooks = async (trainerId) => {
-    try {
-      setAppointmentError(null)
-      const hourStart = hourRange[0].$H
-      const hourEnd = hourRange[1].$H
-      const dayInfo = `${date.$M + 1}/${date.$D}/${date.$y}`
-      if (hourStart > hourEnd) { 
-        setAppointmentError('Hour Range Error')
-        return
-      }
-      if (hourEnd > 22) {
-        setAppointmentError("Hour end is too late")
-        return
-      }
-      if (hourStart < 7) {
-        setAppointmentError("Hour start is too early")
-        return
-      }
-      if ((hourEnd - hourStart) > 12) {
-        setAppointmentError("Hour range size is kinda' illegal")
-        return
-      }
-
-      for (let h = hourStart; h <= hourEnd; h++) { 
-        await appointmentService.createAppointment(
-          trainerId,
-          dayInfo,
-          h
-        )
-      }
-      // const response = await appointmentService.createAppointment(trainerId, dayInfo, hourStart)
-    } catch (error) {
-      setAppointmentError(error.response.data.message)
-    }
-  }
-
+  
   const getTrainerSchedule = async () => {
     try {
-        const scheduleFromDB =
-          await appointmentService.getAppointmentsForTrainer(trainerId)
-        setTrainerSchedule(scheduleFromDB.data)
+      const scheduleFromDB = await appointmentService
+          .getAppointmentsForTrainer(trainerId)      
+      setTrainerSchedule(scheduleFromDB.data)
     } catch (error) {
       console.log(error.response)
     }
-  }
-
-  const handleDeleteAppointment = async (appointmentId, trainerId) => { 
-    console.log(appointmentId, trainerId)
   }
 
   useEffect(() => {
@@ -138,6 +90,7 @@ function TrainerProfile() {
         flexDirection: "column",
       }}
     >
+      {/* For Trainee */}
       {trainerInfo && user && !user.isTrainer && (
         <>
           <Box
@@ -149,8 +102,8 @@ function TrainerProfile() {
           >
             <Container maxWidth="sm">
               <Typography
-                component="h1"
-                variant="h2"
+                component="h3"
+                variant="h4"
                 align="center"
                 color="text.primary"
                 gutterBottom
@@ -269,6 +222,7 @@ function TrainerProfile() {
         </>
       )}
 
+      {/* For Trainer */}
       {trainerInfo && user && user._id === trainerInfo._id && (
         <>
           <Box
@@ -280,8 +234,8 @@ function TrainerProfile() {
           >
             <Container maxWidth="sm">
               <Typography
-                component="h2"
-                variant="h3"
+                component="h3"
+                variant="h4"
                 align="center"
                 color="text.primary"
                 gutterBottom
@@ -292,20 +246,27 @@ function TrainerProfile() {
             </Container>
           </Box>
 
-          {/* <Button variant="outlined">Add Consults</Button> */}
-          <NewAppointmentForm
-            day={date}
-            setDay={setDate}
-            hourRange={hourRange}
-            setHourRange={setHourRange}
-            handleCreateBooks={handleCreateBooks}
-            appointmentError={appointmentError}
-          />
+          {user &&
+            user.isTrainer &&
+            trainerSchedule &&
+            trainerSchedule.schedule && (
+              <NewAppointmentForm
+                trainerSchedule={trainerSchedule}
+                setTrainerSchedule={setTrainerSchedule}
+                getTrainerSchedule={getTrainerSchedule}
+              />
+            )}
 
-          <AppointmentsList
-            trainerSchedule={trainerSchedule}
-            deleteAppointment={handleDeleteAppointment}
-          />
+          {user &&
+            user.isTrainer &&
+            trainerSchedule &&
+            trainerSchedule.schedule && (
+              <AppointmentsList
+                trainerSchedule={trainerSchedule}
+                setTrainerSchedule={setTrainerSchedule}
+                getTrainerSchedule={getTrainerSchedule}
+              />
+            )}
         </>
       )}
     </div>
