@@ -1,14 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import trainerService from "../services/trainer.service";
 import { Button, Card, CardActions, CardContent, CardMedia, Container, Grid, Link, Typography } from "@mui/material";
-import { AuthContext } from "../context/auth.context";
-import { useNavigate } from "react-router-dom";
 
 
 function TrainersList() {
   const [trainers, setTrainers] = useState([])
-  const { isLoggedIn, user } = useContext(AuthContext)
-  const navigate = useNavigate()
 
   const getAllTrainers = async () => {
     try {
