@@ -2,8 +2,8 @@ import axios from 'axios'
 // import Cookies from 'js-cookie'
 
 let baseUrl =
-  process.env.ENV === "production"
-    ? process.env.SERVER_URL
+  process.env.REACT_APP_ENV === "production"
+    ? process.env.REACT_APP_SERVER_URL
     : "http://localhost:5005"
 
 const service = axios.create({
