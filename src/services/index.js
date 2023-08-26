@@ -12,7 +12,7 @@ const service = axios.create({
   headers: {
     "Content-Type": 'application/json', // fixes the type of conten for this applicaiton (we will receive JSON)
   },
-  withCredentials: true, // allows to add credentials such as the motherfucking Cookie!
+  withCredentials: true, // allows to add credentials such as the MOTHERF#CKING Cookie!
 })
 
 
