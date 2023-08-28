@@ -24,7 +24,7 @@ function NewAppointmentForm(props) {
       setAppointmentError(null)
       const hourStart = hourRange[0].$H
       const hourEnd = hourRange[1].$H
-      const dayInfo = `${date.$M + 1}/${date.$D}/${date.$y}`
+      const dayInfo = `${date.$M + 1}/${date.$D - 1}/${date.$y}`
       if (hourStart > hourEnd) { 
         setAppointmentError('Hour Range Error')
         return
