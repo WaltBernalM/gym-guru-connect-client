@@ -5,6 +5,7 @@ import Signup from './pages/Signup.jsx'
 import Login from "./pages/Login";
 import TrainersList from "./pages/TrainersList";
 import TrainerProfile from "./pages/TrainerProfile";
+import TraineeProfile from './pages/TraineeProfile'
 
 function App() {
   return (
@@ -16,7 +17,9 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/trainers" element={ <TrainersList/> } />
-        <Route path="/trainers/:trainerId" element={<TrainerProfile/>} />
+        <Route path="/trainers/:trainerId" element={<TrainerProfile />} />
+        
+        <Route path="/trainee/:traineeId" element={<TraineeProfile />} />
       </Routes>
     </div>
   )

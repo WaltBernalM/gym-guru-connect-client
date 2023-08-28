@@ -84,7 +84,7 @@ function Navbar() {
                 <Link
                   variant="button"
                   color="text.primary"
-                  href={`/trainees/${user._id}`}
+                  href={`/trainee/${user._id}`}
                   sx={{ my: 1, mx: 1.5 }}
                 >
                   My Plan
