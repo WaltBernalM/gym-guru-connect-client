@@ -190,7 +190,7 @@ function TrainerProfile() {
                               )
                             }
                           >
-                            <EventAvailableIcon />
+                            <EventAvailableIcon sx={{color: 'green'}}/>
                           </IconButton>
                         ) : (
                           <LockClockIcon />

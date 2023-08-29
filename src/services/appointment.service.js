@@ -20,6 +20,9 @@ const appointmentService = {
   getAppointmentsForTrainer: (trainerId) => {
     return service.get(`/api/appointments/trainer/${trainerId}`)
   },
+  getAllAppointmentsOfTrainee: (traineeId) => {
+    return service.get(`/api/appointments/trainee/${traineeId}`)
+  },
   deletAppointmentForTrainer: (appointmentId, trainerId) => {
     return service.delete(
       `/api/appointments/${appointmentId}/trainer/${trainerId}`
