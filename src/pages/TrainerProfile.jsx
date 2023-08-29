@@ -1,11 +1,9 @@
 import { useContext, useEffect, useState } from "react"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import trainerService from "../services/trainer.service"
-import { Box, Button, Container, Grid, IconButton, List, ListItem, ListItemText, ListSubheader, Stack, Typography } from "@mui/material"
+import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material"
 import { AuthContext } from "../context/auth.context"
 
-import LockClockIcon from "@mui/icons-material/LockClock"
-import EventAvailableIcon from "@mui/icons-material/EventAvailable"
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
 import appointmentService from "../services/appointment.service"
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
@@ -13,72 +11,36 @@ import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined
 import NewAppointmentForm from "../components/NewAppointmentForm"
 import AppointmentsList from "../components/AppointmentsList"
 
-
 function TrainerProfile() {
   const [trainerInfo, setTrainerInfo] = useState(null)
   const [trainerSchedule, setTrainerSchedule] = useState(null)
   const [appointmentStatus, setAppointmentStatus] = useState('')
   const { trainerId } = useParams()
   const { user } = useContext(AuthContext)
-  const navigate = useNavigate()
-  
+
   const getTrainer = async () => {
     try {
       const trainerFromDB = await trainerService.getTrainerInfo(trainerId)
       setTrainerInfo(trainerFromDB.data)
     } catch (error) {
-      console.log(error.response.data.message)
-    }
-  }
-
-  const filterAppointments = (dayInfo, isAvailable) => {
-    const options = {
-      timeZone: "America/Los_Angeles",
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-    }
-    const currentDate = new Date().toLocaleString("en-US", options)
-    const date = new Date(dayInfo).toLocaleString("en-US", options)
-    const today = new Date(currentDate)
-
-    if (new Date(date) < today.setDate(today.getDate() + 2)) {
-      return false
-    } else {
-      if (isAvailable) {
-        return true
-      } else {
-        return false
-      }
-    }
-  }
-
-  const handleBookIn = async (appointmentId, trainerId, traineeId) => {
-    try {
-      const response = await appointmentService.traineeBookAppointment(
-        appointmentId, trainerId, traineeId
-      )
-      setAppointmentStatus(response.data.message)
-      getTrainer()
-      setTimeout(() => navigate("/"), 2000)
-    } catch (error) {
-      console.log(error.response.data.message)
+      setAppointmentStatus(error.response.data.message)
     }
   }
   
   const getTrainerSchedule = async () => {
     try {
       const scheduleFromDB = await appointmentService
-          .getAppointmentsForTrainer(trainerId)      
+        .getAppointmentsForTrainer(trainerId)      
       setTrainerSchedule(scheduleFromDB.data)
     } catch (error) {
-      console.log(error.response)
+      setAppointmentStatus(error.response.data.message)
     }
   }
 
   useEffect(() => {
     getTrainer()
     getTrainerSchedule()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
   return (
@@ -148,59 +110,12 @@ function TrainerProfile() {
             </Container>
           </Box>
 
-          {/* Trainer's Scedule */}
-          <List
-            sx={{
-              width: "100%",
-              maxWidth: 360,
-              bgcolor: "background.paper",
-              position: "relative",
-              overflow: "auto",
-              maxHeight: 300,
-              "& ul": { padding: 0 },
-              border: "6px solid purple",
-              borderRadius: "20px",
-              mt: 1,
-            }}
-            subheader={<li />}
-          >
-            <ul style={{ textAlign: "center" }}>
-              <ListSubheader>Open Schedule</ListSubheader>
-              {trainerInfo.schedule
-                .filter(({ dayInfo, isAvailable }) => {
-                  return filterAppointments(dayInfo, isAvailable)
-                })
-                .map((appointment) => {
-                  return (
-                    <ListItem
-                      key={appointment._id}
-                      disableGutters
-                      sx={{ textAlign: "center" }}
-                    >
-                      <ListItemText>
-                        {appointment.dayInfo} @ {appointment.hour}
-                        {":00"}
-                        {trainerInfo.trainees.includes(user._id) ? (
-                          <IconButton
-                            onClick={() =>
-                              handleBookIn(
-                                appointment._id,
-                                trainerInfo._id,
-                                user._id
-                              )
-                            }
-                          >
-                            <EventAvailableIcon sx={{color: 'green'}}/>
-                          </IconButton>
-                        ) : (
-                          <LockClockIcon />
-                        )}
-                      </ListItemText>
-                    </ListItem>
-                  )
-                })}
-            </ul>
-          </List>
+          {user && trainerSchedule && trainerSchedule.schedule && (
+            <AppointmentsList
+              trainerSchedule={trainerSchedule}
+              trainerInfo={trainerInfo}
+            />
+          )}
 
           {/* Appointment message */}
           {appointmentStatus && (
@@ -250,9 +165,8 @@ function TrainerProfile() {
             user.isTrainer &&
             trainerSchedule &&
             trainerSchedule.schedule && (
-              <NewAppointmentForm
-                trainerSchedule={trainerSchedule}
-                setTrainerSchedule={setTrainerSchedule}
+            <NewAppointmentForm
+              
                 getTrainerSchedule={getTrainerSchedule}
               />
             )}
@@ -263,8 +177,7 @@ function TrainerProfile() {
             trainerSchedule.schedule && (
               <AppointmentsList
                 trainerSchedule={trainerSchedule}
-                setTrainerSchedule={setTrainerSchedule}
-                getTrainerSchedule={getTrainerSchedule}
+                trainerInfo={trainerInfo}
               />
             )}
         </>
