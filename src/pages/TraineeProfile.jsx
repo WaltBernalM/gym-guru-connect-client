@@ -2,14 +2,12 @@ import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import traineeService from "../services/trainee.service"
 import appointmentService from "../services/appointment.service"
-import { Box, Button, Container, Grid, Link, List, ListItem, ListItemText, Typography } from "@mui/material"
+import { Box, Button, Container, Link, List, ListItem, ListItemText, Typography } from "@mui/material"
 import NutritionPlanList from "../components/NutritionPlanList"
 import ExercisePlanList from "../components/ExercisePlanList"
 import { AuthContext } from "../context/auth.context"
 import EventBusyIcon from "@mui/icons-material/EventBusy"
 import { options, today } from "../utils/constants"
-
-import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
 
 const now = new Date(today)
 const twoDaysNow = now.setDate(now.getDate() + 1)
@@ -53,7 +51,7 @@ function TraineeProfile() {
     getTraineeData()
     getTraineeAppointments()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user])
 
   const handleUnbook = async (appointmentId, trainerId, traineeId) => {
     try {
@@ -67,12 +65,13 @@ function TraineeProfile() {
   return (
     <div>
       {/* For Trainee */}
-      {user &&
-        user._id === traineeId &&
+      {user && !user.isTrainer &&
+        traineeId === user._id &&
         traineeInfo &&
         traineeInfo.nutritionPlan &&
         traineeAppointments && (
           <>
+            {/* Trainee Welcome and Schedule */}
             <Box
               sx={{
                 bgcolor: "background.paper",
@@ -106,10 +105,12 @@ function TraineeProfile() {
                       sx={{ textDecoration: "none" }}
                     >
                       {` ${traineeInfo.trainerId.name.firstName} 
-            ${traineeInfo.trainerId.name.lastName}`}
+                  ${traineeInfo.trainerId.name.lastName}`}
                     </Link>
                   </small>
                 </Typography>
+
+                {/* Trainee appointments */}
                 <List
                   align="center"
                   sx={{
@@ -135,8 +136,7 @@ function TraineeProfile() {
                         sx={{ textAlign: "center" }}
                       >
                         <ListItemText>
-                          {`${appointment.dayInfo} @ ${appointment.hour}
-                :00`}
+                          {`${appointment.dayInfo} @ ${appointment.hour}:00`}
                           <small>{` with ${traineeInfo.trainerId.name.firstName}`}</small>
                           <Button
                             sx={{ textAlign: "center", color: "red" }}
@@ -163,7 +163,7 @@ function TraineeProfile() {
                 </List>
               </Container>
             </Box>
-
+            {/* Trainee Exercise and Nutrition Plan  */}
             <Box
               sx={{ display: "flex", flexWrap: "wrap", flexDirection: "row" }}
             >
@@ -198,7 +198,35 @@ function TraineeProfile() {
       {/* For Trainer */}
       {user && user.isTrainer && traineeInfo && traineeInfo.nutritionPlan && (
         <>
-          <span>trainer view </span>
+          <span>trainer view</span>
+
+          <Box sx={{ display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
+            <Container
+              maxWidth="sm"
+              sx={{
+                backgroundColor: "black",
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                marginY: 2,
+              }}
+            >
+              <></>
+              <NutritionPlanList nutritionPlan={traineeInfo.nutritionPlan} traineeId={traineeId} />
+            </Container>
+            <Container
+              maxWidth="sm"
+              sx={{
+                backgroundColor: "black",
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                marginY: 2,
+              }}
+            >
+              <ExercisePlanList exercisePlan={traineeInfo.exercisePlan} />
+            </Container>
+          </Box>
         </>
       )}
     </div>

@@ -166,7 +166,6 @@ function TrainerProfile() {
             trainerSchedule &&
             trainerSchedule.schedule && (
             <NewAppointmentForm
-              
                 getTrainerSchedule={getTrainerSchedule}
               />
             )}
