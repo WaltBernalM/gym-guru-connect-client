@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, Divider, FormControl, IconButton, InputLabel, List, ListItem, ListItemText, ListSubheader, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, useMediaQuery, useTheme } from "@mui/material"
+import { Box, Button, Collapse, Divider, FormControl, IconButton, InputLabel, List, ListItem, ListItemText, ListSubheader, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
 import { Fragment, useContext, useEffect, useState } from "react"
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
@@ -6,10 +6,10 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import Paper from "@mui/material/Paper"
 import { AuthContext } from "../context/auth.context"
 
-import DeleteIcon from "@mui/icons-material/Delete"
 import PlusOneIcon from "@mui/icons-material/PlusOne"
 import SearchIcon from "@mui/icons-material/Search"
 import PostAddIcon from "@mui/icons-material/PostAdd"
+import BackspaceIcon from "@mui/icons-material/Backspace"
 
 import FoodRowInfo from "./FoodRowInfo"
 import foodService from "../services/foods.service"
@@ -29,11 +29,9 @@ function NutritionPlanList(props) {
   const [portionIdForFood, setPortionIdForFood] = useState("")
   const [nutritionPlan, setNutritionPlan] = useState(traineeNutritionPlan)
 
-  const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"))
-
   useEffect(() => {
     setNutritionPlan(traineeNutritionPlan)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleCreatePortion = async () => {
@@ -47,6 +45,7 @@ function NutritionPlanList(props) {
 
   const searchFood = async () => {
     try {
+      setFoodQueryError(null)
       if (!foodQuerySearch.name || !foodQuerySearch.serving_size_g) {
         setFoodQueryError("Missing filed")
         return
@@ -128,18 +127,19 @@ function NutritionPlanList(props) {
                   <div style={{ minWidth: 80, maxWidth: 140 }}>
                     <TextField
                       id="outlined-basic"
-                      label="food"
+                      label={foodQuerySearch.name ? "name" : "empty"}
                       variant="outlined"
                       size="small"
                       sx={{ maxWidth: "100%" }}
                       fullWidth
+                      error={foodQuerySearch.name ? false : true}
                       value={foodQuerySearch.name}
                       onChange={(e) =>
                         handleQuerySearchInput("name", e.target.value)
                       }
                     />
                     <TextField
-                      label="grams"
+                      label={foodQuerySearch.serving_size_g ? "grams" : "empty"}
                       inputProps={{
                         step: 10,
                         min: 10,
@@ -147,6 +147,7 @@ function NutritionPlanList(props) {
                         type: "number",
                       }}
                       fullWidth
+                      error={foodQuerySearch.serving_size_g ? false : true}
                       size="small"
                       sx={{ maxWidth: "100%", marginTop: 1 }}
                       value={foodQuerySearch.serving_size_g}
@@ -255,8 +256,8 @@ function NutritionPlanList(props) {
                 >
                   Add To:
                 </Button>
-                <FormControl sx={{ minWidth: 100, marginY: 1}} size="small">
-                  <InputLabel size="small" >
+                <FormControl sx={{ minWidth: 100, marginY: 1 }} size="small">
+                  <InputLabel size="small">
                     <small>Portion #</small>
                   </InputLabel>
                   <Select
@@ -319,9 +320,10 @@ function NutritionPlanList(props) {
                         variant="outlined"
                         color="error"
                         size="small"
+                        startIcon={<BackspaceIcon />}
                         onClick={() => {}}
                       >
-                        <DeleteIcon />
+                        Delete
                       </Button>
                     </TableCell>
                   )}
@@ -337,7 +339,7 @@ function NutritionPlanList(props) {
                               {user && user.isTrainer && (
                                 <TableCell size="small"></TableCell>
                               )}
-                              <TableCell size="small">Name</TableCell>
+                              <TableCell size="small">Food name</TableCell>
                               <TableCell size="small">Portion size</TableCell>
                               <TableCell size="small"></TableCell>
                             </TableRow>

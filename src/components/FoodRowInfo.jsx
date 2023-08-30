@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, Grid, Slider, TableCell, TableRow, Typography } from "@mui/material"
+import { Button, Slider, TableCell, TableRow, Typography } from "@mui/material"
 
 import DeleteIcon from "@mui/icons-material/Delete"
 import SaveIcon from "@mui/icons-material/Save"
@@ -43,6 +43,7 @@ function FoodRowInfo(params) {
   useEffect(() => {
     getFoodInfoOfPortion(foodId, traineeId, portionId)
     setFeedback(false)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
