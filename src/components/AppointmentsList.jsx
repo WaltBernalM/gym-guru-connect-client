@@ -1,4 +1,4 @@
-import { Button, Grid, List, ListItem, ListItemText, ListSubheader, } from "@mui/material"
+import { Button, Grid, IconButton, List, ListItem, ListItemText, ListSubheader, } from "@mui/material"
 
 import EventBusyIcon from "@mui/icons-material/EventBusy"
 import PersonSearchIcon from "@mui/icons-material/PersonSearch"
@@ -6,13 +6,16 @@ import { AuthContext } from "../context/auth.context"
 import { useContext, useEffect, useState } from "react"
 
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
+import EventAvailableIcon from "@mui/icons-material/EventAvailable"
+import LockClockIcon from "@mui/icons-material/LockClock"
 
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs from "dayjs"
 import appointmentService from "../services/appointment.service"
+import { useNavigate } from "react-router-dom"
 
 function AppointmentsList(props) {
-  const { trainerSchedule } = props
+  const { trainerSchedule, trainerInfo } = props
   const { user } = useContext(AuthContext)
   
   const [dateFilter, setDateFilter] = useState(null)
@@ -20,6 +23,9 @@ function AppointmentsList(props) {
   const [filtered, setFiltered] = useState(trainerSchedule.schedule)
   
   const [deletionError, setDeletionError] = useState(null)
+
+  const navigate = useNavigate()
+  const [appointmentStatus, setAppointmentStatus] = useState("")
 
   const options = {
     timeZone: "America/Los_Angeles",
@@ -59,97 +65,167 @@ function AppointmentsList(props) {
         trainerId
       )
       setFiltered(response.data.schedule)
+    } catch (error) { 
+      setDeletionError(error.response.data.message)
+    }
+  }
+
+  const handleBookIn = async (appointmentId, trainerId, traineeId) => {
+    try {
+      const response = await appointmentService.traineeBookAppointment(
+        appointmentId,
+        trainerId,
+        traineeId
+      )
+      setAppointmentStatus(response.data.message)
+      setTimeout(() => navigate(`/trainee/${user._id}`), 1000)
     } catch (error) {
       console.log(error.response.data.message)
-      setDeletionError(error.response.data.message)
+    }
+  }
+  const filterAppointments = (dayInfo, isAvailable) => {
+    const options = {
+      timeZone: "America/Los_Angeles",
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    }
+    const currentDate = new Date().toLocaleString("en-US", options)
+    const date = new Date(dayInfo).toLocaleString("en-US", options)
+    const today = new Date(currentDate)
+
+    if (new Date(date) < today.setDate(today.getDate() + 2)) {
+      return false
+    } else {
+      if (isAvailable) {
+        return true
+      } else {
+        return false
+      }
     }
   }
   
   return (
     <>
-      <List
-        sx={{
-          width: "100%",
-          maxWidth: 500,
-          bgcolor: "background.paper",
-          position: "relative",
-          overflow: "auto",
-          maxHeight: 310,
-          "& ul": { padding: 0, margin: 1 },
-          border: "6px solid purple",
-          borderRadius: "20px",
-          mt: 1,
-        }}
-        subheader={<li />}
-      >
-        <ul style={{ textAlign: "center" }}>
-          <ListSubheader>
-            {filtered.length > 0 ? (
-              <DatePicker
-                sx={{ marginTop: 1, paddingBottom: 1 }}
-                label={
-                  filterMessage
-                    ? <span style={{ color: 'red' }}>
-                        {filterMessage}
-                      </span>
-                    : "Date Filter"
-                }
-                slotProps={{ textField: { size: "small" } }}
-                minDate={dayjs(new Date())}
-                onChange={(newValue) => handleFilter(newValue)}
-                value={dateFilter}
-              />
-            ) : (
-              "Is empty"
-            )}
-          </ListSubheader>
-
-          {/* Render of list items */}
-          {
-            filtered.filter((a) => {
-              const dateInAppointment = new Date(a.dayInfo).toLocaleString(
-                "en-US",
-                options
-              )
-              return new Date(dateInAppointment) >= today ? true : false
-            })
-            .map((appointment) => {
-              return (
-                <ListItem
-                  key={appointment._id}
-                  disableGutters
-                  sx={{ textAlign: "center" }}
-                >
-                  <ListItemText>
-                    {`${appointment.dayInfo} @ ${appointment.hour}:00`}
-                    {appointment.traineeId ? (
-                      <Button
-                        sx={{ ml: 2 }}
-                        variant="contained"
-                        startIcon={<PersonSearchIcon />}
-                        color="info"
-                        href={`/trainee/${appointment.traineeId._id}`}
-                      >
-                        {`${appointment.traineeId.name.firstName}`}
-                      </Button>
+      {((!user.isTrainer && trainerInfo.trainees.includes(user._id)) ||
+        user.isTrainer) &&
+        <List
+          sx={{
+            width: "100%",
+            maxWidth: 500,
+            bgcolor: "background.paper",
+            position: "relative",
+            overflow: "auto",
+            maxHeight: 310,
+            "& ul": { padding: 0, margin: 1 },
+            border: "6px solid purple",
+            borderRadius: "20px",
+            mt: 1,
+          }}
+          subheader={<li />}
+        >
+          <ul style={{ textAlign: "center" }}>
+            <ListSubheader>
+              {filtered.length > 0 ? (
+                <DatePicker
+                  sx={{ marginTop: 1, paddingBottom: 1 }}
+                  label={
+                    filterMessage ? (
+                      <span style={{ color: "red" }}>{filterMessage}</span>
                     ) : (
-                      <Button
-                        sx={{ ml: 2 }}
-                        startIcon={<EventBusyIcon />}
-                        color="error"
-                        disabled={ new Date (appointment.dayInfo) > new Date(today) ? false : true}
-                        onClick={() => hanldeDelete(appointment._id, user._id)}
-                      >
-                        Remove
-                      </Button>
-                    )}
-                  </ListItemText>
-                </ListItem>
-              )
-            })}
-        </ul>
-      </List>
+                      "Date Filter"
+                    )
+                  }
+                  slotProps={{ textField: { size: "small" } }}
+                  minDate={dayjs(new Date())}
+                  onChange={(newValue) => handleFilter(newValue)}
+                  value={dateFilter}
+                />
+              ) : (
+                "Is empty"
+              )}
+            </ListSubheader>
 
+            {/* Render of list items */}
+            {filtered
+              // eslint-disable-next-line array-callback-return
+              .filter((a) => {
+                const dateInAppointment = new Date(a.dayInfo).toLocaleString(
+                  "en-US",
+                  options
+                )
+                if (user.isTrainer) {
+                  return new Date(dateInAppointment) >= today ? true : false
+                } else if (!user.isTrainer) {
+                  const { dayInfo, isAvailable } = a
+                  return filterAppointments(dayInfo, isAvailable)
+                }
+              })
+              .map((appointment) => {
+                return (
+                  <ListItem
+                    key={appointment._id}
+                    disableGutters
+                    sx={{ textAlign: "center" }}
+                  >
+                    {user.isTrainer && (
+                      <ListItemText>
+                        {`${appointment.dayInfo} @ ${appointment.hour}:00`}
+                        {appointment.traineeId ? (
+                          <Button
+                            sx={{ ml: 2 }}
+                            variant="contained"
+                            startIcon={<PersonSearchIcon />}
+                            color="info"
+                            href={`/trainee/${appointment.traineeId._id}`}
+                          >
+                            {`${appointment.traineeId.name.firstName}`}
+                          </Button>
+                        ) : (
+                          <Button
+                            sx={{ ml: 2 }}
+                            startIcon={<EventBusyIcon />}
+                            color="error"
+                            disabled={
+                              new Date(appointment.dayInfo) > new Date(today)
+                                ? false
+                                : true
+                            }
+                            onClick={() =>
+                              hanldeDelete(appointment._id, user._id)
+                            }
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </ListItemText>
+                    )}
+                    {!user.isTrainer && (
+                      <ListItemText>
+                        {appointment.dayInfo} @ {appointment.hour}
+                        {":00"}
+                        {trainerInfo.trainees.includes(user._id) ? (
+                          <IconButton
+                            onClick={() =>
+                              handleBookIn(
+                                appointment._id,
+                                trainerInfo._id,
+                                user._id
+                              )
+                            }
+                          >
+                            <EventAvailableIcon sx={{ color: "green" }} />
+                          </IconButton>
+                        ) : (
+                          <LockClockIcon />
+                        )}
+                      </ListItemText>
+                    )}
+                  </ListItem>
+                )
+              })}
+          </ul>
+        </List>}
       {deletionError && (
         <Grid
           container
@@ -164,6 +240,22 @@ function AppointmentsList(props) {
         >
           <ReportProblemOutlinedIcon sx={{ mr: 1 }} />
           <span>{deletionError}</span>
+        </Grid>
+      )}
+      {/* Appointment message */}
+      {appointmentStatus && (
+        <Grid
+          container
+          sx={{
+            color: "green",
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+            justifyContent: "center",
+            textAlign: "justify",
+          }}
+        >
+          <span>{appointmentStatus}</span>
         </Grid>
       )}
     </>
