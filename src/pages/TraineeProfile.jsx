@@ -65,7 +65,8 @@ function TraineeProfile() {
   return (
     <div>
       {/* For Trainee */}
-      {user && !user.isTrainer &&
+      {user &&
+        !user.isTrainer &&
         traineeId === user._id &&
         traineeInfo &&
         traineeInfo.nutritionPlan &&
@@ -99,14 +100,19 @@ function TraineeProfile() {
                 </Typography>
                 <Typography align="center">
                   <small>
-                    Your current trainer is
-                    <Link
-                      href={traineeInfo.trainerId ? `/trainers/${traineeInfo.trainerId._id}`: ''}
-                      sx={{ textDecoration: "none" }}
-                    >
-                      {` ${traineeInfo.trainerId.name.firstName} 
-                  ${traineeInfo.trainerId.name.lastName}`}
-                    </Link>
+                    {traineeInfo.trainerId ? (
+                      <>
+                        Your current trainer is
+                        <Link
+                          href={`/trainers/${traineeInfo.trainerId._id}`}
+                          sx={{ textDecoration: "none" }}
+                        >
+                          {` ${traineeInfo.trainerId.name.firstName} ${traineeInfo.trainerId.name.lastName}`}
+                        </Link>
+                      </>
+                    ) : (
+                      "You have no trainer yet"
+                    )}
                   </small>
                 </Typography>
 
@@ -212,7 +218,10 @@ function TraineeProfile() {
               }}
             >
               <></>
-              <NutritionPlanList nutritionPlan={traineeInfo.nutritionPlan} traineeId={traineeId} />
+              <NutritionPlanList
+                nutritionPlan={traineeInfo.nutritionPlan}
+                traineeId={traineeId}
+              />
             </Container>
             <Container
               maxWidth="sm"
