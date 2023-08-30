@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, List, ListItem, ListItemText, ListSubheader, MenuItem, OutlinedInput, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
+import { Box, Button, Collapse, Divider, FormControl, IconButton, InputLabel, List, ListItem, ListItemText, ListSubheader, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, useMediaQuery, useTheme } from "@mui/material"
 import { Fragment, useContext, useEffect, useState } from "react"
 
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
@@ -8,7 +8,6 @@ import { AuthContext } from "../context/auth.context"
 
 import DeleteIcon from "@mui/icons-material/Delete"
 import PlusOneIcon from "@mui/icons-material/PlusOne"
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd"
 import SearchIcon from "@mui/icons-material/Search"
 import PostAddIcon from "@mui/icons-material/PostAdd"
 
@@ -28,8 +27,10 @@ function NutritionPlanList(props) {
   const [foodQueryError, setFoodQueryError] = useState(null)
   const [foodQueryResult, setFoodQueryResult] = useState(null)
   const [portionIdForFood, setPortionIdForFood] = useState("")
-
   const [nutritionPlan, setNutritionPlan] = useState(traineeNutritionPlan)
+
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"))
 
   useEffect(() => {
     setNutritionPlan(traineeNutritionPlan)
@@ -37,23 +38,21 @@ function NutritionPlanList(props) {
 
   const handleCreatePortion = async () => {
     try {
-      
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   }
 
   const handleQuerySearchInput = (field, value) => {
-    setFoodQuerySearch((prevVal) => ({...prevVal, [field]:value}))
+    setFoodQuerySearch((prevVal) => ({ ...prevVal, [field]: value }))
   }
 
   const searchFood = async () => {
     try {
       if (!foodQuerySearch.name || !foodQuerySearch.serving_size_g) {
-        setFoodQueryError('Missing filed')
+        setFoodQueryError("Missing filed")
         return
       }
-      const response = (await foodService.queryFood(foodQuerySearch)).data.foods[0]
+      const response = (await foodService.queryFood(foodQuerySearch)).data
+        .foods[0]
       setFoodQueryResult(response)
     } catch (error) {
       setFoodQueryError(error)
@@ -68,24 +67,36 @@ function NutritionPlanList(props) {
     try {
       const form = {
         portionId: portionIdForFood,
-        ...foodQueryResult
+        ...foodQueryResult,
       }
-      const response = (await foodService.createFoodForTraineePortion(traineeId, form)).data.updatedNutritionPlan
+      const response = (
+        await foodService.createFoodForTraineePortion(traineeId, form)
+      ).data.updatedNutritionPlan
       setNutritionPlan(response)
     } catch (error) {
       console.log(error)
     }
   }
-  
+
+  const deleteFood = async (foodId) => {
+    try {
+      const response = (await foodService.deleteFood(foodId, traineeId)).data
+        .updatedNutritionPlan
+      setNutritionPlan(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <TableContainer component={Paper} sx={{ maxWidth: 600 }}>
       <Table aria-label="collapsible table">
         {/* Portion content Editor */}
-        <TableHead>
-          <TableRow>
+        <TableHead size="small">
+          <TableRow size="small">
             {user && !user.isTrainer && <TableCell />}
             {user && user.isTrainer && (
-              <TableCell>
+              <TableCell size="small">
                 <Button
                   variant="contained"
                   size="small"
@@ -95,15 +106,15 @@ function NutritionPlanList(props) {
                 </Button>
               </TableCell>
             )}
-            <TableCell>
+            <TableCell size="small">
               <Typography variant="h6">Nutrition Plan</Typography>
             </TableCell>
             {user && user.isTrainer && <TableCell />}
           </TableRow>
 
           {user && user.isTrainer && (
-            <TableRow>
-              <TableCell sx={{ paddingRight: 0 }}>
+            <TableRow size="small">
+              <TableCell sx={{ paddingX: 0 }} size="small">
                 <FormControl
                   sx={{
                     m: 1,
@@ -114,7 +125,7 @@ function NutritionPlanList(props) {
                   variant="outlined"
                   size="small"
                 >
-                  <div style={{ maxWidth: 120 }}>
+                  <div style={{ minWidth: 80, maxWidth: 140 }}>
                     <TextField
                       id="outlined-basic"
                       label="food"
@@ -137,7 +148,7 @@ function NutritionPlanList(props) {
                       }}
                       fullWidth
                       size="small"
-                      sx={{ minWidth: 110, maxWidth: "100%", marginTop: 1 }}
+                      sx={{ maxWidth: "100%", marginTop: 1 }}
                       value={foodQuerySearch.serving_size_g}
                       onChange={(e) =>
                         handleQuerySearchInput("serving_size_g", e.target.value)
@@ -154,7 +165,7 @@ function NutritionPlanList(props) {
                   </IconButton>
                 </FormControl>
               </TableCell>
-              <TableCell>
+              <TableCell size="small" sx={{ paddingX: 0 }}>
                 <List
                   sx={{
                     width: "100%",
@@ -174,9 +185,11 @@ function NutritionPlanList(props) {
                           margin: 0,
                           textAlign: "center",
                           height: 40,
+                          borderBottom: "1px solid",
+                          borderColor: "rgb(0,0,0,0.4)",
                         }}
                       >
-                        Search Result
+                        Result
                       </ListSubheader>
                       {foodQueryResult && (
                         <>
@@ -185,31 +198,37 @@ function NutritionPlanList(props) {
                               primary={`Name: ${foodQueryResult.name}`}
                             />
                           </ListItem>
+                          <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                             <ListItemText
                               primary={`Serv. Size: ${foodQueryResult.serving_size_g}g`}
                             />
                           </ListItem>
+                          <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                             <ListItemText
                               primary={`Protein: ${foodQueryResult.protein_g}g`}
                             />
                           </ListItem>
+                          <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                             <ListItemText
                               primary={`Calories: ${foodQueryResult.calories}`}
                             />
                           </ListItem>
+                          <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                             <ListItemText
                               primary={`Carbs: ${foodQueryResult.carbohydrates_total_g}g`}
                             />
                           </ListItem>
+                          <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                             <ListItemText
                               primary={`Total Fat: ${foodQueryResult.fat_total_g}g`}
                             />
                           </ListItem>
+                          <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                             <ListItemText
                               primary={`Sat. Fat: ${foodQueryResult.fat_saturated_g}g`}
@@ -221,9 +240,14 @@ function NutritionPlanList(props) {
                   </li>
                 </List>
               </TableCell>
-              <TableCell align="center" sx={{ maxWidth: 150 }}>
+              <TableCell
+                align="center"
+                sx={{ maxWidth: 150, paddingX: 1 }}
+                size="small"
+              >
                 <Button
                   variant="outlined"
+                  size="small"
                   startIcon={<PostAddIcon />}
                   sx={{ marginY: 1 }}
                   disabled={portionIdForFood ? false : true}
@@ -231,20 +255,27 @@ function NutritionPlanList(props) {
                 >
                   Add To:
                 </Button>
-                <FormControl sx={{ minWidth: 110, marginY: 1 }} size="small">
-                  <InputLabel>Portion #</InputLabel>
+                <FormControl sx={{ minWidth: 100, marginY: 1}} size="small">
+                  <InputLabel size="small" >
+                    <small>Portion #</small>
+                  </InputLabel>
                   <Select
                     value={portionIdForFood}
                     label="portionAssign"
                     onChange={handleFoodAssignPortion}
                     disabled={foodQueryResult ? false : true}
+                    size="small"
                   >
-                    <MenuItem value="" key="None">
+                    <MenuItem value="" key="None" size="small">
                       <em>None</em>
                     </MenuItem>
                     {nutritionPlan.map((portion) => {
                       return (
-                        <MenuItem value={portion._id} key={portion._id}>
+                        <MenuItem
+                          value={portion._id}
+                          key={portion._id}
+                          size="small"
+                        >
                           Portion #{portion.portionNumber}
                         </MenuItem>
                       )
@@ -257,13 +288,16 @@ function NutritionPlanList(props) {
         </TableHead>
 
         {/* Portion and Food Editor */}
-        <TableBody>
+        <TableBody size="small">
           {nutritionPlan.map((portion) => {
             const { _id: portionId, foodList } = portion
             return (
               <Fragment key={portionId}>
-                <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-                  <TableCell>
+                <TableRow
+                  sx={{ "& > *": { borderBottom: "unset" } }}
+                  size="small"
+                >
+                  <TableCell size="small">
                     <IconButton
                       aria-label="expand row"
                       size="small"
@@ -276,11 +310,11 @@ function NutritionPlanList(props) {
                       )}
                     </IconButton>
                   </TableCell>
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" size="small">
                     Portion #{portion.portionNumber}
                   </TableCell>
                   {user && user.isTrainer && (
-                    <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row" size="small">
                       <Button
                         variant="outlined"
                         color="error"
@@ -294,29 +328,18 @@ function NutritionPlanList(props) {
                 </TableRow>
 
                 <TableRow key={portion._id}>
-                  <TableCell
-                    style={{ paddingBottom: 0, paddingTop: 0 }}
-                    colSpan={6}
-                  >
+                  <TableCell style={{ padding: 0 }} colSpan={6} size="small">
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                      <Box sx={{ margin: 1 }}>
+                      <Box sx={{ marginY: 1 }}>
                         <Table size="small" aria-label="foods">
                           <TableHead>
                             <TableRow>
                               {user && user.isTrainer && (
-                                <TableCell>
-                                  <Button
-                                    onClick={() =>
-                                      console.log("add food to ", portionId)
-                                    }
-                                  >
-                                    <PlaylistAddIcon />
-                                  </Button>
-                                </TableCell>
+                                <TableCell size="small"></TableCell>
                               )}
-                              <TableCell>Name</TableCell>
-                              <TableCell>Portion size</TableCell>
-                              <TableCell></TableCell>
+                              <TableCell size="small">Name</TableCell>
+                              <TableCell size="small">Portion size</TableCell>
+                              <TableCell size="small"></TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -324,14 +347,18 @@ function NutritionPlanList(props) {
                               !user.isTrainer &&
                               foodList.map((food) => {
                                 return (
-                                  <TableRow key={food._id}>
-                                    <TableCell component="th" scope="row">
+                                  <TableRow key={food._id} size="small">
+                                    <TableCell
+                                      component="th"
+                                      scope="row"
+                                      size="small"
+                                    >
                                       {food.name}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell size="small">
                                       {`${food.serving_size_g} g`}
                                     </TableCell>
-                                    <TableCell />
+                                    <TableCell size="small" />
                                   </TableRow>
                                 )
                               })}
@@ -344,6 +371,7 @@ function NutritionPlanList(props) {
                                     foodId={food._id}
                                     traineeId={traineeId}
                                     portionId={portionId}
+                                    deleteFood={deleteFood}
                                   />
                                 )
                               })}

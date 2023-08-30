@@ -6,7 +6,7 @@ import SaveIcon from "@mui/icons-material/Save"
 import foodService from "../services/foods.service"
 
 function FoodRowInfo(params) {
-  const {foodId, traineeId, portionId} = params
+  const {foodId, traineeId, portionId, deleteFood} = params
   const [foodInfo, setFoodInfo] = useState(null)
   const [servingSize, setServingSize] = useState(null)
   const [ feedback, setFeedback] = useState(false)
@@ -47,21 +47,21 @@ function FoodRowInfo(params) {
 
   return (
     foodInfo && (
-      <TableRow key={foodId}>
-        <TableCell>
+      <TableRow key={foodId} size="small">
+        <TableCell size="small">
           <Button
             variant="contained"
-            color={feedback ? 'success' : 'primary'}
+            color={feedback ? "success" : "primary"}
             size="small"
             onClick={() => updateFoodInfo()}
           >
             <SaveIcon />
           </Button>
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell component="th" scope="row" size="small">
           {foodInfo.name}
         </TableCell>
-        <TableCell>
+        <TableCell size="small">
           <Slider
             value={servingSize / 10}
             min={5}
@@ -76,12 +76,12 @@ function FoodRowInfo(params) {
             <small>{`${servingSize}g`}</small>
           </Typography>
         </TableCell>
-        <TableCell>
+        <TableCell size="small">
           <Button
             variant="outlined"
             color="error"
             size="small"
-            onClick={() => console.log("delete", foodId)}
+            onClick={() => deleteFood(foodId)}
           >
             <DeleteIcon />
           </Button>

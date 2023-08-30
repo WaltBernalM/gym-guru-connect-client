@@ -20,6 +20,9 @@ const foodService = {
       serving_size_g
     )
   },
+  deleteFood: (foodId, traineeId) => {
+    return service.delete(`/api/foods/${foodId}/trainee/${traineeId}`)
+  }
 }
 
 export default foodService
