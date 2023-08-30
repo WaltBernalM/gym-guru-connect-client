@@ -117,86 +117,98 @@ function TraineeProfile() {
                 </Typography>
 
                 {/* Trainee appointments */}
-                <List
-                  align="center"
-                  sx={{
-                    width: "100%",
-                    maxWidth: 200,
-                    bgcolor: "background.paper",
-                    position: "relative",
-                    overflow: "auto",
-                    maxHeight: 100,
-                    "& ul": { padding: 0 },
-                    border: "6px solid purple",
-                    borderRadius: "10px",
-                    mt: 1,
-                    display: "flex",
-                    flexDirection: "row",
-                  }}
-                  subheader={<li />}
-                >
-                  {traineeAppointments.map((appointment) => {
-                    return (
-                      <ListItem
-                        key={appointment._id}
-                        sx={{ textAlign: "center" }}
-                      >
-                        <ListItemText>
-                          {`${appointment.dayInfo} @ ${appointment.hour}:00`}
-                          <small>{` with ${traineeInfo.trainerId.name.firstName}`}</small>
-                          <Button
-                            sx={{ textAlign: "center", color: "red" }}
-                            startIcon={<EventBusyIcon />}
-                            disabled={
-                              new Date(appointment.dayInfo) > twoDaysNow
-                                ? false
-                                : true
-                            }
-                            onClick={() =>
-                              handleUnbook(
-                                appointment._id,
-                                traineeInfo.trainerId._id,
-                                user._id
-                              )
-                            }
-                          >
-                            Unbook
-                          </Button>
-                        </ListItemText>
-                      </ListItem>
-                    )
-                  })}
-                </List>
+                {traineeInfo.trainerId ? (
+                  <List
+                    align="center"
+                    sx={{
+                      width: "100%",
+                      maxWidth: 200,
+                      bgcolor: "background.paper",
+                      position: "relative",
+                      overflow: "auto",
+                      maxHeight: 100,
+                      "& ul": { padding: 0 },
+                      border: "6px solid purple",
+                      borderRadius: "10px",
+                      mt: 1,
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                    subheader={<li />}
+                  >
+                    {traineeAppointments.map((appointment) => {
+                      return (
+                        <ListItem
+                          key={appointment._id}
+                          sx={{ textAlign: "center" }}
+                        >
+                          <ListItemText>
+                            {`${appointment.dayInfo} @ ${appointment.hour}:00`}
+                            <small>{` with ${traineeInfo.trainerId.name.firstName}`}</small>
+                            <Button
+                              sx={{ textAlign: "center", color: "red" }}
+                              startIcon={<EventBusyIcon />}
+                              disabled={
+                                new Date(appointment.dayInfo) > twoDaysNow
+                                  ? false
+                                  : true
+                              }
+                              onClick={() =>
+                                handleUnbook(
+                                  appointment._id,
+                                  traineeInfo.trainerId._id,
+                                  user._id
+                                )
+                              }
+                            >
+                              Unbook
+                            </Button>
+                          </ListItemText>
+                        </ListItem>
+                      )
+                    })}
+                  </List>
+                ) : (
+                  <></>
+                )}
               </Container>
             </Box>
             {/* Trainee Exercise and Nutrition Plan  */}
             <Box
               sx={{ display: "flex", flexWrap: "wrap", flexDirection: "row" }}
             >
-              <Container
-                maxWidth="sm"
-                sx={{
-                  backgroundColor: "black",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "center",
-                  marginY: 2,
-                }}
-              >
-                <NutritionPlanList nutritionPlan={traineeInfo.nutritionPlan} />
-              </Container>
-              <Container
-                maxWidth="sm"
-                sx={{
-                  backgroundColor: "black",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "center",
-                  marginY: 2,
-                }}
-              >
-                <ExercisePlanList exercisePlan={traineeInfo.exercisePlan} />
-              </Container>
+              {traineeInfo.trainerId ? (
+                <>
+                  <Container
+                    maxWidth="sm"
+                    sx={{
+                      backgroundColor: "black",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "center",
+                      marginY: 2,
+                    }}
+                  >
+                    <NutritionPlanList
+                      nutritionPlan={traineeInfo.nutritionPlan}
+                    />
+                  </Container>
+                  <Container
+                    maxWidth="sm"
+                    sx={{
+                      backgroundColor: "black",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "center",
+                      marginY: 2,
+                    }}
+                  >
+                    <ExercisePlanList exercisePlan={traineeInfo.exercisePlan} />
+                  </Container>
+                </>
+              ) : (
+                <></>
+              )}
             </Box>
           </>
         )}
