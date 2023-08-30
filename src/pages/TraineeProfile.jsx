@@ -101,7 +101,7 @@ function TraineeProfile() {
                   <small>
                     Your current trainer is
                     <Link
-                      href={`/trainers/${traineeInfo.trainerId._id}`}
+                      href={traineeInfo.trainerId ? `/trainers/${traineeInfo.trainerId._id}`: ''}
                       sx={{ textDecoration: "none" }}
                     >
                       {` ${traineeInfo.trainerId.name.firstName} 
