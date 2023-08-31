@@ -216,8 +216,6 @@ function TraineeProfile() {
       {/* For Trainer */}
       {user && user.isTrainer && traineeInfo && traineeInfo.nutritionPlan && (
         <>
-          <span>trainer view</span>
-
           <Box sx={{ display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
             <Container
               maxWidth="sm"
