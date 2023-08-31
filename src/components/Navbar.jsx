@@ -5,9 +5,9 @@ import { GlobalStyles } from "@mui/styled-engine"
 import {
   Link,
   AppBar,
-  Button,
   CssBaseline,
   Toolbar,
+  Button,
   Typography,
   createTheme,
   Avatar,
@@ -15,7 +15,7 @@ import {
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"
 
 function Navbar() {
-  const { isLoggedIn, user, logout } = useContext(AuthContext)
+  const { isLoggedIn, user, logout, isLoading } = useContext(AuthContext)
   const defaultTheme = createTheme()
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -48,71 +48,83 @@ function Navbar() {
               GymGuru Connect
             </Link>
           </Typography>
-          <nav>
-            {isLoggedIn && (
-              <Link
-                variant="button"
-                color="text.primary"
-                href="#"
-                sx={{ my: 1, mx: 1.5 }}
-              >
-                Exercises
-              </Link>
-            )}
-
-            {isLoggedIn && user.isTrainer && (
-              <Link
-                variant="button"
-                color="text.primary"
-                href={`/trainers/${user._id}`}
-                sx={{ my: 1, mx: 1.5 }}
-              >
-                My Schedule
-              </Link>
-            )}
-
-            {isLoggedIn && !user.isTrainer && (
-              <>
-                <Link
-                  variant="button"
-                  color="text.primary"
-                  href="/trainers"
-                  sx={{ my: 1, mx: 1.5 }}
-                >
-                  Trainers
-                </Link>
-                <Link
-                  variant="button"
-                  color="text.primary"
-                  href={`/trainee/${user._id}`}
-                  sx={{ my: 1, mx: 1.5 }}
-                >
-                  My Plan
-                </Link>
-              </>
-            )}
-          </nav>
-
-          {!isLoggedIn && (
+          {!isLoading && (
             <>
-              <Button href="/signup" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-                Signup
-              </Button>
-              <Button href="/login" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-                Login
-              </Button>
-            </>
-          )}
+              <nav>
+                {isLoggedIn && (
+                  <Link
+                    variant="button"
+                    color="text.primary"
+                    href="#"
+                    sx={{ my: 1, mx: 1.5 }}
+                  >
+                    Exercises
+                  </Link>
+                )}
 
-          {isLoggedIn && user && (
-            <>
-              <Button
-                onClick={(logout)}
-                variant="contained"
-                sx={{ my: 1, mx: 1.5, bgcolor: "purple" }}
-              >
-                {"Logout"}
-              </Button>
+                {isLoggedIn && user.isTrainer && (
+                  <Link
+                    variant="button"
+                    color="text.primary"
+                    href={`/trainers/${user._id}`}
+                    sx={{ my: 1, mx: 1.5 }}
+                  >
+                    My Schedule
+                  </Link>
+                )}
+
+                {isLoggedIn && !user.isTrainer && (
+                  <>
+                    <Link
+                      variant="button"
+                      color="text.primary"
+                      href="/trainers"
+                      sx={{ my: 1, mx: 1.5 }}
+                    >
+                      Trainers
+                    </Link>
+                    <Link
+                      variant="button"
+                      color="text.primary"
+                      href={`/trainee/${user._id}`}
+                      sx={{ my: 1, mx: 1.5 }}
+                    >
+                      My Plan
+                    </Link>
+                  </>
+                )}
+              </nav>
+
+              {!isLoggedIn && (
+                <>
+                  <Button
+                    href="/signup"
+                    variant="outlined"
+                    sx={{ my: 1, mx: 1.5 }}
+                  >
+                    Signup
+                  </Button>
+                  <Button
+                    href="/login"
+                    variant="outlined"
+                    sx={{ my: 1, mx: 1.5 }}
+                  >
+                    Login
+                  </Button>
+                </>
+              )}
+
+              {isLoggedIn && user && (
+                <>
+                  <Button
+                    onClick={logout}
+                    variant="contained"
+                    sx={{ my: 1, mx: 1.5, bgcolor: "purple" }}
+                  >
+                    {"Logout"}
+                  </Button>
+                </>
+              )}
             </>
           )}
         </Toolbar>
