@@ -1,5 +1,5 @@
 import Lottie from "lottie-web"
-import animationData from '../utils/animation_llyrilz5.json'
+import animationData from '../animations/animation_llyrilz5.json'
 import { useRef, useEffect } from "react"
 
 function LoadingAnimation() {
