@@ -216,6 +216,7 @@ function NutritionPlanList(props) {
               </TableCell>
               <TableCell size="small" sx={{ paddingX: 0 }}>
                 <List
+                  size="small"
                   sx={{
                     width: "100%",
                     overflow: "auto",
@@ -229,6 +230,7 @@ function NutritionPlanList(props) {
                   <li>
                     <ul>
                       <ListSubheader
+                        size="small"
                         sx={{
                           padding: 0,
                           margin: 0,
@@ -238,7 +240,7 @@ function NutritionPlanList(props) {
                           borderColor: "rgb(0,0,0,0.4)",
                         }}
                       >
-                        Result
+                        {foodQueryResult ? foodQueryResult.name : "Result"}
                       </ListSubheader>
                       {foodQueryError && (
                         <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
@@ -251,45 +253,69 @@ function NutritionPlanList(props) {
                       {!foodQueryError && foodQueryResult && (
                         <>
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Name: ${foodQueryResult.name}`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Serv. Size: ${foodQueryResult.serving_size_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Serv. Size: ${foodQueryResult.serving_size_g}g`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Protein: ${foodQueryResult.protein_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Protein: ${foodQueryResult.protein_g}g`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Calories: ${foodQueryResult.calories}`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Calories: ${foodQueryResult.calories}`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Carbs: ${foodQueryResult.carbohydrates_total_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Carbs: ${foodQueryResult.carbohydrates_total_g}g`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Total Fat: ${foodQueryResult.fat_total_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Total Fat: ${foodQueryResult.fat_total_g}g`}
-                            />
-                          </ListItem>
-                          <Divider />
-                          <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Sat. Fat: ${foodQueryResult.fat_saturated_g}g`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Sat. Fat: ${foodQueryResult.fat_saturated_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                         </>
                       )}
@@ -327,7 +353,7 @@ function NutritionPlanList(props) {
                       <em>None</em>
                     </MenuItem>
                     {nutritionPlan.map((portion) => {
-                      return (
+                      return ( portion && (
                         <MenuItem
                           value={portion._id}
                           key={portion._id}
@@ -335,7 +361,7 @@ function NutritionPlanList(props) {
                         >
                           Portion #{portion.portionNumber}
                         </MenuItem>
-                      )
+                      ))
                     })}
                   </Select>
                 </FormControl>
@@ -390,7 +416,6 @@ function NutritionPlanList(props) {
                       </TableCell>
                     )}
                   </TableRow>
-
                   <TableRow key={portion._id}>
                     <TableCell style={{ padding: 0 }} colSpan={6} size="small">
                       <Collapse
