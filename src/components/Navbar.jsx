@@ -107,11 +107,11 @@ function Navbar() {
           {isLoggedIn && user && (
             <>
               <Button
-                onClick={() => logout}
+                onClick={(logout)}
                 variant="contained"
                 sx={{ my: 1, mx: 1.5, bgcolor: "purple" }}
               >
-                Logout
+                {"Logout"}
               </Button>
             </>
           )}
