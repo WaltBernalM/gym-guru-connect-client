@@ -20,16 +20,26 @@ const initFoodQuery = {
   serving_size_g: 200,
 }
 
+const initSwitches = {
+  1: false,
+  2: false,
+  3: false,
+  4: false,
+  5: false,
+  6: false
+}
+
 function NutritionPlanList(props) {
   const { nutritionPlan: traineeNutritionPlan, traineeId } = props
   const { user } = useContext(AuthContext)
-  const [open, setOpen] = useState(false)
   const [foodQuerySearch, setFoodQuerySearch] = useState(initFoodQuery)
   const [foodQueryError, setFoodQueryError] = useState(null)
   const [foodQueryResult, setFoodQueryResult] = useState(null)
   const [portionIdForFood, setPortionIdForFood] = useState("")
   const [nutritionPlan, setNutritionPlan] = useState(traineeNutritionPlan)
   const [canAddPortion, setCanAddPortion] = useState(false)
+
+  const [switches, setSwitches] = useState(initSwitches)
 
   useEffect(() => {
     setNutritionPlan(traineeNutritionPlan)
@@ -337,99 +347,110 @@ function NutritionPlanList(props) {
         {/* Portion and Food Editor */}
         <TableBody size="small">
           {nutritionPlan.map((portion) => {
-            const { _id: portionId, foodList } = portion
+            const { _id: portionId, foodList, portionNumber } = portion
             return (
-              portion && (<Fragment key={portionId}>
-                <TableRow
-                  sx={{ "& > *": { borderBottom: "unset" } }}
-                  size="small"
-                >
-                  <TableCell size="small">
-                    <IconButton
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => setOpen(!open)}
-                    >
-                      {open ? (
-                        <KeyboardArrowUpIcon />
-                      ) : (
-                        <KeyboardArrowDownIcon />
-                      )}
-                    </IconButton>
-                  </TableCell>
-                  <TableCell component="th" scope="row" size="small">
-                    Portion #{portion.portionNumber}
-                  </TableCell>
-                  {user && user.isTrainer && (
-                    <TableCell component="th" scope="row" size="small">
-                      <Button
-                        variant="outlined"
-                        color="error"
+              portion && (
+                <Fragment key={portionId}>
+                  <TableRow
+                    sx={{ "& > *": { borderBottom: "unset" } }}
+                    size="small"
+                  >
+                    <TableCell size="small">
+                      <IconButton
+                        aria-label="expand row"
                         size="small"
-                        startIcon={<BackspaceIcon />}
-                        onClick={() => deletePortion(portion._id)}
+                        onClick={() =>
+                          setSwitches((prevVal) => ({
+                            ...prevVal,
+                            [portionNumber]: !prevVal[portionNumber],
+                          }))
+                        }
                       >
-                        Delete
-                      </Button>
+                        {switches[portionNumber] ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
                     </TableCell>
-                  )}
-                </TableRow>
+                    <TableCell component="th" scope="row" size="small">
+                      Portion #{portion.portionNumber}
+                    </TableCell>
+                    {user && user.isTrainer && (
+                      <TableCell component="th" scope="row" size="small">
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          size="small"
+                          startIcon={<BackspaceIcon />}
+                          onClick={() => deletePortion(portion._id)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    )}
+                  </TableRow>
 
-                <TableRow key={portion._id}>
-                  <TableCell style={{ padding: 0 }} colSpan={6} size="small">
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                      <Box sx={{ marginY: 1 }}>
-                        <Table size="small" aria-label="foods">
-                          <TableHead>
-                            <TableRow>
-                              {user && user.isTrainer && (
+                  <TableRow key={portion._id}>
+                    <TableCell style={{ padding: 0 }} colSpan={6} size="small">
+                      <Collapse
+                        in={switches[portionNumber]}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <Box sx={{ marginY: 1 }}>
+                          <Table size="small" aria-label="foods">
+                            <TableHead>
+                              <TableRow>
+                                {user && user.isTrainer && (
+                                  <TableCell size="small"></TableCell>
+                                )}
+                                <TableCell size="small">Food name</TableCell>
+                                <TableCell size="small">Portion size</TableCell>
                                 <TableCell size="small"></TableCell>
-                              )}
-                              <TableCell size="small">Food name</TableCell>
-                              <TableCell size="small">Portion size</TableCell>
-                              <TableCell size="small"></TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {user &&
-                              !user.isTrainer &&
-                              foodList.map((food) => {
-                                return (
-                                  <TableRow key={food._id} size="small">
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      size="small"
-                                    >
-                                      {food.name}
-                                    </TableCell>
-                                    <TableCell size="small">
-                                      {`${food.serving_size_g} g`}
-                                    </TableCell>
-                                    <TableCell size="small" />
-                                  </TableRow>
-                                )
-                              })}
-                            {user &&
-                              user.isTrainer &&
-                              foodList.map((food) => {
-                                return (
-                                  <FoodRowInfo
-                                    key={food._id}
-                                    foodId={food._id}
-                                    traineeId={traineeId}
-                                    portionId={portionId}
-                                    deleteFood={deleteFood}
-                                  />
-                                )
-                              })}
-                          </TableBody>
-                        </Table>
-                      </Box>
-                    </Collapse>
-                  </TableCell>
-                </TableRow>
-              </Fragment>)
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {user &&
+                                !user.isTrainer &&
+                                foodList.map((food) => {
+                                  return (
+                                    <TableRow key={food._id} size="small">
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        size="small"
+                                      >
+                                        {food.name}
+                                      </TableCell>
+                                      <TableCell size="small">
+                                        {`${food.serving_size_g} g`}
+                                      </TableCell>
+                                      <TableCell size="small" />
+                                    </TableRow>
+                                  )
+                                })}
+                              {user &&
+                                user.isTrainer &&
+                                foodList.map((food) => {
+                                  return (
+                                    <FoodRowInfo
+                                      key={food._id}
+                                      foodId={food._id}
+                                      traineeId={traineeId}
+                                      portionId={portionId}
+                                      deleteFood={deleteFood}
+                                    />
+                                  )
+                                })}
+                            </TableBody>
+                          </Table>
+                        </Box>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                </Fragment>
+              )
             )
           })}
         </TableBody>
