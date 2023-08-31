@@ -41,9 +41,7 @@ function NewAppointmentForm(props) {
         setAppointmentError("Hour range size is kinda' illegal")
         return
       }
-
-      console.log(dayInfo)
-
+      
       for (let h = hourStart; h <= hourEnd; h++) { 
         await appointmentService.createAppointment(
           trainerId,
