@@ -7,6 +7,7 @@ function LoadingAnimation() {
   let animation
 
   useEffect (() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     animation = Lottie.loadAnimation({
       container: animationContainer.current,
       animationData,
