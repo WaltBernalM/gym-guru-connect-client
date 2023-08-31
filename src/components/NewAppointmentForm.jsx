@@ -42,6 +42,8 @@ function NewAppointmentForm(props) {
         return
       }
 
+      console.log(dayInfo)
+
       for (let h = hourStart; h <= hourEnd; h++) { 
         await appointmentService.createAppointment(
           trainerId,
