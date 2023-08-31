@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import traineeService from "../services/trainee.service"
 import appointmentService from "../services/appointment.service"
-import { Box, Button, Container, Link, List, ListItem, ListItemText, Typography } from "@mui/material"
+import { Box, Button, Container, Divider, Link, List, ListItem, ListItemText, Typography } from "@mui/material"
 import NutritionPlanList from "../components/NutritionPlanList"
 import ExercisePlanList from "../components/ExercisePlanList"
 import { AuthContext } from "../context/auth.context"
@@ -122,11 +122,11 @@ function TraineeProfile() {
                     align="center"
                     sx={{
                       width: "100%",
-                      maxWidth: 200,
+                      // maxWidth: 200,
                       bgcolor: "background.paper",
                       position: "relative",
                       overflow: "auto",
-                      maxHeight: 100,
+                      maxHeight: 150,
                       "& ul": { padding: 0 },
                       border: "6px solid purple",
                       borderRadius: "10px",
@@ -138,33 +138,36 @@ function TraineeProfile() {
                   >
                     {traineeAppointments.map((appointment) => {
                       return (
-                        <ListItem
-                          key={appointment._id}
-                          sx={{ textAlign: "center" }}
-                        >
-                          <ListItemText>
-                            {`${appointment.dayInfo} @ ${appointment.hour}:00`}
-                            <small>{` with ${traineeInfo.trainerId.name.firstName}`}</small>
-                            <Button
-                              sx={{ textAlign: "center", color: "red" }}
-                              startIcon={<EventBusyIcon />}
-                              disabled={
-                                new Date(appointment.dayInfo) > twoDaysNow
-                                  ? false
-                                  : true
-                              }
-                              onClick={() =>
-                                handleUnbook(
-                                  appointment._id,
-                                  traineeInfo.trainerId._id,
-                                  user._id
-                                )
-                              }
-                            >
-                              Unbook
-                            </Button>
-                          </ListItemText>
-                        </ListItem>
+                        <>
+                          <ListItem
+                            key={appointment._id}
+                            sx={{ textAlign: "center" }}
+                          >
+                            <ListItemText>
+                              {`${appointment.dayInfo} @ ${appointment.hour}:00`}
+                              <small>{` with ${traineeInfo.trainerId.name.firstName}`}</small>
+                              <Button
+                                sx={{ textAlign: "center", color: "red" }}
+                                startIcon={<EventBusyIcon />}
+                                disabled={
+                                  new Date(appointment.dayInfo) > twoDaysNow
+                                    ? false
+                                    : true
+                                }
+                                onClick={() =>
+                                  handleUnbook(
+                                    appointment._id,
+                                    traineeInfo.trainerId._id,
+                                    user._id
+                                  )
+                                }
+                              >
+                                Unbook
+                              </Button>
+                            </ListItemText>
+                          </ListItem>
+                          <Divider orientation="vertical" flexItem/>
+                        </>
                       )
                     })}
                   </List>
@@ -216,8 +219,6 @@ function TraineeProfile() {
       {/* For Trainer */}
       {user && user.isTrainer && traineeInfo && traineeInfo.nutritionPlan && (
         <>
-          <span>trainer view</span>
-
           <Box sx={{ display: "flex", flexWrap: "wrap", flexDirection: "row" }}>
             <Container
               maxWidth="sm"

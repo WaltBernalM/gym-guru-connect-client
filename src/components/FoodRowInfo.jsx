@@ -5,12 +5,11 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import SaveIcon from "@mui/icons-material/Save"
 import foodService from "../services/foods.service"
 
-function FoodRowInfo(params) {
-  const {foodId, traineeId, portionId, deleteFood} = params
+function FoodRowInfo(props) {
+  const {foodId, traineeId, portionId, deleteFood} = props
   const [foodInfo, setFoodInfo] = useState(null)
   const [servingSize, setServingSize] = useState(null)
-  const [ feedback, setFeedback] = useState(false)
-  
+
   const getFoodInfoOfPortion = async (foodId, traineeId, portionId) => {
     try {
       const response = (await foodService.getFoodInTraineePortion(
@@ -33,8 +32,6 @@ function FoodRowInfo(params) {
         })
       ).data.updatedFood
       setFoodInfo(response)
-      setFeedback(true)
-      setTimeout(() => setFeedback(false), 1000)
     } catch (error) {
       console.log(error)
     }
@@ -42,7 +39,6 @@ function FoodRowInfo(params) {
 
   useEffect(() => {
     getFoodInfoOfPortion(foodId, traineeId, portionId)
-    setFeedback(false)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -52,7 +48,8 @@ function FoodRowInfo(params) {
         <TableCell size="small">
           <Button
             variant="contained"
-            color={feedback ? "success" : "primary"}
+            disabled={foodInfo.serving_size_g === servingSize ? true : false }
+            color="primary"
             size="small"
             onClick={() => updateFoodInfo()}
           >
@@ -65,7 +62,7 @@ function FoodRowInfo(params) {
         <TableCell size="small">
           <Slider
             value={servingSize / 10}
-            min={5}
+            min={1}
             step={1}
             max={30}
             scale={(servingSize) => 10 * servingSize}

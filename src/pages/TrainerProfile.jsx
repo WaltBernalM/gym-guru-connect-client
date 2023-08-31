@@ -42,6 +42,14 @@ function TrainerProfile() {
     getTrainerSchedule()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const changeToNewCoach = async () => {
+    try {
+      console.log("assign new coach", trainerId)
+    } catch (error) {
+      
+    }
+  }
   
   return (
     <div
@@ -99,11 +107,10 @@ function TrainerProfile() {
                       justifyContent: "center",
                     }}
                     variant="contained"
+                    endIcon={<PersonAddIcon />}
+                    onClick={()=> changeToNewCoach()}
                   >
-                    <div>Add me as your Coach!</div>
-                    <div>
-                      <PersonAddIcon sx={{ marginLeft: 1 }} />
-                    </div>
+                    Add me as your Coach!
                   </Button>
                 </Stack>
               )}
@@ -165,9 +172,7 @@ function TrainerProfile() {
             user.isTrainer &&
             trainerSchedule &&
             trainerSchedule.schedule && (
-            <NewAppointmentForm
-                getTrainerSchedule={getTrainerSchedule}
-              />
+              <NewAppointmentForm getTrainerSchedule={getTrainerSchedule} />
             )}
 
           {user &&

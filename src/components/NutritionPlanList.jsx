@@ -20,16 +20,26 @@ const initFoodQuery = {
   serving_size_g: 200,
 }
 
+const initSwitches = {
+  1: false,
+  2: false,
+  3: false,
+  4: false,
+  5: false,
+  6: false
+}
+
 function NutritionPlanList(props) {
   const { nutritionPlan: traineeNutritionPlan, traineeId } = props
   const { user } = useContext(AuthContext)
-  const [open, setOpen] = useState(false)
   const [foodQuerySearch, setFoodQuerySearch] = useState(initFoodQuery)
   const [foodQueryError, setFoodQueryError] = useState(null)
   const [foodQueryResult, setFoodQueryResult] = useState(null)
   const [portionIdForFood, setPortionIdForFood] = useState("")
   const [nutritionPlan, setNutritionPlan] = useState(traineeNutritionPlan)
   const [canAddPortion, setCanAddPortion] = useState(false)
+
+  const [switches, setSwitches] = useState(initSwitches)
 
   useEffect(() => {
     setNutritionPlan(traineeNutritionPlan)
@@ -206,6 +216,7 @@ function NutritionPlanList(props) {
               </TableCell>
               <TableCell size="small" sx={{ paddingX: 0 }}>
                 <List
+                  size="small"
                   sx={{
                     width: "100%",
                     overflow: "auto",
@@ -219,6 +230,7 @@ function NutritionPlanList(props) {
                   <li>
                     <ul>
                       <ListSubheader
+                        size="small"
                         sx={{
                           padding: 0,
                           margin: 0,
@@ -228,7 +240,7 @@ function NutritionPlanList(props) {
                           borderColor: "rgb(0,0,0,0.4)",
                         }}
                       >
-                        Result
+                        {foodQueryResult ? foodQueryResult.name : "Result"}
                       </ListSubheader>
                       {foodQueryError && (
                         <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
@@ -241,45 +253,69 @@ function NutritionPlanList(props) {
                       {!foodQueryError && foodQueryResult && (
                         <>
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Name: ${foodQueryResult.name}`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Serv. Size: ${foodQueryResult.serving_size_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Serv. Size: ${foodQueryResult.serving_size_g}g`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Protein: ${foodQueryResult.protein_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Protein: ${foodQueryResult.protein_g}g`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Calories: ${foodQueryResult.calories}`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Calories: ${foodQueryResult.calories}`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Carbs: ${foodQueryResult.carbohydrates_total_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Carbs: ${foodQueryResult.carbohydrates_total_g}g`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Total Fat: ${foodQueryResult.fat_total_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                           <Divider />
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Total Fat: ${foodQueryResult.fat_total_g}g`}
-                            />
-                          </ListItem>
-                          <Divider />
-                          <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                            <ListItemText
-                              primary={`Sat. Fat: ${foodQueryResult.fat_saturated_g}g`}
-                            />
+                            <ListItemText>
+                              <Typography
+                                variant="body1"
+                                style={{ fontSize: "14px" }}
+                              >
+                                {`Sat. Fat: ${foodQueryResult.fat_saturated_g}g`}
+                              </Typography>
+                            </ListItemText>
                           </ListItem>
                         </>
                       )}
@@ -317,7 +353,7 @@ function NutritionPlanList(props) {
                       <em>None</em>
                     </MenuItem>
                     {nutritionPlan.map((portion) => {
-                      return (
+                      return ( portion && (
                         <MenuItem
                           value={portion._id}
                           key={portion._id}
@@ -325,7 +361,7 @@ function NutritionPlanList(props) {
                         >
                           Portion #{portion.portionNumber}
                         </MenuItem>
-                      )
+                      ))
                     })}
                   </Select>
                 </FormControl>
@@ -337,99 +373,109 @@ function NutritionPlanList(props) {
         {/* Portion and Food Editor */}
         <TableBody size="small">
           {nutritionPlan.map((portion) => {
-            const { _id: portionId, foodList } = portion
+            const { _id: portionId, foodList, portionNumber } = portion
             return (
-              portion && (<Fragment key={portionId}>
-                <TableRow
-                  sx={{ "& > *": { borderBottom: "unset" } }}
-                  size="small"
-                >
-                  <TableCell size="small">
-                    <IconButton
-                      aria-label="expand row"
-                      size="small"
-                      onClick={() => setOpen(!open)}
-                    >
-                      {open ? (
-                        <KeyboardArrowUpIcon />
-                      ) : (
-                        <KeyboardArrowDownIcon />
-                      )}
-                    </IconButton>
-                  </TableCell>
-                  <TableCell component="th" scope="row" size="small">
-                    Portion #{portion.portionNumber}
-                  </TableCell>
-                  {user && user.isTrainer && (
-                    <TableCell component="th" scope="row" size="small">
-                      <Button
-                        variant="outlined"
-                        color="error"
+              portion && (
+                <Fragment key={portionId}>
+                  <TableRow
+                    sx={{ "& > *": { borderBottom: "unset" } }}
+                    size="small"
+                  >
+                    <TableCell size="small">
+                      <IconButton
+                        aria-label="expand row"
                         size="small"
-                        startIcon={<BackspaceIcon />}
-                        onClick={() => deletePortion(portion._id)}
+                        onClick={() =>
+                          setSwitches((prevVal) => ({
+                            ...prevVal,
+                            [portionNumber]: !prevVal[portionNumber],
+                          }))
+                        }
                       >
-                        Delete
-                      </Button>
+                        {switches[portionNumber] ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
                     </TableCell>
-                  )}
-                </TableRow>
-
-                <TableRow key={portion._id}>
-                  <TableCell style={{ padding: 0 }} colSpan={6} size="small">
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                      <Box sx={{ marginY: 1 }}>
-                        <Table size="small" aria-label="foods">
-                          <TableHead>
-                            <TableRow>
-                              {user && user.isTrainer && (
+                    <TableCell component="th" scope="row" size="small">
+                      Portion #{portion.portionNumber}
+                    </TableCell>
+                    {user && user.isTrainer && (
+                      <TableCell component="th" scope="row" size="small">
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          size="small"
+                          startIcon={<BackspaceIcon />}
+                          onClick={() => deletePortion(portion._id)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                  <TableRow key={portion._id}>
+                    <TableCell style={{ padding: 0 }} colSpan={6} size="small">
+                      <Collapse
+                        in={switches[portionNumber]}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <Box sx={{ marginY: 1 }}>
+                          <Table size="small" aria-label="foods">
+                            <TableHead>
+                              <TableRow>
+                                {user && user.isTrainer && (
+                                  <TableCell size="small"></TableCell>
+                                )}
+                                <TableCell size="small">Food name</TableCell>
+                                <TableCell size="small">Portion size</TableCell>
                                 <TableCell size="small"></TableCell>
-                              )}
-                              <TableCell size="small">Food name</TableCell>
-                              <TableCell size="small">Portion size</TableCell>
-                              <TableCell size="small"></TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {user &&
-                              !user.isTrainer &&
-                              foodList.map((food) => {
-                                return (
-                                  <TableRow key={food._id} size="small">
-                                    <TableCell
-                                      component="th"
-                                      scope="row"
-                                      size="small"
-                                    >
-                                      {food.name}
-                                    </TableCell>
-                                    <TableCell size="small">
-                                      {`${food.serving_size_g} g`}
-                                    </TableCell>
-                                    <TableCell size="small" />
-                                  </TableRow>
-                                )
-                              })}
-                            {user &&
-                              user.isTrainer &&
-                              foodList.map((food) => {
-                                return (
-                                  <FoodRowInfo
-                                    key={food._id}
-                                    foodId={food._id}
-                                    traineeId={traineeId}
-                                    portionId={portionId}
-                                    deleteFood={deleteFood}
-                                  />
-                                )
-                              })}
-                          </TableBody>
-                        </Table>
-                      </Box>
-                    </Collapse>
-                  </TableCell>
-                </TableRow>
-              </Fragment>)
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {user &&
+                                !user.isTrainer &&
+                                foodList.map((food) => {
+                                  return (
+                                    <TableRow key={food._id} size="small">
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        size="small"
+                                      >
+                                        {food.name}
+                                      </TableCell>
+                                      <TableCell size="small">
+                                        {`${food.serving_size_g} g`}
+                                      </TableCell>
+                                      <TableCell size="small" />
+                                    </TableRow>
+                                  )
+                                })}
+                              {user &&
+                                user.isTrainer &&
+                                foodList.map((food) => {
+                                  return (
+                                    <FoodRowInfo
+                                      key={food._id}
+                                      foodId={food._id}
+                                      traineeId={traineeId}
+                                      portionId={portionId}
+                                      deleteFood={deleteFood}
+                                    />
+                                  )
+                                })}
+                            </TableBody>
+                          </Table>
+                        </Box>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                </Fragment>
+              )
             )
           })}
         </TableBody>
