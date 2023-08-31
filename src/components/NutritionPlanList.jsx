@@ -13,6 +13,7 @@ import BackspaceIcon from "@mui/icons-material/Backspace"
 
 import FoodRowInfo from "./FoodRowInfo"
 import foodService from "../services/foods.service"
+import portionService from "../services/portion.service"
 
 const initFoodQuery = {
   name: "tuna",
@@ -28,15 +29,52 @@ function NutritionPlanList(props) {
   const [foodQueryResult, setFoodQueryResult] = useState(null)
   const [portionIdForFood, setPortionIdForFood] = useState("")
   const [nutritionPlan, setNutritionPlan] = useState(traineeNutritionPlan)
+  const [canAddPortion, setCanAddPortion] = useState(false)
 
   useEffect(() => {
     setNutritionPlan(traineeNutritionPlan)
+    if (nutritionPlan.length < 6) {
+      setCanAddPortion(true)
+    } else {
+      setCanAddPortion(false)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleCreatePortion = async () => {
+  const createPortion = async () => {
     try {
-    } catch (error) {}
+      const possiblePortionNumber = [1, 2, 3, 4, 5, 6]
+      const takenPortionNumbers = nutritionPlan.map(portion => portion.portionNumber)
+      const availablePortionNumbers = possiblePortionNumber
+        .filter(number => {
+          return takenPortionNumbers.includes(number) ? false : true
+        })
+      
+      if (availablePortionNumbers.length === 1) { 
+        setCanAddPortion(false)
+      }
+      if (availablePortionNumbers.length === 0) return
+
+      const response = (await portionService.createPortion(
+        availablePortionNumbers[0],
+        traineeId
+      )).data.updatedNutritionPlan
+      setNutritionPlan(response)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const deletePortion = async (portionId) => { 
+    try {
+      const response = (await portionService.deletePortion(portionId, traineeId)).data.updatedNutritionPlan
+      setNutritionPlan(response)
+      if (response.length < 6) {
+        setCanAddPortion(true)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleQuerySearchInput = (field, value) => {
@@ -99,7 +137,8 @@ function NutritionPlanList(props) {
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={() => console.log("plus portion")}
+                  onClick={() => createPortion()}
+                  disabled={canAddPortion ? false : true}
                 >
                   <PlusOneIcon sx={{ mr: 1 }} /> <small>{`Portion`}</small>
                 </Button>
@@ -157,7 +196,6 @@ function NutritionPlanList(props) {
                     />
                   </div>
                   <IconButton
-                    aria-label="delete"
                     size="small"
                     sx={{ marginLeft: 1 }}
                     onClick={() => searchFood()}
@@ -192,7 +230,15 @@ function NutritionPlanList(props) {
                       >
                         Result
                       </ListSubheader>
-                      {foodQueryResult && (
+                      {foodQueryError && (
+                        <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
+                          <ListItemText
+                            sx={{ color: "red" }}
+                            primary={`${foodQueryError}`}
+                          />
+                        </ListItem>
+                      )}
+                      {!foodQueryError && foodQueryResult && (
                         <>
                           <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                             <ListItemText
@@ -293,7 +339,7 @@ function NutritionPlanList(props) {
           {nutritionPlan.map((portion) => {
             const { _id: portionId, foodList } = portion
             return (
-              <Fragment key={portionId}>
+              portion && (<Fragment key={portionId}>
                 <TableRow
                   sx={{ "& > *": { borderBottom: "unset" } }}
                   size="small"
@@ -321,7 +367,7 @@ function NutritionPlanList(props) {
                         color="error"
                         size="small"
                         startIcon={<BackspaceIcon />}
-                        onClick={() => {}}
+                        onClick={() => deletePortion(portion._id)}
                       >
                         Delete
                       </Button>
@@ -383,7 +429,7 @@ function NutritionPlanList(props) {
                     </Collapse>
                   </TableCell>
                 </TableRow>
-              </Fragment>
+              </Fragment>)
             )
           })}
         </TableBody>
