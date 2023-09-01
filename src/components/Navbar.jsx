@@ -16,6 +16,8 @@ import {
 
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"
 import MenuIcon from "@mui/icons-material/Menu"
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
+import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 
 const settings = ["signup", "login"]
 const pages = ["exercises", "trainers", "trainee"]
@@ -214,9 +216,26 @@ function Navbar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="I" src="/static/images/avatar/2.jpg" />
-              </IconButton>
+              {!isLoading && (
+                <IconButton
+                  onClick={handleOpenUserMenu}
+                  sx={{ p: 0 }}
+                  size="large"
+                >
+                  {isLoggedIn && (
+                    <AccountCircleIcon
+                      fontSize="large"
+                      sx={{ color: "white" }}
+                    />
+                  )}
+                  {!isLoggedIn && (
+                    <NoAccountsIcon
+                      fontSize="large"
+                      sx={{ color: "white" }}
+                    />
+                  )}
+                </IconButton>
+              )}
             </Tooltip>
 
             {!isLoading && (
