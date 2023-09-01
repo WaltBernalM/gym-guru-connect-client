@@ -112,7 +112,7 @@ function AppointmentsList(props) {
         <List
           sx={{
             width: "100%",
-            maxWidth: 500,
+            maxWidth: 300,
             bgcolor: "background.paper",
             position: "relative",
             overflow: "auto",
