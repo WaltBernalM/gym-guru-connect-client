@@ -1,9 +1,9 @@
-import { Button, Grid, IconButton, List, ListItem, ListItemText, ListSubheader, } from "@mui/material"
+import { Button, Divider, Grid, List, ListItem, ListItemText, ListSubheader, Typography, } from "@mui/material"
 
 import EventBusyIcon from "@mui/icons-material/EventBusy"
 import PersonSearchIcon from "@mui/icons-material/PersonSearch"
 import { AuthContext } from "../context/auth.context"
-import { useContext, useEffect, useState } from "react"
+import { Fragment, useContext, useEffect, useState } from "react"
 
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
 import EventAvailableIcon from "@mui/icons-material/EventAvailable"
@@ -163,65 +163,69 @@ function AppointmentsList(props) {
               })
               .map((appointment) => {
                 return (
-                  <ListItem
-                    key={appointment._id}
-                    disableGutters
-                    sx={{ textAlign: "center" }}
-                  >
-                    {user.isTrainer && (
-                      <ListItemText>
-                        {`${appointment.dayInfo} @ ${appointment.hour}:00`}
-                        {appointment.traineeId ? (
-                          <Button
-                            sx={{ ml: 2 }}
-                            variant="contained"
-                            startIcon={<PersonSearchIcon />}
-                            color="info"
-                            href={`/trainee/${appointment.traineeId._id}`}
-                          >
-                            {`${appointment.traineeId.name.firstName}`}
-                          </Button>
-                        ) : (
-                          <Button
-                            sx={{ ml: 2 }}
-                            startIcon={<EventBusyIcon />}
-                            color="error"
-                            disabled={
-                              new Date(appointment.dayInfo) > new Date(today)
-                                ? false
-                                : true
-                            }
-                            onClick={() =>
-                              hanldeDelete(appointment._id, user._id)
-                            }
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </ListItemText>
-                    )}
-                    {!user.isTrainer && (
-                      <ListItemText>
-                        {appointment.dayInfo} @ {appointment.hour}
-                        {":00"}
-                        {trainerInfo.trainees.includes(user._id) ? (
-                          <IconButton
-                            onClick={() =>
-                              handleBookIn(
-                                appointment._id,
-                                trainerInfo._id,
-                                user._id
-                              )
-                            }
-                          >
-                            <EventAvailableIcon sx={{ color: "green" }} />
-                          </IconButton>
-                        ) : (
-                          <LockClockIcon />
-                        )}
-                      </ListItemText>
-                    )}
-                  </ListItem>
+                  <Fragment key={appointment._id}>
+                    <ListItem disableGutters sx={{ textAlign: "center" }}>
+                      {user.isTrainer && (
+                        <ListItemText>
+                          {`${appointment.dayInfo} @ ${appointment.hour}:00`}
+                          {appointment.traineeId ? (
+                            <Button
+                              sx={{ ml: 2 }}
+                              variant="contained"
+                              startIcon={<PersonSearchIcon />}
+                              color="info"
+                              href={`/trainee/${appointment.traineeId._id}`}
+                            >
+                              {`${appointment.traineeId.name.firstName}`}
+                            </Button>
+                          ) : (
+                            <Button
+                              sx={{ ml: 2 }}
+                              startIcon={<EventBusyIcon />}
+                              color="error"
+                              disabled={
+                                new Date(appointment.dayInfo) > new Date(today)
+                                  ? false
+                                  : true
+                              }
+                              onClick={() =>
+                                hanldeDelete(appointment._id, user._id)
+                              }
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </ListItemText>
+                      )}
+                      {!user.isTrainer && (
+                        <ListItemText>
+                          <Typography>
+                            {appointment.dayInfo} @ {appointment.hour}
+                            {":00"}
+                          </Typography>
+                          {trainerInfo.trainees.includes(user._id) ? (
+                            <Button
+                              color="success"
+                              variant="contained"
+                              onClick={() =>
+                                handleBookIn(
+                                  appointment._id,
+                                  trainerInfo._id,
+                                  user._id
+                                )
+                              }
+                              startIcon={
+                                <EventAvailableIcon />
+                              }
+                            > Book IN</Button>
+                          ) : (
+                            <LockClockIcon />
+                          )}
+                        </ListItemText>
+                      )}
+                    </ListItem>
+                    <Divider orientation="horizontal" flexItem />
+                  </Fragment>
                 )
               })}
           </ul>
