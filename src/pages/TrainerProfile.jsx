@@ -17,11 +17,17 @@ function TrainerProfile() {
   const [appointmentStatus, setAppointmentStatus] = useState('')
   const { trainerId } = useParams()
   const { user } = useContext(AuthContext)
+  const [coachAssignError, setCoachAssignError] = useState(null)
 
   const getTrainer = async () => {
     try {
       const trainerFromDB = await trainerService.getTrainerInfo(trainerId)
       setTrainerInfo(trainerFromDB.data)
+      if (!user.isTrainer && trainerFromDB.data.trainees.includes(user._id)) {
+        getTrainerSchedule()
+      } else if (user.isTrainer && trainerFromDB) {
+        getTrainerSchedule()
+      }
     } catch (error) {
       setAppointmentStatus(error.response.data.message)
     }
@@ -29,8 +35,8 @@ function TrainerProfile() {
   
   const getTrainerSchedule = async () => {
     try {
-      const scheduleFromDB = await appointmentService
-        .getAppointmentsForTrainer(trainerId)      
+      const scheduleFromDB =
+        await appointmentService.getAppointmentsForTrainer(trainerId)
       setTrainerSchedule(scheduleFromDB.data)
     } catch (error) {
       setAppointmentStatus(error.response.data.message)
@@ -39,15 +45,17 @@ function TrainerProfile() {
 
   useEffect(() => {
     getTrainer()
-    getTrainerSchedule()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user])
 
   const changeToNewCoach = async () => {
     try {
-      console.log("assign new coach", trainerId)
+      const traineeId = user._id
+      const response = await trainerService.assignTraineeToTrainer(trainerId, traineeId)
+      console.log(response)
+      getTrainer()
     } catch (error) {
-      
+      setCoachAssignError(error.response.data.message)
     }
   }
   
@@ -96,9 +104,10 @@ function TrainerProfile() {
               {!trainerInfo.trainees.includes(user._id) && (
                 <Stack
                   sx={{ pt: 4 }}
-                  direction="row"
+                  direction="column"
                   spacing={2}
                   justifyContent="center"
+                  alignItems="center"
                 >
                   <Button
                     sx={{
@@ -107,11 +116,15 @@ function TrainerProfile() {
                       justifyContent: "center",
                     }}
                     variant="contained"
+                    disabled={coachAssignError ? true : false}
                     endIcon={<PersonAddIcon />}
-                    onClick={()=> changeToNewCoach()}
+                    onClick={() => changeToNewCoach()}
                   >
                     Add me as your Coach!
                   </Button>
+                  <Typography sx={{ color: "red", maxWidth: '60%' }}>
+                    {coachAssignError}
+                  </Typography>
                 </Stack>
               )}
             </Container>
