@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { Fragment, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import traineeService from "../services/trainee.service"
 import appointmentService from "../services/appointment.service"
@@ -103,12 +103,9 @@ function TraineeProfile() {
                     {traineeInfo.trainerId ? (
                       <>
                         Your current trainer is
-                        <Link
-                          href={`/trainers/${traineeInfo.trainerId._id}`}
-                          sx={{ textDecoration: "none" }}
-                        >
+                        <span>
                           {` ${traineeInfo.trainerId.name.firstName} ${traineeInfo.trainerId.name.lastName}`}
-                        </Link>
+                        </span>
                       </>
                     ) : (
                       "You have no trainer yet"
@@ -117,65 +114,89 @@ function TraineeProfile() {
                 </Typography>
 
                 {/* Trainee appointments */}
-                {traineeInfo.trainerId ? (
-                  <List
-                    align="center"
-                    sx={{
-                      width: "100%",
-                      // maxWidth: 200,
-                      bgcolor: "background.paper",
-                      position: "relative",
-                      overflow: "auto",
-                      maxHeight: 150,
-                      "& ul": { padding: 0 },
-                      border: "6px solid purple",
-                      borderRadius: "10px",
-                      mt: 1,
-                      display: "flex",
-                      flexDirection: "row",
-                    }}
-                    subheader={<li />}
-                  >
-                    {traineeAppointments.map((appointment) => {
-                      return (
-                        <>
-                          <ListItem
-                            key={appointment._id}
-                            sx={{ textAlign: "center" }}
+              {traineeInfo.trainerId ? (
+                <List
+                  align="center"
+                  sx={{
+                    width: "100%",
+                    // maxWidth: 200,
+                    bgcolor: "background.paper",
+                    position: "relative",
+                    overflow: "auto",
+                    maxHeight: 150,
+                    "& ul": { padding: 0 },
+                    border: "6px solid purple",
+                    borderRadius: "10px",
+                    mt: 1,
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                  subheader={<li />}
+                >
+                  {traineeAppointments.length === 0 && (
+                    <ListItem sx={{ textAlign: "center" }} key='empty'>
+                      <ListItemText>
+                        <Container sx={{display: 'flex', flexDirection: 'column'}}>
+                          <small>You have no appointments</small>
+                          <Button
+                            href={`/trainers/${traineeInfo.trainerId._id}`}
                           >
-                            <ListItemText>
+                            Book a new Appointment
+                          </Button>
+                        </Container>
+                      </ListItemText>
+                    </ListItem>
+                  )}
+                  
+                  {traineeAppointments.map((appointment) => {
+                    return (
+                      <Fragment key={appointment._id}>
+                        <ListItem
+                          sx={{ textAlign: "center" }}
+                        >
+                          <ListItemText>
+                            <Typography>
                               {`${appointment.dayInfo} @ ${appointment.hour}:00`}
-                              <small>{` with ${traineeInfo.trainerId.name.firstName}`}</small>
-                              <Button
-                                sx={{ textAlign: "center", color: "red" }}
-                                startIcon={<EventBusyIcon />}
-                                disabled={
-                                  new Date(appointment.dayInfo) > twoDaysNow
-                                    ? false
-                                    : true
-                                }
-                                onClick={() =>
-                                  handleUnbook(
-                                    appointment._id,
-                                    traineeInfo.trainerId._id,
-                                    user._id
-                                  )
-                                }
-                              >
-                                Unbook
-                              </Button>
-                            </ListItemText>
-                          </ListItem>
-                          <Divider orientation="vertical" flexItem/>
-                        </>
-                      )
-                    })}
-                  </List>
-                ) : (
+                            </Typography>
+                            <Typography>
+                              <small>with</small>
+                              <Link sx={{textDecoration: 'none'}} href={`/trainers/${traineeInfo.trainerId._id}`}>
+                                <small>{` ${traineeInfo.trainerId.name.firstName}`}</small>
+                              </Link>
+                            </Typography>
+                            <Button
+                              sx={{ textAlign: "center", color: "red", marginTop: 1 }}
+                              startIcon={<EventBusyIcon />}
+                              disabled={
+                                new Date(appointment.dayInfo) > twoDaysNow
+                                  ? false
+                                  : true
+                              }
+                              onClick={() =>
+                                handleUnbook(
+                                  appointment._id,
+                                  traineeInfo.trainerId._id,
+                                  user._id
+                                )
+                              }
+                            >
+                              Unbook
+                            </Button>
+                          </ListItemText>
+                        </ListItem>
+                        <Divider
+                          orientation="vertical"
+                          flexItem
+                        />
+                      </Fragment>
+                    )
+                  })}
+                </List>
+              ) : (
                   <></>
-                )}
-              </Container>
-            </Box>
+              )}
+            </Container>
+          </Box>
             {/* Trainee Exercise and Nutrition Plan  */}
             <Box
               sx={{ display: "flex", flexWrap: "wrap", flexDirection: "row" }}
