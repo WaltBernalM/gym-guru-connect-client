@@ -1,15 +1,10 @@
 import { useContext, useState } from "react"
 import { AuthContext } from "../context/auth.context"
-import { ThemeProvider } from "@emotion/react"
-import { GlobalStyles } from "@mui/styled-engine"
 import {
-  Link,
   AppBar,
-  CssBaseline,
   Toolbar,
   Button,
   Typography,
-  createTheme,
   Avatar,
   Box,
   IconButton,
@@ -87,61 +82,67 @@ function Navbar() {
             >
               {isLoggedIn && <MenuIcon />}
             </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => {
-                let link, text
-                if (page === "trainers" && isLoggedIn && user.isTrainer) {
-                  link = `/trainers/${user._id}`
-                  text = "My Schedule"
-                } else if (
-                  page === "trainee" &&
-                  isLoggedIn &&
-                  !user.isTrainer
-                ) {
-                  link = `/trainee/${user._id}`
-                  text = "My Plan"
-                } else if (page === "exercises" && isLoggedIn) {
-                  link = `/exercises`
-                  text = "Exercises"
-                } else if (page === 'trainers' && isLoggedIn && !user.isTrainer) { 
-                  link = '/trainers'
-                  text= 'Trainers'
-                }
+            {!isLoading && (
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {pages.map((page) => {
+                  let link, text
+                  if (page === "trainers" && isLoggedIn && user.isTrainer) {
+                    link = `/trainers/${user._id}`
+                    text = "My Schedule"
+                  } else if (
+                    page === "trainee" &&
+                    isLoggedIn &&
+                    !user.isTrainer
+                  ) {
+                    link = `/trainee/${user._id}`
+                    text = "My Plan"
+                  } else if (page === "exercises" && isLoggedIn) {
+                    link = `/exercises`
+                    text = "Exercises"
+                  } else if (
+                    page === "trainers" &&
+                    isLoggedIn &&
+                    !user.isTrainer
+                  ) {
+                    link = "/trainers"
+                    text = "Trainers"
+                  }
 
-                return (
-                  link &&
-                  text && (
-                    <MenuItem key={page} onClick={handleCloseUserMenu}>
-                      <Typography
-                        href={link}
-                        textAlign="center"
-                        sx={{ textDecoration: "none", color: "black" }}
-                        component="a"
-                      >
-                        {text}
-                      </Typography>
-                    </MenuItem>
+                  return (
+                    link &&
+                    text && (
+                      <MenuItem key={page} onClick={handleCloseUserMenu}>
+                        <Typography
+                          href={link}
+                          textAlign="center"
+                          sx={{ textDecoration: "none", color: "black" }}
+                          component="a"
+                        >
+                          {text}
+                        </Typography>
+                      </MenuItem>
+                    )
                   )
-                )
-              })}
-            </Menu>
+                })}
+              </Menu>
+            )}
           </Box>
           <FitnessCenterIcon
             sx={{ display: { sx: "flex", md: "none", mr: 1 } }}
@@ -166,82 +167,41 @@ function Navbar() {
             GymGuru
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => {
-              let link, text
-              if (page === "trainers" && isLoggedIn && user.isTrainer) {
-                link = `/trainers/${user._id}`
-                text = "My Schedule"
-              } else if (page === "trainee" && isLoggedIn && !user.isTrainer) {
-                link = `/trainee/${user._id}`
-                text = "My Plan"
-              } else if (page === "exercises" && isLoggedIn) {
-                link = `/exercises`
-                text = "Exercises"
-              } else if (page === "trainers" && isLoggedIn && !user.isTrainer) {
-                link = "/trainers"
-                text = "Trainers"
-              }
-
-              return (
-                link &&
-                text && (
-                  <MenuItem key={page} onClick={handleCloseUserMenu}>
-                    <Typography
-                      href={link}
-                      textAlign="center"
-                      sx={{ textDecoration: "none", color: "white" }}
-                      component="a"
-                    >
-                      {text}
-                    </Typography>
-                  </MenuItem>
-                )
-              )
-            })}
-          </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="I" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => {
-                let text, link
-
-                if (setting === "login" && !isLoggedIn) {
-                  text = "Login"
-                  link = "/login"
-                } else if (setting === "signup" && !isLoggedIn) {
-                  text = "Sign up"
-                  link = "/signup"
+          {!isLoading && (
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {pages.map((page) => {
+                let link, text
+                if (page === "trainers" && isLoggedIn && user.isTrainer) {
+                  link = `/trainers/${user._id}`
+                  text = "My Schedule"
+                } else if (
+                  page === "trainee" &&
+                  isLoggedIn &&
+                  !user.isTrainer
+                ) {
+                  link = `/trainee/${user._id}`
+                  text = "My Plan"
+                } else if (page === "exercises" && isLoggedIn) {
+                  link = `/exercises`
+                  text = "Exercises"
+                } else if (
+                  page === "trainers" &&
+                  isLoggedIn &&
+                  !user.isTrainer
+                ) {
+                  link = "/trainers"
+                  text = "Trainers"
                 }
+
                 return (
-                  text &&
-                  link && (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  link &&
+                  text && (
+                    <MenuItem key={page} onClick={handleCloseUserMenu}>
                       <Typography
                         href={link}
-                        sx={{ textDecoration: "none", color: "black" }}
-                        component="a"
                         textAlign="center"
+                        sx={{ textDecoration: "none", color: "white" }}
+                        component="a"
                       >
                         {text}
                       </Typography>
@@ -249,8 +209,61 @@ function Navbar() {
                   )
                 )
               })}
-              {isLoggedIn && (
-                // <MenuItem>
+            </Box>
+          )}
+
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="I" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+
+            {!isLoading && (
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => {
+                  let text, link
+
+                  if (setting === "login" && !isLoggedIn) {
+                    text = "Login"
+                    link = "/login"
+                  } else if (setting === "signup" && !isLoggedIn) {
+                    text = "Sign up"
+                    link = "/signup"
+                  }
+                  return (
+                    text &&
+                    link && (
+                      <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                        <Typography
+                          href={link}
+                          sx={{ textDecoration: "none", color: "black" }}
+                          component="a"
+                          textAlign="center"
+                        >
+                          {text}
+                        </Typography>
+                      </MenuItem>
+                    )
+                  )
+                })}
+                {isLoggedIn && (
+                  // <MenuItem>
                   <Button
                     onClick={logout}
                     size="small"
@@ -259,9 +272,10 @@ function Navbar() {
                   >
                     {"Logout"}
                   </Button>
-                // </MenuItem>
-              )}
-            </Menu>
+                  // </MenuItem>
+                )}
+              </Menu>
+            )}
           </Box>
 
           {/* {!isLoading && (
