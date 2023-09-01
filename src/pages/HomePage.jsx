@@ -12,14 +12,6 @@ function HomePage() {
     <div>
       <ThemeProvider theme={defaultTheme}>
         <CssBaseline />
-        <AppBar position="relative">
-          <Toolbar>
-            <CameraIcon sx={{ mr: 2 }} />
-            <Typography variant="h6" color="inherit" noWrap>
-              Album layout
-            </Typography>
-          </Toolbar>
-        </AppBar>
         <main>
           {/* Hero unit */}
           <Box

@@ -8,6 +8,7 @@ import TrainerProfile from "./pages/TrainerProfile";
 import TraineeProfile from './pages/TraineeProfile'
 import IsAnonymous from "./components/isAnonymous";
 import IsPrivate from "./components/isPrivate";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -57,6 +58,14 @@ function App() {
             </IsPrivate>
           }
         />
+
+        <Route
+          path="/*"
+          element={
+            <NotFound/>
+          }
+        />
+
       </Routes>
     </div>
   )

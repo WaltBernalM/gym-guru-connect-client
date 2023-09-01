@@ -228,7 +228,7 @@ function NutritionPlanList(props) {
                   subheader={<li />}
                 >
                   <li>
-                    <ul>
+                    <ul style={{padding: 0}}>
                       <ListSubheader
                         size="small"
                         sx={{

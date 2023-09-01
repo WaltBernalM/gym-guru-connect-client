@@ -51,8 +51,7 @@ function TrainerProfile() {
   const changeToNewCoach = async () => {
     try {
       const traineeId = user._id
-      const response = await trainerService.assignTraineeToTrainer(trainerId, traineeId)
-      console.log(response)
+      await trainerService.assignTraineeToTrainer(trainerId, traineeId)
       getTrainer()
     } catch (error) {
       setCoachAssignError(error.response.data.message)
