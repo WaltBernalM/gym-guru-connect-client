@@ -1,112 +1,93 @@
-import { AppBar, Box, Button, Card, CardActions, CardContent, CardMedia, Container, CssBaseline, Grid, Stack, ThemeProvider, Toolbar, Typography, createTheme } from "@mui/material"
-import CameraIcon from "@mui/icons-material/PhotoCamera"
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme()
-
+import { Box, Button, Container, Stack, Typography } from "@mui/material"
+import DietPlanAnimation from "../components/DietPlanAnimation"
+import { AuthContext } from "../context/auth.context"
+import { useContext } from "react"
+import TrainerAnimation from "../components/TrainerAnimation"
 
 function HomePage() {
+  const { isLoggedIn } = useContext(AuthContext)
+
   return (
     <div>
-      <ThemeProvider theme={defaultTheme}>
-        <CssBaseline />
-        <main>
-          {/* Hero unit */}
-          <Box
-            sx={{
-              bgcolor: "background.paper",
-              pt: 8,
-              pb: 6,
-            }}
-          >
-            <Container maxWidth="sm">
-              <Typography
-                component="h1"
-                variant="h2"
-                align="center"
-                color="text.primary"
-                gutterBottom
-              >
-                Album layout
-              </Typography>
-              <Typography
-                variant="h5"
-                align="center"
-                color="text.secondary"
-                paragraph
-              >
-                Something short and leading about the collection below—its
-                contents, the creator, etc. Make it short and sweet, but not too
-                short so folks don&apos;t simply skip over it entirely.
-              </Typography>
+      <main>
+        {/* Hero unit */}
+        <Box
+          sx={{
+            bgcolor: "background.paper",
+            pt: 1,
+            pb: 1,
+          }}
+        >
+          <Container maxWidth="sm" align="center">
+            <DietPlanAnimation />
+            <Typography
+              component="h4"
+              variant="h5"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              Manage your Health Program with us!
+            </Typography>
+            <Typography
+              variant="h6"
+              align="center"
+              color="text.secondary"
+              paragraph
+              marginBottom={0}
+            >
+              We've also been there, where you receive all the information by
+              email, and it all depends if you save it locally, or you'll need
+              to search for it.
+            </Typography>
+            {!isLoggedIn && (
               <Stack
-                sx={{ pt: 4 }}
+                sx={{ pt: 1 }}
                 direction="row"
                 spacing={2}
                 justifyContent="center"
               >
-                <Button variant="contained">Main call to action</Button>
-                <Button variant="outlined">Secondary action</Button>
+                <Button href="/signup" variant="contained">
+                  Sign up now!
+                </Button>
+                <Button href="/login" variant="outlined">
+                  Go to see your Plan
+                </Button>
               </Stack>
-            </Container>
-          </Box>
-          <Container sx={{ py: 8 }} maxWidth="md">
-            {/* End hero unit */}
-            <Grid container spacing={4}>
-              {cards.map((card) => (
-                <Grid item key={card} xs={12} sm={6} md={4}>
-                  <Card
-                    sx={{
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <CardMedia
-                      component="div"
-                      sx={{
-                        // 16:9
-                        pt: "56.25%",
-                      }}
-                      image="https://source.unsplash.com/random?wallpapers"
-                    />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        Heading
-                      </Typography>
-                      <Typography>
-                        This is a media card. You can use this section to
-                        describe the content.
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">View</Button>
-                      <Button size="small">Edit</Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
+            )}
           </Container>
-        </main>
-        {/* Footer */}
-        <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
-          <Typography variant="h6" align="center" gutterBottom>
-            Footer
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            align="center"
-            color="text.secondary"
-            component="p"
-          >
-            Something here to give the footer a purpose!
-          </Typography>
         </Box>
-        {/* End footer */}
-      </ThemeProvider> 
+        <Box align="center">
+          <Container>
+            <div style={{ maxWidth: "20%" }}>
+              <TrainerAnimation />
+            </div>
+            <Typography
+              variant="p"
+              align="center"
+              color="text.secondary"
+              paragraph
+              maxWidth={"75%"}
+              paddingBottom={0}
+              marginBottom={1}
+            >
+              You'll be able to keep in track with your Nutrition Program
+            </Typography>
+            <Typography
+              variant="p"
+              align="center"
+              color="text.secondary"
+              paragraph
+              maxWidth={"75%"}
+              paddingTop={0}
+              marginBottom={1}
+            >
+              And maybe you forget from time to time forget what's next in your
+              Exercise Routine. So worry no more!
+            </Typography>
+          </Container>
+        </Box>
+      </main>
     </div>
   )
 }
