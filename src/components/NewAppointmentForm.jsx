@@ -62,7 +62,7 @@ function NewAppointmentForm(props) {
       sx={{
         bgcolor: "background.paper",
         pt: 0,
-        pb: 2,
+        pb: 0,
         mb: 2,
         mt: 0,
         // border: "6px dotted purple",
