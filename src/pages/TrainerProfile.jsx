@@ -121,7 +121,7 @@ function TrainerProfile() {
                   >
                     Add me as your Coach!
                   </Button>
-                  <Typography sx={{ color: "red", maxWidth: '60%' }}>
+                  <Typography sx={{ color: "red", maxWidth: "60%" }}>
                     {coachAssignError}
                   </Typography>
                 </Stack>
@@ -168,8 +168,8 @@ function TrainerProfile() {
           >
             <Container maxWidth="sm">
               <Typography
-                component="h3"
-                variant="h4"
+                component="h5"
+                variant="h6"
                 align="center"
                 color="text.primary"
                 gutterBottom
