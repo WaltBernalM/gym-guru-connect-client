@@ -2,7 +2,7 @@ import { Fragment, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import traineeService from "../services/trainee.service"
 import appointmentService from "../services/appointment.service"
-import { Box, Button, Container, Divider, IconButton, Link, List, ListItem, ListItemText, Paper, Tab, Typography } from "@mui/material"
+import { Box, Button, Container, Divider, Grow, IconButton, Link, List, ListItem, ListItemText, Paper, Tab, Typography, Zoom } from "@mui/material"
 import NutritionPlanList from "../components/NutritionPlanList"
 import ExercisePlanList from "../components/ExercisePlanList"
 import { AuthContext } from "../context/auth.context"
@@ -123,7 +123,7 @@ function TraineeProfile() {
                 </Typography>
 
                 {/* Trainee appointments */}
-                {traineeInfo.trainerId ? (
+              {traineeInfo.trainerId ? (
                   <Paper
                     elevation={3}
                     sx={{
@@ -151,92 +151,99 @@ function TraineeProfile() {
                     </div>
 
                     {showAppointments && (
-                      <List
-                        sx={{
-                          width: "auto",
-                          maxWidth: "100%",
-                          bgcolor: "background.paper",
-                          position: "relative",
-                          overflow: "auto",
-                          maxHeight: "auto",
-                          "& ul": { padding: 0 },
-                          mt: 0,
-                          display: "flex",
-                          flexDirection: "row",
-                        }}
-                        subheader={<li />}
+                      <Grow
+                        in={showAppointments}
+                        style={{ transformOrigin: "0 0 0" }}
+                        {...(showAppointments ? { timeout: 1000 } : {})}
                       >
-                        {/* If there's no appiontments */}
-                        {traineeAppointments.length === 0 && (
-                          <ListItem sx={{ textAlign: "center" }} key="empty">
-                            <ListItemText>
-                              <Container
-                                sx={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <small>You have no appointments</small>
-                                <Button
-                                  href={`/trainers/${traineeInfo.trainerId._id}`}
+                        <List
+                          sx={{
+                            width: "auto",
+                            maxWidth: "100%",
+                            bgcolor: "background.paper",
+                            position: "relative",
+                            overflow: "auto",
+                            maxHeight: "auto",
+                            "& ul": { padding: 0 },
+                            mt: 0,
+                            display: "flex",
+                            flexDirection: "row",
+                          }}
+                          subheader={<li />}
+                        >
+                          {/* If there's no appiontments */}
+                          {traineeAppointments.length === 0 && (
+                            <ListItem sx={{ textAlign: "center" }} key="empty">
+                              <ListItemText>
+                                <Container
+                                  sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                  }}
                                 >
-                                  Book a new Appointment
-                                </Button>
-                              </Container>
-                            </ListItemText>
-                          </ListItem>
-                        )}
-
-                        {traineeAppointments.map((appointment, i) => {
-                          return (
-                            <Paper
-                              key={appointment._id}
-                              sx={{ margin: 1.5, marginBottom: 0 }}
-                              elevation={1}
-                            >
-                              <ListItem sx={{ textAlign: "center" }}>
-                                <ListItemText>
-                                  <Typography>
-                                    {`${appointment.dayInfo} @ ${appointment.hour}:00`}
-                                  </Typography>
-                                  <Typography>
-                                    <small>with</small>
-                                    <Link
-                                      sx={{ textDecoration: "none" }}
-                                      href={`/trainers/${traineeInfo.trainerId._id}`}
-                                    >
-                                      <small>{` ${traineeInfo.trainerId.name.firstName}`}</small>
-                                    </Link>
-                                  </Typography>
+                                  <small>You have no appointments</small>
                                   <Button
-                                    sx={{
-                                      textAlign: "center",
-                                      color: "red",
-                                      marginTop: 1,
-                                    }}
-                                    startIcon={<EventBusyIcon />}
-                                    disabled={
-                                      new Date(appointment.dayInfo) > twoDaysNow
-                                        ? false
-                                        : true
-                                    }
-                                    onClick={() =>
-                                      handleUnbook(
-                                        appointment._id,
-                                        traineeInfo.trainerId._id,
-                                        user._id
-                                      )
-                                    }
+                                    href={`/trainers/${traineeInfo.trainerId._id}`}
                                   >
-                                    Unbook
+                                    Book a new Appointment
                                   </Button>
-                                </ListItemText>
-                              </ListItem>
-                              <Divider orientation="vertical" flexItem />
-                            </Paper>
-                          )
-                        })}
-                      </List>
+                                </Container>
+                              </ListItemText>
+                            </ListItem>
+                          )}
+
+                          {traineeAppointments.map((appointment, i) => {
+                            return (
+                              <Paper
+                                key={appointment._id}
+                                sx={{ margin: 1.5, marginBottom: 0 }}
+                                elevation={1}
+                              >
+                                <ListItem sx={{ textAlign: "center" }}>
+                                  <ListItemText>
+                                    <Typography>
+                                      {`${appointment.dayInfo} @ ${appointment.hour}:00`}
+                                    </Typography>
+                                    <Typography>
+                                      <small>with</small>
+                                      <Link
+                                        sx={{ textDecoration: "none" }}
+                                        href={`/trainers/${traineeInfo.trainerId._id}`}
+                                      >
+                                        <small>{` ${traineeInfo.trainerId.name.firstName}`}</small>
+                                      </Link>
+                                    </Typography>
+                                    <Button
+                                      sx={{
+                                        textAlign: "center",
+                                        color: "red",
+                                        marginTop: 1,
+                                      }}
+                                      startIcon={<EventBusyIcon />}
+                                      disabled={
+                                        new Date(appointment.dayInfo) >
+                                        twoDaysNow
+                                          ? false
+                                          : true
+                                      }
+                                      onClick={() =>
+                                        handleUnbook(
+                                          appointment._id,
+                                          traineeInfo.trainerId._id,
+                                          user._id
+                                        )
+                                      }
+                                    >
+                                      Unbook
+                                    </Button>
+                                  </ListItemText>
+                                </ListItem>
+                                <Divider orientation="vertical" flexItem />
+                              </Paper>
+                            )
+                          })}
+                        </List>
+                      </Grow>
                     )}
                   </Paper>
                 ) : (
