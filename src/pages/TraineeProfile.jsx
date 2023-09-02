@@ -2,7 +2,7 @@ import { Fragment, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import traineeService from "../services/trainee.service"
 import appointmentService from "../services/appointment.service"
-import { Box, Button, Container, Divider, Grow, IconButton, Link, List, ListItem, ListItemText, Paper, Tab, Typography, Zoom } from "@mui/material"
+import { Box, Button, Container, Divider, Grow, IconButton, Link, List, ListItem, ListItemText, Paper, Tab, Typography } from "@mui/material"
 import NutritionPlanList from "../components/NutritionPlanList"
 import ExercisePlanList from "../components/ExercisePlanList"
 import { AuthContext } from "../context/auth.context"
@@ -123,7 +123,7 @@ function TraineeProfile() {
                 </Typography>
 
                 {/* Trainee appointments */}
-              {traineeInfo.trainerId ? (
+                {traineeInfo.trainerId ? (
                   <Paper
                     elevation={3}
                     sx={{
@@ -139,7 +139,14 @@ function TraineeProfile() {
                       alignItems: "center",
                     }}
                   >
-                    <div style={{ width: "30%", maxWidth: 120, minWidth: 90 }}>
+                    <div
+                      style={{
+                        width: "30%",
+                        maxWidth: 120,
+                        minWidth: 90,
+                        textAlign: "center",
+                      }}
+                    >
                       <IconButton
                         sx={{ marginBottom: 1 }}
                         onClick={() => {
@@ -148,6 +155,17 @@ function TraineeProfile() {
                       >
                         <CalendarAnimation />
                       </IconButton>
+                      {showAppointments && (
+                        <Grow
+                          in={showAppointments}
+                          style={{ transformOrigin: "0 0 0" }}
+                          {...(showAppointments ? { timeout: 1000 } : {})}
+                        >
+                          <small style={{ fontSize: 10 }}>
+                            Next appointments
+                          </small>
+                        </Grow>
+                      )}
                     </div>
 
                     {showAppointments && (
@@ -191,7 +209,6 @@ function TraineeProfile() {
                               </ListItemText>
                             </ListItem>
                           )}
-
                           {traineeAppointments.map((appointment, i) => {
                             return (
                               <Paper
