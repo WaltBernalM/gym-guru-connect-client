@@ -10,6 +10,7 @@ import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined
 
 import NewAppointmentForm from "../components/NewAppointmentForm"
 import AppointmentsList from "../components/AppointmentsList"
+import CoachAnimation from "../components/CoachAnimation"
 
 function TrainerProfile() {
   const [trainerInfo, setTrainerInfo] = useState(null)
@@ -67,20 +68,24 @@ function TrainerProfile() {
         flexDirection: "column",
       }}
     >
+      <Container sx={{ width: "25%" }}>
+        <CoachAnimation />
+      </Container>
       {/* For Trainee */}
       {trainerInfo && user && !user.isTrainer && (
         <>
           <Box
             sx={{
               bgcolor: "background.paper",
-              pt: 8,
+              pt: 0,
+              mt: 0,
               pb: 6,
             }}
           >
             <Container maxWidth="sm">
               <Typography
-                component="h3"
-                variant="h4"
+                component="h5"
+                variant="h6"
                 align="center"
                 color="text.primary"
                 gutterBottom
@@ -88,7 +93,7 @@ function TrainerProfile() {
                 {trainerInfo.name.firstName} {trainerInfo.name.lastName}
               </Typography>
               <Typography
-                variant="h5"
+                variant="p"
                 align="center"
                 color="text.secondary"
                 paragraph
@@ -121,7 +126,7 @@ function TrainerProfile() {
                   >
                     Add me as your Coach!
                   </Button>
-                  <Typography sx={{ color: "red", maxWidth: '60%' }}>
+                  <Typography sx={{ color: "red", maxWidth: "60%" }}>
                     {coachAssignError}
                   </Typography>
                 </Stack>
@@ -162,14 +167,14 @@ function TrainerProfile() {
           <Box
             sx={{
               bgcolor: "background.paper",
-              pt: 2,
+              pt: 0,
               pb: 0,
             }}
           >
             <Container maxWidth="sm">
               <Typography
-                component="h3"
-                variant="h4"
+                component="h5"
+                variant="h6"
                 align="center"
                 color="text.primary"
                 gutterBottom
@@ -180,22 +185,24 @@ function TrainerProfile() {
             </Container>
           </Box>
 
-          {user &&
-            user.isTrainer &&
-            trainerSchedule &&
-            trainerSchedule.schedule && (
-              <NewAppointmentForm getTrainerSchedule={getTrainerSchedule} />
-            )}
+          <Box display={'flex'} flexWrap={'wrap'} justifyContent={'center'}>
+            {user &&
+              user.isTrainer &&
+              trainerSchedule &&
+              trainerSchedule.schedule && (
+                <NewAppointmentForm getTrainerSchedule={getTrainerSchedule} />
+              )}
 
-          {user &&
-            user.isTrainer &&
-            trainerSchedule &&
-            trainerSchedule.schedule && (
-              <AppointmentsList
-                trainerSchedule={trainerSchedule}
-                trainerInfo={trainerInfo}
-              />
-            )}
+            {user &&
+              user.isTrainer &&
+              trainerSchedule &&
+              trainerSchedule.schedule && (
+                <AppointmentsList
+                  trainerSchedule={trainerSchedule}
+                  trainerInfo={trainerInfo}
+                />
+              )}
+          </Box>
         </>
       )}
     </div>
