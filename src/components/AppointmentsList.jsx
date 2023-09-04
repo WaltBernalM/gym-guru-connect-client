@@ -275,7 +275,6 @@ function AppointmentsList(props) {
                       const dateInAppointment = new Date(
                         a.dayInfo
                       ).toLocaleString("en-US", options)
-                      console.log(dateInAppointment , currentDate)
                       if (user.isTrainer) {
                         return dateInAppointment >= currentDate
                           ? true
