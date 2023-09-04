@@ -1,4 +1,4 @@
-import { Button, Checkbox, Container, Fade, FormControlLabel, FormGroup, Grid, IconButton, List, ListItem, ListItemText, ListSubheader, Paper, Typography, } from "@mui/material"
+import { Button, Checkbox, Container, Fade, FormControlLabel, FormGroup, Grid, IconButton, List, ListItem, ListItemText, ListSubheader, Paper, Typography, useMediaQuery, } from "@mui/material"
 
 import EventBusyIcon from "@mui/icons-material/EventBusy"
 import PersonSearchIcon from "@mui/icons-material/PersonSearch"
@@ -15,6 +15,7 @@ import appointmentService from "../services/appointment.service"
 import { useNavigate } from "react-router-dom"
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt"
+import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined"
 
 function AppointmentsList(props) {
   const { trainerSchedule, trainerInfo } = props
@@ -84,6 +85,7 @@ function AppointmentsList(props) {
     filterMessage && setTimeout(() => {
       setFilterMessage("")
       setFiltered(trainerSchedule.schedule)
+      setSeeOnlyBooked(false)
     }, 2000)
   }, [trainerSchedule, filterMessage])
 
@@ -134,6 +136,17 @@ function AppointmentsList(props) {
       }
     }
   }
+
+  const isSmallScreen = useMediaQuery("(max-width:600px)")
+  const maxHeight = isSmallScreen ? 360 : 300
+
+  const shouldDisableDate = (date) => {
+    const formattedDate = new Date(date).toLocaleString("en-US", options)
+    const dayInfoArray = trainerSchedule.schedule.map(
+      (appointment) => appointment.dayInfo
+    )
+    return !dayInfoArray.includes(formattedDate)
+  }
   
   return (
     <>
@@ -149,15 +162,17 @@ function AppointmentsList(props) {
               bgcolor: "background.paper",
               position: "relative",
               overflow: "auto",
-              maxHeight: 300,
+              maxHeight: `${maxHeight}px`,
               "& ul": { padding: 0, margin: 1 },
               mt: 1,
             }}
             subheader={<li />}
           >
             <ul style={{ textAlign: "center" }}>
-              <ListSubheader sx={{ width: "auto"}}>
-                <div style={{display: "flex", justifyContent:'space-between' }}>
+              <ListSubheader sx={{ width: "auto" }}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
                   <IconButton
                     onClick={() => setFilterVisible(!filterVisible)}
                     sx={{ marginRight: 1 }}
@@ -183,36 +198,56 @@ function AppointmentsList(props) {
                         paddingBottom: 1,
                       }}
                     >
-                      <DatePicker
-                        sx={{
-                          marginTop: 0,
-                          paddingBottom: 0,
-                          maxWidth: 180,
-                          paddingTop: 0,
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-around",
+                          width: "100%",
                         }}
-                        label={
-                          filterMessage ? (
-                            <span style={{ color: "red" }}>
-                              {filterMessage}
-                            </span>
-                          ) : (
-                            "Date Filter"
-                          )
-                        }
-                        slotProps={{ textField: { size: "small" } }}
-                        minDate={dayjs(new Date()).set(
-                          "date",
-                          dayjs(new Date()).date() + 2
-                        )}
-                        onChange={(newValue) => handleFilter(newValue)}
-                        value={dateFilter}
-                        disabled={filterMessage ? true : false}
-                      />
+                      >
+                        <DatePicker
+                          shouldDisableDate={shouldDisableDate}
+                          sx={{
+                            marginTop: 0,
+                            paddingBottom: 0,
+                            maxWidth: 180,
+                            paddingTop: 0,
+                          }}
+                          label={
+                            filterMessage ? (
+                              <span style={{ color: "red" }}>
+                                {filterMessage}
+                              </span>
+                            ) : (
+                              "Date Filter"
+                            )
+                          }
+                          slotProps={{ textField: { size: "small" } }}
+                          minDate={dayjs(new Date()).set(
+                            "date",
+                            dayjs(new Date()).date() + 2
+                          )}
+                          onChange={(newValue) => handleFilter(newValue)}
+                          value={dateFilter}
+                          disabled={filterMessage ? true : false}
+                        />
+                        <IconButton
+                          onClick={() => {
+                            setDateFilter(null)
+                            setFiltered(trainerSchedule.schedule)
+                          }}
+                          disabled={filterMessage ? true : false}
+                        >
+                          <CachedOutlinedIcon />
+                        </IconButton>
+                      </div>
                       {user.isTrainer && (
                         <FormGroup sx={{ marginTop: 1 }}>
                           <FormControlLabel
                             control={
                               <Checkbox
+                                disabled={filterMessage ? true : false}
                                 checked={seeOnlyBooked}
                                 onChange={handleCheckbox}
                                 sx={{ margin: 0, padding: 0, marginLeft: 2 }}
@@ -247,10 +282,15 @@ function AppointmentsList(props) {
                     })
                     .map((appointment) => {
                       return (
-                        <Fragment key={appointment._id}>
-                          <ListItem disableGutters sx={{ textAlign: "center" }}>
+                        <Paper key={appointment._id} sx={{ marginY: 1 }}>
+                          <ListItem disableGutters>
                             {user.isTrainer && (
-                              <ListItemText>
+                              <ListItemText
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "space-around",
+                                }}
+                              >
                                 {`${appointment.dayInfo} @ ${appointment.hour}:00`}
                                 {appointment.traineeId ? (
                                   <Button
@@ -319,7 +359,7 @@ function AppointmentsList(props) {
                               </ListItemText>
                             )}
                           </ListItem>
-                        </Fragment>
+                        </Paper>
                       )
                     })}
             </ul>
@@ -353,7 +393,7 @@ function AppointmentsList(props) {
             flexDirection: "column",
             justifyContent: "center",
             textAlign: "justify",
-            mt:1
+            mt: 1,
           }}
         >
           <span>{appointmentStatus}</span>
