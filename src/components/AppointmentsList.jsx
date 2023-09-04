@@ -311,15 +311,13 @@ function AppointmentsList(props) {
                                     startIcon={<EventBusyIcon />}
                                     color="error"
                                     disabled={
-                                      appointment.dayInfo > currentDate
+                                      appointment.dayInfo > todayPlus24
                                       ? false
                                       : true
                                     }
-                                    onClick={() => {
-                                      console.log(appointment.dayInfo, currentDate)
-                                      console.log(todayPlus24)
+                                    onClick={() => 
                                       hanldeDelete(appointment._id, user._id)
-                                    }}
+                                    }
                                   >
                                     Remove
                                   </Button>
