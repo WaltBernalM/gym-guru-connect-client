@@ -315,7 +315,7 @@ function AppointmentsList(props) {
                                     }
                                     onClick={() =>
                                     {
-                                      console.log(today)
+                                      console.log(new Date(today))
                                       console.log(new Date(appointment.dayInfo))
                                       console.log(currentDate)
                                       console.log(appointment.dayInfo)
