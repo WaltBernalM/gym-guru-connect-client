@@ -316,8 +316,9 @@ function AppointmentsList(props) {
                                     onClick={() =>
                                     {
                                       console.log(today)
-                                      console.log(currentDate)
                                       console.log(new Date(appointment.dayInfo))
+                                      console.log(currentDate)
+                                      console.log(appointment.dayInfo)
                                       hanldeDelete(appointment._id, user._id)
                                     }
                                     }
