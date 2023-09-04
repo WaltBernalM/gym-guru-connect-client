@@ -315,10 +315,10 @@ function AppointmentsList(props) {
                                     color="error"
                                     disabled={
                                       appointment.dayInfo > todayPlus24
-                                      ? false
-                                      : true
+                                        ? false
+                                        : true
                                     }
-                                    onClick={() => 
+                                    onClick={() =>
                                       hanldeDelete(appointment._id, user._id)
                                     }
                                   >
@@ -328,7 +328,12 @@ function AppointmentsList(props) {
                               </ListItemText>
                             )}
                             {!user.isTrainer && (
-                              <ListItemText>
+                              <ListItemText
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "space-around",
+                                }}
+                              >
                                 <Typography>
                                   {appointment.dayInfo} @ {appointment.hour}
                                   {":00"}
