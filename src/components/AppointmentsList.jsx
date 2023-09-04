@@ -329,38 +329,30 @@ function AppointmentsList(props) {
                             )}
                             {!user.isTrainer && (
                               <ListItemText>
-                                <Paper
-                                  sx={{
-                                    width: "auto",
-                                    paddingY: 2,
-                                    marginX: 1,
-                                  }}
-                                >
-                                  <Typography>
-                                    {appointment.dayInfo} @ {appointment.hour}
-                                    {":00"}
-                                  </Typography>
-                                  {trainerInfo.trainees.includes(user._id) ? (
-                                    <Button
-                                      color="success"
-                                      variant="contained"
-                                      onClick={() =>
-                                        handleBookIn(
-                                          appointment._id,
-                                          trainerInfo._id,
-                                          user._id
-                                        )
-                                      }
-                                      disabled={filterMessage ? true : false}
-                                      startIcon={<EventAvailableIcon />}
-                                    >
-                                      {" "}
-                                      Book IN
-                                    </Button>
-                                  ) : (
-                                    <LockClockIcon />
-                                  )}
-                                </Paper>
+                                <Typography>
+                                  {appointment.dayInfo} @ {appointment.hour}
+                                  {":00"}
+                                </Typography>
+                                {trainerInfo.trainees.includes(user._id) ? (
+                                  <Button
+                                    color="success"
+                                    variant="contained"
+                                    onClick={() =>
+                                      handleBookIn(
+                                        appointment._id,
+                                        trainerInfo._id,
+                                        user._id
+                                      )
+                                    }
+                                    disabled={filterMessage ? true : false}
+                                    startIcon={<EventAvailableIcon />}
+                                  >
+                                    {" "}
+                                    Book IN
+                                  </Button>
+                                ) : (
+                                  <LockClockIcon />
+                                )}
                               </ListItemText>
                             )}
                           </ListItem>
