@@ -227,7 +227,9 @@ function AppointmentsList(props) {
                             )
                           }
                           slotProps={{ textField: { size: "small" } }}
-                          minDate={dayjs(new Date()).set(
+                          minDate={user.isTrainer
+                            ? dayjs(new Date())
+                            : dayjs(new Date()).set(
                             "date",
                             dayjs(new Date()).date() + 2
                           )}
