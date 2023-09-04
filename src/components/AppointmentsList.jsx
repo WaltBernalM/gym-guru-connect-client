@@ -308,7 +308,7 @@ function AppointmentsList(props) {
                                     startIcon={<EventBusyIcon />}
                                     color="error"
                                     disabled={
-                                      new Date(appointment.dayInfo) >=
+                                      new Date(appointment.dayInfo) >
                                       new Date(today)
                                         ? false
                                         : true
@@ -316,6 +316,8 @@ function AppointmentsList(props) {
                                     onClick={() =>
                                     {
                                       console.log(today)
+                                      console.log(currentDate)
+                                      console.log(new Date(appointment.dayInfo))
                                       hanldeDelete(appointment._id, user._id)
                                     }
                                     }
