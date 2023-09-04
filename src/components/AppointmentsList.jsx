@@ -275,7 +275,7 @@ function AppointmentsList(props) {
                       ).toLocaleString("en-US", options)
                       console.log(dateInAppointment , currentDate)
                       if (user.isTrainer) {
-                        return new Date(dateInAppointment) >= today
+                        return dateInAppointment >= currentDate
                           ? true
                           : false
                       } else if (!user.isTrainer) {
