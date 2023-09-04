@@ -308,13 +308,16 @@ function AppointmentsList(props) {
                                     startIcon={<EventBusyIcon />}
                                     color="error"
                                     disabled={
-                                      new Date(appointment.dayInfo) >
+                                      new Date(appointment.dayInfo) >=
                                       new Date(today)
                                         ? false
                                         : true
                                     }
                                     onClick={() =>
+                                    {
+                                      console.log(today)
                                       hanldeDelete(appointment._id, user._id)
+                                    }
                                     }
                                   >
                                     Remove
