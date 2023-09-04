@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { useParams } from 'react-router-dom'
 import trainerService from "../services/trainer.service"
-import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material"
+import { Box, Button, Container, Grid, Stack, Typography, useMediaQuery } from "@mui/material"
 import { AuthContext } from "../context/auth.context"
 
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
@@ -58,6 +58,9 @@ function TrainerProfile() {
       setCoachAssignError(error.response.data.message)
     }
   }
+
+  const isSmallScreen = useMediaQuery("(max-width:600px)")
+  const coachAnimWidth = isSmallScreen ? "10px" : "20%"
   
   return (
     <div
@@ -68,7 +71,7 @@ function TrainerProfile() {
         flexDirection: "column",
       }}
     >
-      <Container sx={{ width: "20%" }}>
+      <Container sx={{ width: `${coachAnimWidth}` }}>
         <CoachAnimation />
       </Container>
       {/* For Trainee */}
@@ -185,7 +188,7 @@ function TrainerProfile() {
             </Container>
           </Box>
 
-          <Box display={'flex'} flexWrap={'wrap'} justifyContent={'center'}>
+          <Box display={"flex"} flexWrap={"wrap"} justifyContent={"center"}>
             {user &&
               user.isTrainer &&
               trainerSchedule &&
