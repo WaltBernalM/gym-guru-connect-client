@@ -42,6 +42,9 @@ function AppointmentsList(props) {
   const currentDate = new Date().toLocaleString("en-US", options)
   const today = new Date(currentDate)
 
+  const plus24 = today.setDate(today.getDate() + 1)
+  const todayPlus24 = new Date(plus24).toLocaleString("en-US", options)
+
   const handleFilter = (date, seeBooked) => {
     let dateToSearch, filteredSchedule
     setFilterMessage(null)
@@ -307,21 +310,16 @@ function AppointmentsList(props) {
                                     sx={{ ml: 2 }}
                                     startIcon={<EventBusyIcon />}
                                     color="error"
-                                      disabled={() => {
-                                        const plsu24h = dayjs(appointment.dayInfo).set('day', dayjs(appointment.dayInfo).getDate() + 1)
-                                        console.log(plsu24h)
-                                        
-                                        console.log(appointment.dayInfo)
-                                        console.log(today)
-                                        
-                                      return new Date(appointment.dayInfo) >
-                                      new Date(today)
-                                        ? false
-                                        : true
+                                    disabled={
+                                      appointment.dayInfo > currentDate
+                                      ? false
+                                      : true
                                     }
-                                      
-                                    }
-                                    onClick={() => hanldeDelete(appointment._id, user._id) }
+                                    onClick={() => {
+                                      console.log(appointment.dayInfo, currentDate)
+                                      console.log(todayPlus24)
+                                      hanldeDelete(appointment._id, user._id)
+                                    }}
                                   >
                                     Remove
                                   </Button>
