@@ -68,7 +68,7 @@ function TrainerProfile() {
         flexDirection: "column",
       }}
     >
-      <Container sx={{ width: "25%" }}>
+      <Container sx={{ width: "20%" }}>
         <CoachAnimation />
       </Container>
       {/* For Trainee */}
