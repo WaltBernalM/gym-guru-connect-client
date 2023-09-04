@@ -307,21 +307,21 @@ function AppointmentsList(props) {
                                     sx={{ ml: 2 }}
                                     startIcon={<EventBusyIcon />}
                                     color="error"
-                                    disabled={
-                                      new Date(appointment.dayInfo) >
+                                      disabled={() => {
+                                        const plsu24h = dayjs(appointment.dayInfo).set('day', dayjs(appointment.dayInfo).getDate() + 1)
+                                        console.log(plsu24h)
+                                        
+                                        console.log(appointment.dayInfo)
+                                        console.log(today)
+                                        
+                                      return new Date(appointment.dayInfo) >
                                       new Date(today)
                                         ? false
                                         : true
                                     }
-                                    onClick={() =>
-                                    {
-                                      console.log(new Date(today))
-                                      console.log(new Date(appointment.dayInfo))
-                                      console.log(currentDate)
-                                      console.log(appointment.dayInfo)
-                                      hanldeDelete(appointment._id, user._id)
+                                      
                                     }
-                                    }
+                                    onClick={() => hanldeDelete(appointment._id, user._id) }
                                   >
                                     Remove
                                   </Button>
