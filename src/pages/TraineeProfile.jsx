@@ -10,6 +10,7 @@ import EventBusyIcon from "@mui/icons-material/EventBusy"
 import { options, today } from "../utils/constants"
 import { TabContext, TabList, TabPanel } from "@mui/lab"
 import CalendarAnimation from "../components/CalendarAnimation"
+import ServerErrorAnimation from "../components/ServerErrorAnimation"
 
 const now = new Date(today)
 const twoDaysNow = now.setDate(now.getDate() + 1)
@@ -20,7 +21,7 @@ function TraineeProfile() {
 
   const [traineeInfo, setTraineeInfo] = useState(null)
   const [traineeAppointments, setTraineeAppointments] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [error, setError] = useState(null)
 
   const [tabNumber, setTabNumber] = useState("1")
   const [showAppointments, setShowAppointments] = useState(false)
@@ -30,7 +31,7 @@ function TraineeProfile() {
       const traineeFromDB = await traineeService.getTrainee(traineeId)
       setTraineeInfo(traineeFromDB.data)
     } catch (error) {
-      setErrorMessage(error.response.data.message)
+      setError(error.response.data.message)
     }
   }
 
@@ -48,7 +49,7 @@ function TraineeProfile() {
       })
       setTraineeAppointments(traineeAppointmentsFromDB)}
     } catch (error) {
-      setErrorMessage(error.response.data.message)
+      setError(error.response.data.message)
     }
   }
 
@@ -72,226 +73,318 @@ function TraineeProfile() {
   }
 
   return (
-    <div>
-      {/* For Trainee */}
-      {user &&
-        !user.isTrainer &&
-        traineeId === user._id &&
-        traineeInfo &&
-        traineeInfo.nutritionPlan &&
-        traineeAppointments && (
-          <>
-            {/* Trainee Welcome and Schedule */}
-            <Box
-              sx={{
-                bgcolor: "background.paper",
-                pt: 1,
-                pb: 0,
-              }}
-            >
-              <Container
-                maxWidth="md"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
+    <>
+      {!error && (
+        <div>
+          {/* For Trainee */}
+          {user &&
+            !user.isTrainer &&
+            traineeId === user._id &&
+            traineeInfo &&
+            traineeInfo.nutritionPlan &&
+            traineeAppointments && (
+              <Grow
+                in={!user.isTrainer}
+                style={{ transformOrigin: "0 0 0" }}
+                {...(!user.isTrainer ? { timeout: 1000 } : {})}
               >
-                <Typography
-                  component="h5"
-                  variant="h6"
-                  align="center"
-                  color="text.primary"
-                  gutterBottom
-                >
-                  Welcome <br /> {traineeInfo.name.firstName}{" "}
-                  {traineeInfo.name.lastName}
-                </Typography>
-                <Typography align="center">
-                  <small>
-                    {traineeInfo.trainerId ? (
-                      <>
-                        Your current trainer is
-                        <span>
-                          {` ${traineeInfo.trainerId.name.firstName} ${traineeInfo.trainerId.name.lastName}`}
-                        </span>
-                      </>
-                    ) : (
-                      "You have no trainer yet"
-                    )}
-                  </small>
-                </Typography>
-
-                {/* Trainee appointments */}
-                {traineeInfo.trainerId ? (
-                  <Paper
-                    elevation={3}
+                <div>
+                  {/* Trainee Welcome and Schedule */}
+                  <Box
                     sx={{
-                      marginTop: 1,
-                      paddingTop: 1,
-                      width: "auto",
-                      maxWidth: "70%",
-                      border: "1px rgba(0,0,0,0.1)",
-                      borderStyle: "ridge",
-                      borderRadius: "10px",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
+                      bgcolor: "background.paper",
+                      pt: 1,
+                      pb: 0,
                     }}
                   >
-                    <div
-                      style={{
-                        width: "30%",
-                        maxWidth: 120,
-                        minWidth: 90,
-                        textAlign: "center",
+                    <Container
+                      maxWidth="md"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
                     >
-                      <IconButton
-                        sx={{ marginBottom: 1 }}
-                        onClick={() => {
-                          setShowAppointments(!showAppointments)
+                      <Typography
+                        component="h5"
+                        variant="h6"
+                        align="center"
+                        color="text.primary"
+                        gutterBottom
+                      >
+                        Welcome <br /> {traineeInfo.name.firstName}{" "}
+                        {traineeInfo.name.lastName}
+                      </Typography>
+                      <Typography align="center">
+                        <small>
+                          {traineeInfo.trainerId ? (
+                            <>
+                              Your current trainer is
+                              <span>
+                                {` ${traineeInfo.trainerId.name.firstName} ${traineeInfo.trainerId.name.lastName}`}
+                              </span>
+                            </>
+                          ) : (
+                            "You have no trainer yet"
+                          )}
+                        </small>
+                      </Typography>
+
+                      {/* Trainee appointments */}
+                      {traineeInfo.trainerId ? (
+                        <Paper
+                          elevation={3}
+                          sx={{
+                            marginTop: 1,
+                            paddingTop: 1,
+                            width: "auto",
+                            maxWidth: "70%",
+                            border: "1px rgba(0,0,0,0.1)",
+                            borderStyle: "ridge",
+                            borderRadius: "10px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "30%",
+                              maxWidth: 120,
+                              minWidth: 90,
+                              textAlign: "center",
+                            }}
+                          >
+                            <IconButton
+                              sx={{ marginBottom: 1 }}
+                              onClick={() => {
+                                setShowAppointments(!showAppointments)
+                              }}
+                            >
+                              <CalendarAnimation />
+                            </IconButton>
+                            {showAppointments && (
+                              <Grow
+                                in={showAppointments}
+                                style={{ transformOrigin: "0 0 0" }}
+                                {...(showAppointments ? { timeout: 1000 } : {})}
+                              >
+                                <small style={{ fontSize: 10 }}>
+                                  Next appointments
+                                </small>
+                              </Grow>
+                            )}
+                          </div>
+
+                          {showAppointments && (
+                            <Grow
+                              in={showAppointments}
+                              style={{ transformOrigin: "0 0 0" }}
+                              {...(showAppointments ? { timeout: 1000 } : {})}
+                            >
+                              <List
+                                sx={{
+                                  width: "auto",
+                                  maxWidth: "100%",
+                                  bgcolor: "background.paper",
+                                  position: "relative",
+                                  overflow: "auto",
+                                  maxHeight: "auto",
+                                  "& ul": { padding: 0 },
+                                  mt: 0,
+                                  display: "flex",
+                                  flexDirection: "row",
+                                }}
+                                subheader={<li />}
+                              >
+                                {/* If there's no appiontments */}
+                                {traineeAppointments.length === 0 && (
+                                  <ListItem
+                                    sx={{ textAlign: "center" }}
+                                    key="empty"
+                                  >
+                                    <ListItemText>
+                                      <Container
+                                        sx={{
+                                          display: "flex",
+                                          flexDirection: "column",
+                                        }}
+                                      >
+                                        <small>You have no appointments</small>
+                                        <Button
+                                          href={`/trainers/${traineeInfo.trainerId._id}`}
+                                        >
+                                          Book a new Appointment
+                                        </Button>
+                                      </Container>
+                                    </ListItemText>
+                                  </ListItem>
+                                )}
+                                {traineeAppointments.map((appointment, i) => {
+                                  return (
+                                    <Paper
+                                      key={appointment._id}
+                                      sx={{ margin: 1.5, marginBottom: 0 }}
+                                      elevation={1}
+                                    >
+                                      <ListItem sx={{ textAlign: "center" }}>
+                                        <ListItemText>
+                                          <Typography>
+                                            {`${appointment.dayInfo} @ ${appointment.hour}:00`}
+                                          </Typography>
+                                          <Typography>
+                                            <small>with</small>
+                                            <Link
+                                              sx={{ textDecoration: "none" }}
+                                              href={`/trainers/${traineeInfo.trainerId._id}`}
+                                            >
+                                              <small>{` ${traineeInfo.trainerId.name.firstName}`}</small>
+                                            </Link>
+                                          </Typography>
+                                          <Button
+                                            sx={{
+                                              textAlign: "center",
+                                              color: "red",
+                                              marginTop: 1,
+                                            }}
+                                            startIcon={<EventBusyIcon />}
+                                            disabled={
+                                              new Date(appointment.dayInfo) >
+                                              twoDaysNow
+                                                ? false
+                                                : true
+                                            }
+                                            onClick={() =>
+                                              handleUnbook(
+                                                appointment._id,
+                                                traineeInfo.trainerId._id,
+                                                user._id
+                                              )
+                                            }
+                                          >
+                                            Unbook
+                                          </Button>
+                                        </ListItemText>
+                                      </ListItem>
+                                      <Divider
+                                        orientation="vertical"
+                                        flexItem
+                                      />
+                                    </Paper>
+                                  )
+                                })}
+                              </List>
+                            </Grow>
+                          )}
+                        </Paper>
+                      ) : (
+                        <></>
+                      )}
+                    </Container>
+                  </Box>
+
+                  {/* Trainee Exercise and Nutrition Plan  */}
+                  <Box
+                    sx={{
+                      width: "100%",
+                      typography: "body1",
+                      textAlign: "center",
+                    }}
+                  >
+                    <TabContext value={tabNumber}>
+                      <Box
+                        sx={{
+                          borderBottom: 1,
+                          borderColor: "divider",
+                          display: "flex",
+                          justifyContent: "center",
                         }}
                       >
-                        <CalendarAnimation />
-                      </IconButton>
-                      {showAppointments && (
-                        <Grow
-                          in={showAppointments}
-                          style={{ transformOrigin: "0 0 0" }}
-                          {...(showAppointments ? { timeout: 1000 } : {})}
-                        >
-                          <small style={{ fontSize: 10 }}>
-                            Next appointments
-                          </small>
-                        </Grow>
-                      )}
-                    </div>
+                        <TabList onChange={handleTabsChange}>
+                          <Tab label="Nutrition Plan" value="1" />
+                          <Tab label="Exercise Plan" value="2" />
+                        </TabList>
+                      </Box>
 
-                    {showAppointments && (
-                      <Grow
-                        in={showAppointments}
-                        style={{ transformOrigin: "0 0 0" }}
-                        {...(showAppointments ? { timeout: 1000 } : {})}
-                      >
-                        <List
-                          sx={{
-                            width: "auto",
-                            maxWidth: "100%",
-                            bgcolor: "background.paper",
-                            position: "relative",
-                            overflow: "auto",
-                            maxHeight: "auto",
-                            "& ul": { padding: 0 },
-                            mt: 0,
-                            display: "flex",
-                            flexDirection: "row",
-                          }}
-                          subheader={<li />}
-                        >
-                          {/* If there's no appiontments */}
-                          {traineeAppointments.length === 0 && (
-                            <ListItem sx={{ textAlign: "center" }} key="empty">
-                              <ListItemText>
-                                <Container
-                                  sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                  }}
-                                >
-                                  <small>You have no appointments</small>
-                                  <Button
-                                    href={`/trainers/${traineeInfo.trainerId._id}`}
-                                  >
-                                    Book a new Appointment
-                                  </Button>
-                                </Container>
-                              </ListItemText>
-                            </ListItem>
+                      {/* Tab for Nutrition Plan */}
+                      <TabPanel value="1">
+                        {traineeInfo.trainerId &&
+                          traineeInfo.nutritionPlan.length > 0 && (
+                            <Container
+                              maxWidth="sm"
+                              sx={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                                justifyContent: "center",
+                                marginY: 2,
+                              }}
+                            >
+                              <NutritionPlanList
+                                nutritionPlan={traineeInfo.nutritionPlan}
+                              />
+                            </Container>
                           )}
-                          {traineeAppointments.map((appointment, i) => {
-                            return (
-                              <Paper
-                                key={appointment._id}
-                                sx={{ margin: 1.5, marginBottom: 0 }}
-                                elevation={1}
-                              >
-                                <ListItem sx={{ textAlign: "center" }}>
-                                  <ListItemText>
-                                    <Typography>
-                                      {`${appointment.dayInfo} @ ${appointment.hour}:00`}
-                                    </Typography>
-                                    <Typography>
-                                      <small>with</small>
-                                      <Link
-                                        sx={{ textDecoration: "none" }}
-                                        href={`/trainers/${traineeInfo.trainerId._id}`}
-                                      >
-                                        <small>{` ${traineeInfo.trainerId.name.firstName}`}</small>
-                                      </Link>
-                                    </Typography>
-                                    <Button
-                                      sx={{
-                                        textAlign: "center",
-                                        color: "red",
-                                        marginTop: 1,
-                                      }}
-                                      startIcon={<EventBusyIcon />}
-                                      disabled={
-                                        new Date(appointment.dayInfo) >
-                                        twoDaysNow
-                                          ? false
-                                          : true
-                                      }
-                                      onClick={() =>
-                                        handleUnbook(
-                                          appointment._id,
-                                          traineeInfo.trainerId._id,
-                                          user._id
-                                        )
-                                      }
-                                    >
-                                      Unbook
-                                    </Button>
-                                  </ListItemText>
-                                </ListItem>
-                                <Divider orientation="vertical" flexItem />
-                              </Paper>
-                            )
-                          })}
-                        </List>
-                      </Grow>
-                    )}
-                  </Paper>
-                ) : (
-                  <></>
-                )}
-              </Container>
-            </Box>
+                      </TabPanel>
 
-            {/* Trainee Exercise and Nutrition Plan  */}
-            <Box
-              sx={{ width: "100%", typography: "body1", textAlign: "center" }}
-            >
-              <TabContext value={tabNumber}>
+                      {/* Tab for Exercise Plan */}
+                      <TabPanel value="2">
+                        {traineeInfo.trainerId &&
+                          traineeInfo.exercisePlan.length > 0 && (
+                            <Container
+                              maxWidth="sm"
+                              sx={{
+                                display: "flex",
+                                alignItems: "flex-start",
+                                justifyContent: "center",
+                                marginY: 2,
+                              }}
+                            >
+                              <ExercisePlanList
+                                exercisePlan={traineeInfo.exercisePlan}
+                              />
+                            </Container>
+                          )}
+                      </TabPanel>
+                    </TabContext>
+                  </Box>
+                </div>
+              </Grow>
+            )}
+
+          {/* For Trainer */}
+          {user &&
+            user.isTrainer &&
+            traineeInfo &&
+            traineeInfo.nutritionPlan && (
+              <Grow
+                in={user.isTrainer}
+                style={{ transformOrigin: "0 0 0" }}
+                {...(user.isTrainer ? { timeout: 1000 } : {})}
+              >
                 <Box
                   sx={{
-                    borderBottom: 1,
-                    borderColor: "divider",
-                    display: "flex",
-                    justifyContent: "center",
+                    width: "100%",
+                    typography: "body1",
+                    textAlign: "center",
                   }}
                 >
-                  <TabList onChange={handleTabsChange}>
-                    <Tab label="Nutrition Plan" value="1" />
-                    <Tab label="Exercise Plan" value="2" />
-                  </TabList>
-                </Box>
+                  <TabContext value={tabNumber} sx={{ padding: 0 }}>
+                    <Box
+                      sx={{
+                        borderBottom: 1,
+                        borderColor: "divider",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <TabList onChange={handleTabsChange}>
+                        <Tab label="Nutrition Plan" value="1" />
+                        <Tab label="Exercise Plan" value="2" />
+                      </TabList>
+                    </Box>
 
-                {/* Tab for Nutrition Plan */}
-                <TabPanel value="1">
-                  {traineeInfo.trainerId &&
-                    traineeInfo.nutritionPlan.length > 0 && (
+                    {/* Tab for Nutrition Plan */}
+                    <TabPanel value="1" sx={{ padding: 0 }}>
                       <Container
                         maxWidth="sm"
                         sx={{
@@ -299,19 +392,18 @@ function TraineeProfile() {
                           alignItems: "flex-start",
                           justifyContent: "center",
                           marginY: 2,
+                          padding: 0,
                         }}
                       >
                         <NutritionPlanList
                           nutritionPlan={traineeInfo.nutritionPlan}
+                          traineeId={traineeId}
                         />
                       </Container>
-                    )}
-                </TabPanel>
+                    </TabPanel>
 
-                {/* Tab for Exercise Plan */}
-                <TabPanel value="2">
-                  {traineeInfo.trainerId &&
-                    traineeInfo.exercisePlan.length > 0 && (
+                    {/* Tab for Exercise Plan */}
+                    <TabPanel value="2" sx={{ padding: 0 }}>
                       <Container
                         maxWidth="sm"
                         sx={{
@@ -319,78 +411,27 @@ function TraineeProfile() {
                           alignItems: "flex-start",
                           justifyContent: "center",
                           marginY: 2,
+                          padding: 0,
                         }}
                       >
                         <ExercisePlanList
                           exercisePlan={traineeInfo.exercisePlan}
+                          traineeId={traineeId}
                         />
                       </Container>
-                    )}
-                </TabPanel>
-              </TabContext>
-            </Box>
-          </>
-        )}
-
-      {/* For Trainer */}
-      {user && user.isTrainer && traineeInfo && traineeInfo.nutritionPlan && (
-        <Box sx={{ width: "100%", typography: "body1", textAlign: "center" }}>
-          <TabContext value={tabNumber} sx={{ padding: 0 }}>
-            <Box
-              sx={{
-                borderBottom: 1,
-                borderColor: "divider",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <TabList onChange={handleTabsChange}>
-                <Tab label="Nutrition Plan" value="1" />
-                <Tab label="Exercise Plan" value="2" />
-              </TabList>
-            </Box>
-
-            {/* Tab for Nutrition Plan */}
-            <TabPanel value="1" sx={{ padding: 0 }}>
-              <Container
-                maxWidth="sm"
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "center",
-                  marginY: 2,
-                  padding: 0,
-                }}
-              >
-                <NutritionPlanList
-                  nutritionPlan={traineeInfo.nutritionPlan}
-                  traineeId={traineeId}
-                />
-              </Container>
-            </TabPanel>
-
-            {/* Tab for Exercise Plan */}
-            <TabPanel value="2" sx={{ padding: 0 }}>
-              <Container
-                maxWidth="sm"
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "center",
-                  marginY: 2,
-                  padding: 0,
-                }}
-              >
-                <ExercisePlanList
-                  exercisePlan={traineeInfo.exercisePlan}
-                  traineeId={traineeId}
-                />
-              </Container>
-            </TabPanel>
-          </TabContext>
-        </Box>
+                    </TabPanel>
+                  </TabContext>
+                </Box>
+              </Grow>
+            )}
+        </div>
       )}
-    </div>
+      {error && (
+        <div style={{ height: "90vh", display: "flex", alignItems: "center" }}>
+          <ServerErrorAnimation />
+        </div>
+      )}
+    </>
   )
 }
 

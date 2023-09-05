@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { useParams } from 'react-router-dom'
 import trainerService from "../services/trainer.service"
-import { Box, Button, Container, Grid, Stack, Typography, useMediaQuery } from "@mui/material"
+import { Box, Button, Container, Grid, Grow, Stack, Typography, useMediaQuery } from "@mui/material"
 import { AuthContext } from "../context/auth.context"
 
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
@@ -63,152 +63,158 @@ function TrainerProfile() {
   const coachAnimWidth = isSmallScreen ? "10px" : "20%"
   
   return (
-    <div
-      style={{
-        textAlign: "center",
-        display: "flex",
-        alignItems: "center",
-        flexDirection: "column",
-      }}
+    <Grow
+      in={trainerInfo && user ? true : false}
+      style={{ transformOrigin: "0 0 0" }}
+      {...(trainerInfo && user ? { timeout: 1000 } : {})}
     >
-      <Container sx={{ width: `${coachAnimWidth}` }}>
-        <CoachAnimation />
-      </Container>
-      {/* For Trainee */}
-      {trainerInfo && user && !user.isTrainer && (
-        <>
-          <Box
-            sx={{
-              bgcolor: "background.paper",
-              pt: 0,
-              mt: 0,
-              pb: 6,
-            }}
-          >
-            <Container maxWidth="sm">
-              <Typography
-                component="h5"
-                variant="h6"
-                align="center"
-                color="text.primary"
-                gutterBottom
-              >
-                {trainerInfo.name.firstName} {trainerInfo.name.lastName}
-              </Typography>
-              <Typography
-                variant="p"
-                align="center"
-                color="text.secondary"
-                paragraph
-              >
-                {trainerInfo.personalInfo.bio}
-              </Typography>
-              <Typography>
-                {trainerInfo.trainees.includes(user._id) && (
-                  <small>I'm your actual trainer</small>
-                )}
-              </Typography>
-              {!trainerInfo.trainees.includes(user._id) && (
-                <Stack
-                  sx={{ pt: 4 }}
-                  direction="column"
-                  spacing={2}
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <Button
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    variant="contained"
-                    disabled={coachAssignError ? true : false}
-                    endIcon={<PersonAddIcon />}
-                    onClick={() => changeToNewCoach()}
-                  >
-                    Add me as your Coach!
-                  </Button>
-                  <Typography sx={{ color: "red", maxWidth: "60%" }}>
-                    {coachAssignError}
-                  </Typography>
-                </Stack>
-              )}
-            </Container>
-          </Box>
-
-          {user && trainerSchedule && trainerSchedule.schedule && (
-            <AppointmentsList
-              trainerSchedule={trainerSchedule}
-              trainerInfo={trainerInfo}
-            />
-          )}
-
-          {/* Appointment message */}
-          {appointmentStatus && (
-            <Grid
-              container
+      <div
+        style={{
+          textAlign: "center",
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <Container sx={{ width: `${coachAnimWidth}` }}>
+          <CoachAnimation />
+        </Container>
+        {/* For Trainee */}
+        {trainerInfo && user && !user.isTrainer && (
+          <>
+            <Box
               sx={{
-                color: "orange",
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-                justifyContent: "center",
-                textAlign: "justify",
+                bgcolor: "background.paper",
+                pt: 0,
+                mt: 0,
+                pb: 6,
               }}
             >
-              <ReportProblemOutlinedIcon />
-              <span>{appointmentStatus}</span>
-            </Grid>
-          )}
-        </>
-      )}
+              <Container maxWidth="sm">
+                <Typography
+                  component="h5"
+                  variant="h6"
+                  align="center"
+                  color="text.primary"
+                  gutterBottom
+                >
+                  {trainerInfo.name.firstName} {trainerInfo.name.lastName}
+                </Typography>
+                <Typography
+                  variant="p"
+                  align="center"
+                  color="text.secondary"
+                  paragraph
+                >
+                  {trainerInfo.personalInfo.bio}
+                </Typography>
+                <Typography>
+                  {trainerInfo.trainees.includes(user._id) && (
+                    <small>I'm your actual trainer</small>
+                  )}
+                </Typography>
+                {!trainerInfo.trainees.includes(user._id) && (
+                  <Stack
+                    sx={{ pt: 4 }}
+                    direction="column"
+                    spacing={2}
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Button
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      variant="contained"
+                      disabled={coachAssignError ? true : false}
+                      endIcon={<PersonAddIcon />}
+                      onClick={() => changeToNewCoach()}
+                    >
+                      Add me as your Coach!
+                    </Button>
+                    <Typography sx={{ color: "red", maxWidth: "60%" }}>
+                      {coachAssignError}
+                    </Typography>
+                  </Stack>
+                )}
+              </Container>
+            </Box>
 
-      {/* For Trainer */}
-      {trainerInfo && user && user._id === trainerInfo._id && (
-        <>
-          <Box
-            sx={{
-              bgcolor: "background.paper",
-              pt: 0,
-              pb: 0,
-            }}
-          >
-            <Container maxWidth="sm">
-              <Typography
-                component="h5"
-                variant="h6"
-                align="center"
-                color="text.primary"
-                gutterBottom
+            {user && trainerSchedule && trainerSchedule.schedule && (
+              <AppointmentsList
+                trainerSchedule={trainerSchedule}
+                trainerInfo={trainerInfo}
+              />
+            )}
+
+            {/* Appointment message */}
+            {appointmentStatus && (
+              <Grid
+                container
+                sx={{
+                  color: "orange",
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  textAlign: "justify",
+                }}
               >
-                Welcome <br /> {trainerInfo.name.firstName}{" "}
-                {trainerInfo.name.lastName}
-              </Typography>
-            </Container>
-          </Box>
+                <ReportProblemOutlinedIcon />
+                <span>{appointmentStatus}</span>
+              </Grid>
+            )}
+          </>
+        )}
 
-          <Box display={"flex"} flexWrap={"wrap"} justifyContent={"center"}>
-            {user &&
-              user.isTrainer &&
-              trainerSchedule &&
-              trainerSchedule.schedule && (
-                <NewAppointmentForm getTrainerSchedule={getTrainerSchedule} />
-              )}
+        {/* For Trainer */}
+        {trainerInfo && user && user._id === trainerInfo._id && (
+          <>
+            <Box
+              sx={{
+                bgcolor: "background.paper",
+                pt: 0,
+                pb: 0,
+              }}
+            >
+              <Container maxWidth="sm">
+                <Typography
+                  component="h5"
+                  variant="h6"
+                  align="center"
+                  color="text.primary"
+                  gutterBottom
+                >
+                  Welcome <br /> {trainerInfo.name.firstName}{" "}
+                  {trainerInfo.name.lastName}
+                </Typography>
+              </Container>
+            </Box>
 
-            {user &&
-              user.isTrainer &&
-              trainerSchedule &&
-              trainerSchedule.schedule && (
-                <AppointmentsList
-                  trainerSchedule={trainerSchedule}
-                  trainerInfo={trainerInfo}
-                />
-              )}
-          </Box>
-        </>
-      )}
-    </div>
+            <Box display={"flex"} flexWrap={"wrap"} justifyContent={"space-around"} width={'100%'}>
+              {user &&
+                user.isTrainer &&
+                trainerSchedule &&
+                trainerSchedule.schedule && (
+                  <NewAppointmentForm getTrainerSchedule={getTrainerSchedule} />
+                )}
+
+              {user &&
+                user.isTrainer &&
+                trainerSchedule &&
+                trainerSchedule.schedule && (
+                  <AppointmentsList
+                    trainerSchedule={trainerSchedule}
+                    trainerInfo={trainerInfo}
+                  />
+                )}
+            </Box>
+          </>
+        )}
+      </div>
+    </Grow>
   )
 }
 
