@@ -9,6 +9,7 @@ import TraineeProfile from './pages/TraineeProfile'
 import IsAnonymous from "./components/isAnonymous";
 import IsPrivate from "./components/isPrivate";
 import NotFound from "./pages/NotFound";
+import ExercisesPage from "./pages/ExercisesPage";
 
 function App() {
   return (
@@ -55,6 +56,15 @@ function App() {
           element={
             <IsPrivate>
               <TraineeProfile />
+            </IsPrivate>
+          }
+        />
+
+        <Route
+          path="/exercises"
+          element={
+            <IsPrivate>
+              <ExercisesPage />
             </IsPrivate>
           }
         />
