@@ -102,7 +102,7 @@ function NutritionPlanList(props) {
         .foods[0]
       setFoodQueryResult(response)
     } catch (error) {
-      console.log(error)
+      console.log(error.message)
       setFoodQueryError(error)
     }
   }
