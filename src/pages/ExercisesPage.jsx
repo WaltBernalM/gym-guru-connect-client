@@ -113,10 +113,29 @@ function ExercisesPage() {
               style={{ transformOrigin: "0 0 0" }}
               {...(isAvailable ? { timeout: 1000 } : {})}
             >
-              <Container sx={{ width: "40%", display: "flex" }}>
-                <ExerciseAnimation1 />
-                <ExerciseAnimation2 />
-              </Container>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  sx={{ width: "40%", display: "flex" }}
+                  align="center"
+                  justifyContent={"center"}
+                  component="h4"
+                  variant="h5"
+                  color="text.primary"
+                >
+                  Browse our exercises!
+                </Typography>
+                <Container sx={{ width: "40%", display: "flex" }}>
+                  <ExerciseAnimation1 />
+                  <ExerciseAnimation2 />
+                </Container>
+              </div>
             </Grow>
           )}
           <Fade in={allExercises ? true : false}>
