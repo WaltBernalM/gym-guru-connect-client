@@ -16,10 +16,13 @@ import { useNavigate } from "react-router-dom"
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt"
 import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined"
+import { filter } from "mathjs"
 
 function AppointmentsList(props) {
   const { trainerSchedule, trainerInfo } = props
   const { user } = useContext(AuthContext)
+
+  console.log(trainerSchedule)
   
   const [dateFilter, setDateFilter] = useState(null)
   const [filterMessage, setFilterMessage] = useState(null)
@@ -118,6 +121,7 @@ function AppointmentsList(props) {
       console.log(error.response.data.message)
     }
   }
+
   const filterAppointments = (dayInfo, isAvailable) => {
     const options = {
       timeZone: "America/Los_Angeles",
@@ -129,13 +133,22 @@ function AppointmentsList(props) {
     const date = new Date(dayInfo).toLocaleString("en-US", options)
     const today = new Date(currentDate)
 
-    if (new Date(date) < today.setDate(today.getDate() + 2)) {
-      return false
-    } else {
-      if (isAvailable) {
-        return true
-      } else {
+    if (!user.isTrainer) {
+      if (new Date(date) < today.setDate(today.getDate() + 2)) {
         return false
+      } else {
+        if (isAvailable) {
+          return true
+        } else {
+          return false
+        }
+      }
+    }
+    if (user.isTrainer) {
+      if (new Date(date) < today.setDate(today.getDate())) {
+        return false
+      } else {
+        return true
       }
     }
   }
@@ -271,15 +284,8 @@ function AppointmentsList(props) {
               {filtered.length === 0
                 ? "No appointments"
                 : filtered
-                    .filter((a) => {
-                      const dateInAppointment = new Date(
-                        a.dayInfo
-                      ).toLocaleString("en-US", options)
-                      if (user.isTrainer) {
-                        return dateInAppointment >= currentDate
-                          ? true
-                          : false
-                      } else if (!user.isTrainer) {
+                  .filter((a) => {
+                      if (user.isTrainer || !user.isTrainer) {
                         const { dayInfo, isAvailable } = a
                         return filterAppointments(dayInfo, isAvailable)
                       }
