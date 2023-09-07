@@ -106,7 +106,8 @@ function NutritionPlanList(props) {
       //   setFoodQueryError('Food details services is not available, please try again later.')
       // }
       setFoodQueryError(
-        "Food details services is not available, please try again later."
+        `Food details services are not available.
+        Please try again later.`
       )
     }
   }
