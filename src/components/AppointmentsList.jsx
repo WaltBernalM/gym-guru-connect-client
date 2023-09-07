@@ -1,4 +1,4 @@
-import { Button, Checkbox, Container, Fade, FormControlLabel, FormGroup, Grid, IconButton, List, ListItem, ListItemText, ListSubheader, Paper, Typography, useMediaQuery, } from "@mui/material"
+import { Button, Checkbox, Container, Fade, FormControlLabel, FormGroup, Grid, IconButton, List, ListItem, ListItemText, ListSubheader, Paper, Typography, useMediaQuery, Box} from "@mui/material"
 
 import EventBusyIcon from "@mui/icons-material/EventBusy"
 import PersonSearchIcon from "@mui/icons-material/PersonSearch"
@@ -115,9 +115,10 @@ function AppointmentsList(props) {
       setAppointmentStatus(response.data.message)
       setTimeout(() => navigate(`/trainee/${user._id}`), 1000)
     } catch (error) {
-      console.log(error.response.data.message)
+      setAppointmentStatus(error.response.data.message)
     }
   }
+
   const filterAppointments = (dayInfo, isAvailable) => {
     const options = {
       timeZone: "America/Los_Angeles",
@@ -129,13 +130,22 @@ function AppointmentsList(props) {
     const date = new Date(dayInfo).toLocaleString("en-US", options)
     const today = new Date(currentDate)
 
-    if (new Date(date) < today.setDate(today.getDate() + 2)) {
-      return false
-    } else {
-      if (isAvailable) {
-        return true
-      } else {
+    if (!user.isTrainer) {
+      if (new Date(date) < today.setDate(today.getDate() + 2)) {
         return false
+      } else {
+        if (isAvailable) {
+          return true
+        } else {
+          return false
+        }
+      }
+    }
+    if (user.isTrainer) {
+      if (new Date(date) < today.setDate(today.getDate())) {
+        return false
+      } else {
+        return true
       }
     }
   }
@@ -152,255 +162,282 @@ function AppointmentsList(props) {
   }
   
   return (
-    <>
-      {((!user.isTrainer && trainerInfo.trainees.includes(user._id)) ||
-        user.isTrainer) && (
-        <Paper
-          sx={{ minWidth: 350, display: "flex", justifyContent: "center" }}
-          elevation={5}
-        >
-          <List
-            sx={{
-              width: "90%",
-              bgcolor: "background.paper",
-              position: "relative",
-              overflow: "auto",
-              maxHeight: `${maxHeight}px`,
-              "& ul": { padding: 0, margin: 1 },
-              mt: 1,
-            }}
-            subheader={<li />}
-          >
-            <ul style={{ textAlign: "center" }}>
-              <ListSubheader sx={{ width: "auto" }}>
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <IconButton
-                    onClick={() => setFilterVisible(!filterVisible)}
-                    sx={{ marginRight: 1 }}
-                  >
-                    <FilterAltIcon />
-                  </IconButton>
-                  {!user.isTrainer && (
-                    <small>Only bookings +48h accepted</small>
-                  )}
-                  {user.isTrainer && (
-                    <small>Only bookings +24h can be removed</small>
-                  )}
-                </div>
-
-                {filterVisible && (
-                  <Fade in={filterVisible}>
-                    <Container
-                      sx={{
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        flexWrap: "wrap",
+        mb: 2
+      }}
+    >
+      {
+        <div>
+          {((!user.isTrainer && trainerInfo.trainees.includes(user._id)) ||
+            user.isTrainer) && (
+            <Paper
+              sx={{
+                minWidth: 350,
+                display: "flex",
+                justifyContent: "center",
+              }}
+              elevation={5}
+            >
+              <List
+                sx={{
+                  width: "90%",
+                  bgcolor: "background.paper",
+                  position: "relative",
+                  overflow: "auto",
+                  maxHeight: `${maxHeight}px`,
+                  "& ul": { padding: 0, margin: 1 },
+                  mt: 1,
+                }}
+                subheader={<li />}
+              >
+                <ul style={{ textAlign: "center" }}>
+                  <ListSubheader sx={{ width: "auto" }}>
+                    <div
+                      style={{
                         display: "flex",
-                        alignItems: "center",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        paddingBottom: 1,
+                        justifyContent: "space-between",
                       }}
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-around",
-                          width: "100%",
-                        }}
+                      <IconButton
+                        onClick={() => setFilterVisible(!filterVisible)}
+                        sx={{ marginRight: 1, marginBottom: 0.8 }}
                       >
-                        <DatePicker
-                          shouldDisableDate={shouldDisableDate}
-                          sx={{
-                            marginTop: 0,
-                            paddingBottom: 0,
-                            maxWidth: 180,
-                            paddingTop: 0,
-                          }}
-                          label={
-                            filterMessage ? (
-                              <span style={{ color: "red" }}>
-                                {filterMessage}
-                              </span>
-                            ) : (
-                              "Date Filter"
-                            )
-                          }
-                          slotProps={{ textField: { size: "small" } }}
-                          minDate={user.isTrainer
-                            ? dayjs(new Date())
-                            : dayjs(new Date()).set(
-                            "date",
-                            dayjs(new Date()).date() + 2
-                          )}
-                          onChange={(newValue) => handleFilter(newValue)}
-                          value={dateFilter}
-                          disabled={filterMessage ? true : false}
-                        />
-                        <IconButton
-                          onClick={() => {
-                            setDateFilter(null)
-                            setFiltered(trainerSchedule.schedule)
-                          }}
-                          disabled={filterMessage ? true : false}
-                        >
-                          <CachedOutlinedIcon />
-                        </IconButton>
-                      </div>
-                      {user.isTrainer && (
-                        <FormGroup sx={{ marginTop: 1 }}>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                disabled={filterMessage ? true : false}
-                                checked={seeOnlyBooked}
-                                onChange={handleCheckbox}
-                                sx={{ margin: 0, padding: 0, marginLeft: 2 }}
-                              />
-                            }
-                            label={<small>booked only</small>}
-                          />
-                        </FormGroup>
+                        <FilterAltIcon />
+                      </IconButton>
+                      {!user.isTrainer && (
+                        <small>Only bookings +48h accepted</small>
                       )}
-                    </Container>
-                  </Fade>
-                )}
-              </ListSubheader>
+                      {user.isTrainer && (
+                        <small>Only bookings +24h can be removed</small>
+                      )}
+                    </div>
 
-              {/* Render of list items */}
-              {filtered.length === 0
-                ? "No appointments"
-                : filtered
-                    .filter((a) => {
-                      const dateInAppointment = new Date(
-                        a.dayInfo
-                      ).toLocaleString("en-US", options)
-                      if (user.isTrainer) {
-                        return dateInAppointment >= currentDate
-                          ? true
-                          : false
-                      } else if (!user.isTrainer) {
-                        const { dayInfo, isAvailable } = a
-                        return filterAppointments(dayInfo, isAvailable)
-                      }
-                      return <></>
-                    })
-                    .map((appointment) => {
-                      return (
-                        <Paper key={appointment._id} sx={{ marginY: 1 }}>
-                          <ListItem disableGutters>
-                            {user.isTrainer && (
-                              <ListItemText
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "space-around",
-                                }}
-                              >
-                                {`${appointment.dayInfo} @ ${appointment.hour}:00`}
-                                {appointment.traineeId ? (
-                                  <Button
-                                    sx={{ ml: 2 }}
-                                    variant="contained"
-                                    startIcon={<PersonSearchIcon />}
-                                    color="info"
-                                    href={`/trainee/${appointment.traineeId._id}`}
-                                  >
-                                    {`${appointment.traineeId.name.firstName}`}
-                                  </Button>
+                    {filterVisible && (
+                      <Fade in={filterVisible}>
+                        <Container
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            paddingBottom: 1,
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-around",
+                              width: "100%",
+                            }}
+                          >
+                            <DatePicker
+                              shouldDisableDate={shouldDisableDate}
+                              sx={{
+                                marginTop: 0,
+                                paddingBottom: 0,
+                                maxWidth: 180,
+                                paddingTop: 0,
+                              }}
+                              label={
+                                filterMessage ? (
+                                  <span style={{ color: "red" }}>
+                                    {filterMessage}
+                                  </span>
                                 ) : (
-                                  <Button
-                                    sx={{ ml: 2 }}
-                                    startIcon={<EventBusyIcon />}
-                                    color="error"
-                                    disabled={
-                                      appointment.dayInfo > todayPlus24
-                                        ? false
-                                        : true
-                                    }
-                                    onClick={() =>
-                                      hanldeDelete(appointment._id, user._id)
-                                    }
-                                  >
-                                    Remove
-                                  </Button>
-                                )}
-                              </ListItemText>
-                            )}
-                            {!user.isTrainer && (
-                              <ListItemText
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "space-around",
-                                }}
-                              >
-                                <Typography>
-                                  {appointment.dayInfo} @ {appointment.hour}
-                                  {":00"}
-                                </Typography>
-                                {trainerInfo.trainees.includes(user._id) ? (
-                                  <Button
-                                    color="success"
-                                    variant="contained"
-                                    onClick={() =>
-                                      handleBookIn(
-                                        appointment._id,
-                                        trainerInfo._id,
-                                        user._id
-                                      )
-                                    }
+                                  "Date Filter"
+                                )
+                              }
+                              slotProps={{ textField: { size: "small" } }}
+                              minDate={
+                                user.isTrainer
+                                  ? dayjs(new Date())
+                                  : dayjs(new Date()).set(
+                                      "date",
+                                      dayjs(new Date()).date() + 2
+                                    )
+                              }
+                              onChange={(newValue) => handleFilter(newValue)}
+                              value={dateFilter}
+                              disabled={filterMessage ? true : false}
+                            />
+                            <IconButton
+                              onClick={() => {
+                                setDateFilter(null)
+                                setFiltered(trainerSchedule.schedule)
+                              }}
+                              disabled={filterMessage ? true : false}
+                              sx={{marginLeft: 1}}
+                            >
+                              <CachedOutlinedIcon />
+                            </IconButton>
+                          </div>
+                          {user.isTrainer && (
+                            <FormGroup sx={{ marginTop: 1 }}>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
                                     disabled={filterMessage ? true : false}
-                                    startIcon={<EventAvailableIcon />}
+                                    checked={seeOnlyBooked}
+                                    onChange={handleCheckbox}
+                                    sx={{
+                                      margin: 0,
+                                      padding: 0,
+                                      marginLeft: 2,
+                                    }}
+                                  />
+                                }
+                                label={<small>booked only</small>}
+                              />
+                            </FormGroup>
+                          )}
+                        </Container>
+                      </Fade>
+                    )}
+                  </ListSubheader>
+
+                  {/* Render of list items */}
+                  {filtered.length === 0
+                    ? "No appointments"
+                    : filtered
+                        .filter((a) => {
+                          if (user.isTrainer || !user.isTrainer) {
+                            const { dayInfo, isAvailable } = a
+                            return filterAppointments(dayInfo, isAvailable)
+                          }
+                          return <></>
+                        })
+                        .map((appointment) => {
+                          return (
+                            <Paper key={appointment._id} sx={{ marginY: 1 }}>
+                              <ListItem disableGutters>
+                                {user.isTrainer && (
+                                  <ListItemText
+                                    sx={{
+                                      display: "flex",
+                                      justifyContent: "space-around",
+                                    }}
                                   >
-                                    {" "}
-                                    Book IN
-                                  </Button>
-                                ) : (
-                                  <LockClockIcon />
+                                    {`${appointment.dayInfo} @ ${appointment.hour}:00`}
+                                    {appointment.traineeId ? (
+                                      <Button
+                                        sx={{ ml: 2 }}
+                                        variant="contained"
+                                        startIcon={<PersonSearchIcon />}
+                                        color="info"
+                                        href={`/trainee/${appointment.traineeId._id}`}
+                                      >
+                                        {`${appointment.traineeId.name.firstName}`}
+                                      </Button>
+                                    ) : (
+                                      <Button
+                                        sx={{ ml: 2 }}
+                                        startIcon={<EventBusyIcon />}
+                                        color="error"
+                                        disabled={
+                                          appointment.dayInfo > todayPlus24
+                                            ? false
+                                            : true
+                                        }
+                                        onClick={() =>
+                                          hanldeDelete(
+                                            appointment._id,
+                                            user._id
+                                          )
+                                        }
+                                      >
+                                        Remove
+                                      </Button>
+                                    )}
+                                  </ListItemText>
                                 )}
-                              </ListItemText>
-                            )}
-                          </ListItem>
-                        </Paper>
-                      )
-                    })}
-            </ul>
-          </List>
-        </Paper>
-      )}
-      {deletionError && (
-        <Grid
-          container
-          sx={{
-            color: "red",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "justify",
-            mt: 1,
-          }}
-        >
-          <ReportProblemOutlinedIcon sx={{ mr: 1 }} />
-          <span>{deletionError}</span>
-        </Grid>
-      )}
-      {/* Appointment message */}
-      {appointmentStatus && (
-        <Grid
-          container
-          sx={{
-            color: "green",
-            display: "flex",
-            alignItems: "center",
-            flexDirection: "column",
-            justifyContent: "center",
-            textAlign: "justify",
-            mt: 1,
-          }}
-        >
-          <span>{appointmentStatus}</span>
-        </Grid>
-      )}
-    </>
+                                {!user.isTrainer && (
+                                  <ListItemText
+                                    sx={{
+                                      display: "flex",
+                                      justifyContent: "space-around",
+                                    }}
+                                  >
+                                    <Typography>
+                                      {appointment.dayInfo} @{" "}
+                                      {appointment.hour}
+                                      {":00"}
+                                    </Typography>
+                                    {trainerInfo.trainees.includes(
+                                      user._id
+                                    ) ? (
+                                      <Button
+                                        color="success"
+                                        variant="contained"
+                                        onClick={() =>
+                                          handleBookIn(
+                                            appointment._id,
+                                            trainerInfo._id,
+                                            user._id
+                                          )
+                                        }
+                                        disabled={
+                                          filterMessage ? true : false
+                                        }
+                                        startIcon={<EventAvailableIcon />}
+                                      >
+                                        {" "}
+                                        Book IN
+                                      </Button>
+                                    ) : (
+                                      <LockClockIcon />
+                                    )}
+                                  </ListItemText>
+                                )}
+                              </ListItem>
+                            </Paper>
+                          )
+                        })}
+                </ul>
+              </List>
+              {deletionError && (
+                <Grid
+                  container
+                  sx={{
+                    color: "red",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "justify",
+                    mt: 1,
+                  }}
+                >
+                  <ReportProblemOutlinedIcon sx={{ mr: 1 }} />
+                  <span>{deletionError}</span>
+                </Grid>
+              )}
+              {/* Appointment message */}
+              {appointmentStatus && (
+                <Grid
+                  container
+                  sx={{
+                    color: "green",
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    textAlign: "justify",
+                    mt: 1,
+                  }}
+                >
+                  <span>{appointmentStatus}</span>
+                </Grid>
+              )}
+            </Paper>
+          )}
+        </div>
+      }
+    </Box>
   )
 }
 
