@@ -102,7 +102,9 @@ function NutritionPlanList(props) {
         .foods[0]
       setFoodQueryResult(response)
     } catch (error) {
-      console.log(error.message)
+      if (error.message === 'Network Error') {
+        setFoodQueryError('Food details services is not available, please try again later.')
+      }
       setFoodQueryError(error)
     }
   }
