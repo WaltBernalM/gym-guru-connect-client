@@ -248,7 +248,7 @@ function NutritionPlanList(props) {
                             sx={{ color: "red" }}
                             primary={`${
                               foodQueryError === "AxiosError: Network Error"
-                              ? "Nutrition server not available, try later"
+                              ? "Food details server not available, please try later."
                               : foodQueryError
                             }`}
                           />
