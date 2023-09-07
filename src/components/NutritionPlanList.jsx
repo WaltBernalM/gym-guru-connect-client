@@ -102,6 +102,7 @@ function NutritionPlanList(props) {
         .foods[0]
       setFoodQueryResult(response)
     } catch (error) {
+      console.log(error)
       setFoodQueryError(error)
     }
   }
@@ -246,11 +247,7 @@ function NutritionPlanList(props) {
                         <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                           <ListItemText
                             sx={{ color: "red" }}
-                            primary={`${
-                              foodQueryError === "AxiosError: Network Error"
-                              ? "Food details server not available, please try later."
-                              : foodQueryError
-                            }`}
+                            primary={`${foodQueryError}`}
                           />
                         </ListItem>
                       )}
