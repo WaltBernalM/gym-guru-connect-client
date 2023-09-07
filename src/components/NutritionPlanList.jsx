@@ -228,7 +228,7 @@ function NutritionPlanList(props) {
                   subheader={<li />}
                 >
                   <li>
-                    <ul style={{padding: 0}}>
+                    <ul style={{ padding: 0 }}>
                       <ListSubheader
                         size="small"
                         sx={{
@@ -246,7 +246,11 @@ function NutritionPlanList(props) {
                         <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
                           <ListItemText
                             sx={{ color: "red" }}
-                            primary={`${foodQueryError}`}
+                            primary={`${
+                              foodQueryError === "AxiosError: Network Error"
+                              ? "Nutrition server not available, try later"
+                              : foodQueryError
+                            }`}
                           />
                         </ListItem>
                       )}
@@ -353,15 +357,17 @@ function NutritionPlanList(props) {
                       <em>None</em>
                     </MenuItem>
                     {nutritionPlan.map((portion) => {
-                      return ( portion && (
-                        <MenuItem
-                          value={portion._id}
-                          key={portion._id}
-                          size="small"
-                        >
-                          Portion #{portion.portionNumber}
-                        </MenuItem>
-                      ))
+                      return (
+                        portion && (
+                          <MenuItem
+                            value={portion._id}
+                            key={portion._id}
+                            size="small"
+                          >
+                            Portion #{portion.portionNumber}
+                          </MenuItem>
+                        )
+                      )
                     })}
                   </Select>
                 </FormControl>
