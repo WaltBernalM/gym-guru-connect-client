@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react"
+import { Fragment, useContext, useEffect, useState } from "react"
 import { useParams } from 'react-router-dom'
 import trainerService from "../services/trainer.service"
-import { Box, Button, Container, Grid, Grow, Stack, Typography, useMediaQuery } from "@mui/material"
+import { Box, Button, ButtonGroup, Container, Grid, Grow, IconButton, Slide, Stack, Typography, useMediaQuery } from "@mui/material"
 import { AuthContext } from "../context/auth.context"
 
 import PersonAddIcon from "@mui/icons-material/PersonAdd"
@@ -11,6 +11,10 @@ import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined
 import NewAppointmentForm from "../components/NewAppointmentForm"
 import AppointmentsList from "../components/AppointmentsList"
 import CoachAnimation from "../components/CoachAnimation"
+import TraineesList from "../components/TraineesList"
+import ScheduleAnimation from "../components/ScheduleAnimation"
+import TraineesAnimation from "../components/TraineesAnimation"
+import NewAppointmentAnimation from "../components/NewAppointmentAnimation"
 
 function TrainerProfile() {
   const [trainerInfo, setTrainerInfo] = useState(null)
@@ -19,6 +23,10 @@ function TrainerProfile() {
   const { trainerId } = useParams()
   const { user } = useContext(AuthContext)
   const [coachAssignError, setCoachAssignError] = useState(null)
+
+  const [seeTrainees, setSeeTrainees] = useState(false)
+  const [seeAppointments, setSeeAppointments] = useState(false)
+  const [seeAddForm, setSeeAddForm] = useState(false)
 
   const getTrainer = async () => {
     try {
@@ -61,6 +69,24 @@ function TrainerProfile() {
 
   const isSmallScreen = useMediaQuery("(max-width:600px)")
   const coachAnimWidth = isSmallScreen ? "10px" : "20%"
+
+  const switchButtonsController = (section) => {
+    if (section === 'addAppointmentForm') {
+      setSeeTrainees(false)
+      setSeeAppointments(false)
+      setTimeout(() => {setSeeAddForm(!seeAddForm)},500)
+    } else if (section === 'traineesList') { 
+      setSeeAddForm(false)
+      setSeeAppointments(false)
+      setTimeout(() => {setSeeTrainees(!seeTrainees)}, 500) 
+    } else if (section === 'scheduleList') {
+      setSeeAddForm(false)
+      setSeeTrainees(false)
+      setTimeout(() => {
+        setSeeAppointments(!seeAppointments)
+      }, user.isTrainer ? 500 : 0)
+    }
+  }
   
   return (
     <Grow
@@ -76,77 +102,181 @@ function TrainerProfile() {
           flexDirection: "column",
         }}
       >
-        <Container sx={{ width: `${coachAnimWidth}` }}>
-          <CoachAnimation />
-        </Container>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Container sx={{ width: `${coachAnimWidth}`, margin: 0 }}>
+            <CoachAnimation />
+          </Container>
+          {!isSmallScreen &&
+            trainerInfo &&
+            user &&
+            user._id === trainerInfo._id && (
+              <Typography
+                component="h4"
+                variant="h5"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                Welcome <br /> {trainerInfo.name.firstName}{" "}
+                {trainerInfo.name.lastName}
+              </Typography>
+            )}
+          {!isSmallScreen && user && !user.isTrainer && trainerInfo && (
+            <Container sx={{ width: "30%", margin: 0, padding: 0 }}>
+              <Typography
+                component="h5"
+                variant="h6"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                {trainerInfo.name.firstName} {trainerInfo.name.lastName}
+              </Typography>
+              <Typography
+                variant="p"
+                align="center"
+                color="text.secondary"
+                paragraph
+                paddingBottom={0}
+                marginBottom={0}
+              >
+                {trainerInfo.personalInfo.bio}
+              </Typography>
+              <Typography>
+                {trainerInfo.trainees.includes(user._id) && (
+                  <small>I'm your actual trainer</small>
+                )}
+              </Typography>
+              {!trainerInfo.trainees.includes(user._id) && (
+                <Stack
+                  sx={{ pt: 4 }}
+                  direction="column"
+                  spacing={2}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Button
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    variant="contained"
+                    disabled={coachAssignError ? true : false}
+                    endIcon={<PersonAddIcon />}
+                    onClick={() => changeToNewCoach()}
+                  >
+                    Add me as your Coach!
+                  </Button>
+                  <Typography sx={{ color: "red", maxWidth: "60%" }}>
+                    {coachAssignError}
+                  </Typography>
+                </Stack>
+              )}
+            </Container>
+          )}
+        </div>
         {/* For Trainee */}
         {trainerInfo && user && !user.isTrainer && (
-          <>
+          <Fragment>
             <Box
               sx={{
                 bgcolor: "background.paper",
                 pt: 0,
                 mt: 0,
-                pb: 6,
+                pb: 0,
               }}
             >
-              <Container maxWidth="sm">
-                <Typography
-                  component="h5"
-                  variant="h6"
-                  align="center"
-                  color="text.primary"
-                  gutterBottom
-                >
-                  {trainerInfo.name.firstName} {trainerInfo.name.lastName}
-                </Typography>
-                <Typography
-                  variant="p"
-                  align="center"
-                  color="text.secondary"
-                  paragraph
-                >
-                  {trainerInfo.personalInfo.bio}
-                </Typography>
-                <Typography>
-                  {trainerInfo.trainees.includes(user._id) && (
-                    <small>I'm your actual trainer</small>
-                  )}
-                </Typography>
-                {!trainerInfo.trainees.includes(user._id) && (
-                  <Stack
-                    sx={{ pt: 4 }}
-                    direction="column"
-                    spacing={2}
-                    justifyContent="center"
-                    alignItems="center"
+              {isSmallScreen && (
+                <Container maxWidth="sm">
+                  <Typography
+                    component="h5"
+                    variant="h6"
+                    align="center"
+                    color="text.primary"
                   >
-                    <Button
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      variant="contained"
-                      disabled={coachAssignError ? true : false}
-                      endIcon={<PersonAddIcon />}
-                      onClick={() => changeToNewCoach()}
+                    {trainerInfo.name.firstName} {trainerInfo.name.lastName}
+                  </Typography>
+                  <Typography
+                    variant="p"
+                    align="center"
+                    color="text.secondary"
+                    paragraph
+                    paddingBottom={0}
+                    marginBottom={0}
+                  >
+                    {trainerInfo.personalInfo.bio}
+                  </Typography>
+                  <Typography>
+                    {trainerInfo.trainees.includes(user._id) && (
+                      <small>I'm your actual trainer</small>
+                    )}
+                  </Typography>
+                  {!trainerInfo.trainees.includes(user._id) && (
+                    <Stack
+                      sx={{ pt: 4 }}
+                      direction="column"
+                      spacing={2}
+                      justifyContent="center"
+                      alignItems="center"
                     >
-                      Add me as your Coach!
-                    </Button>
-                    <Typography sx={{ color: "red", maxWidth: "60%" }}>
-                      {coachAssignError}
-                    </Typography>
-                  </Stack>
-                )}
-              </Container>
+                      <Button
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        variant="contained"
+                        disabled={coachAssignError ? true : false}
+                        endIcon={<PersonAddIcon />}
+                        onClick={() => changeToNewCoach()}
+                      >
+                        Add me as your Coach!
+                      </Button>
+                      <Typography sx={{ color: "red", maxWidth: "60%" }}>
+                        {coachAssignError}
+                      </Typography>
+                    </Stack>
+                  )}
+                </Container>
+              )}
             </Box>
 
+            {trainerInfo && trainerInfo.trainees.includes(user._id) && (
+              <Box>
+                <Container
+                  sx={{ width: 130, margin: 0, padding: 0, marginBottom: 0, paddingBottom: 1 }}
+                >
+                  <IconButton
+                    onClick={() => switchButtonsController("scheduleList")}
+                  >
+                    <ScheduleAnimation />
+                  </IconButton>
+                </Container>
+              </Box>
+            )}
+
             {user && trainerSchedule && trainerSchedule.schedule && (
-              <AppointmentsList
-                trainerSchedule={trainerSchedule}
-                trainerInfo={trainerInfo}
-              />
+              <Slide
+                direction="up"
+                in={seeAppointments}
+                mountOnEnter
+                unmountOnExit
+              >
+                <div style={{ width: "auto" }}>
+                  <AppointmentsList
+                    trainerSchedule={trainerSchedule}
+                    trainerInfo={trainerInfo}
+                  />
+                </div>
+              </Slide>
             )}
 
             {/* Appointment message */}
@@ -166,12 +296,13 @@ function TrainerProfile() {
                 <span>{appointmentStatus}</span>
               </Grid>
             )}
-          </>
+          </Fragment>
         )}
 
         {/* For Trainer */}
         {trainerInfo && user && user._id === trainerInfo._id && (
-          <>
+          <Fragment>
+            {/* Welcome message */}
             <Box
               sx={{
                 bgcolor: "background.paper",
@@ -180,38 +311,107 @@ function TrainerProfile() {
               }}
             >
               <Container maxWidth="sm">
-                <Typography
-                  component="h5"
-                  variant="h6"
-                  align="center"
-                  color="text.primary"
-                  gutterBottom
-                >
-                  Welcome <br /> {trainerInfo.name.firstName}{" "}
-                  {trainerInfo.name.lastName}
-                </Typography>
+                {isSmallScreen && (
+                  <Typography
+                    component="h5"
+                    variant="h6"
+                    align="center"
+                    color="text.primary"
+                    gutterBottom
+                  >
+                    Welcome <br /> {trainerInfo.name.firstName}{" "}
+                    {trainerInfo.name.lastName}
+                  </Typography>
+                )}
               </Container>
             </Box>
 
-            <Box display={"flex"} flexWrap={"wrap"} justifyContent={"space-around"} width={'100%'}>
-              {user &&
-                user.isTrainer &&
-                trainerSchedule &&
-                trainerSchedule.schedule && (
-                  <NewAppointmentForm getTrainerSchedule={getTrainerSchedule} />
-                )}
+            {/* Buttons */}
+            <Box>
+              <ButtonGroup>
+                <Container
+                  sx={{ width: 130, margin: 0, padding: 0, marginBottom: 1 }}
+                >
+                  <IconButton
+                    onClick={() =>
+                      switchButtonsController("addAppointmentForm")
+                    }
+                  >
+                    <NewAppointmentAnimation />
+                  </IconButton>
+                </Container>
+                <Container
+                  sx={{ width: 130, margin: 0, padding: 0, marginBottom: 1 }}
+                >
+                  <IconButton
+                    onClick={() => switchButtonsController("traineesList")}
+                  >
+                    <TraineesAnimation />
+                  </IconButton>
+                </Container>
+                <Container
+                  sx={{ width: 130, margin: 0, padding: 0, marginBottom: 1 }}
+                >
+                  <IconButton
+                    onClick={() => switchButtonsController("scheduleList")}
+                  >
+                    <ScheduleAnimation />
+                  </IconButton>
+                </Container>
+              </ButtonGroup>
+            </Box>
 
+            <Box
+              display={"flex"}
+              flexWrap={"wrap"}
+              justifyContent={"space-around"}
+              width={"100%"}
+            >
               {user &&
                 user.isTrainer &&
                 trainerSchedule &&
                 trainerSchedule.schedule && (
-                  <AppointmentsList
-                    trainerSchedule={trainerSchedule}
-                    trainerInfo={trainerInfo}
-                  />
+                  <div style={{ width: "auto" }}>
+                    <Slide
+                      direction="up"
+                      in={seeAddForm}
+                      mountOnEnter
+                      unmountOnExit
+                    >
+                      <div style={{ width: "auto" }}>
+                        <NewAppointmentForm
+                          getTrainerSchedule={getTrainerSchedule}
+                        />
+                      </div>
+                    </Slide>
+
+                    <Slide
+                      direction="up"
+                      in={seeTrainees}
+                      mountOnEnter
+                      unmountOnExit
+                    >
+                      <div style={{ width: "auto" }}>
+                        <TraineesList trainees={trainerInfo.trainees} />
+                      </div>
+                    </Slide>
+                    <Slide
+                      direction="up"
+                      in={seeAppointments}
+                      mountOnEnter
+                      unmountOnExit
+                    >
+                      <div style={{ width: "auto" }}>
+                        <AppointmentsList
+                          trainerSchedule={trainerSchedule}
+                          trainerInfo={trainerInfo}
+                        />
+                      </div>
+                    </Slide>
+                  </div>
                 )}
             </Box>
-          </>
+          </Fragment>
         )}
       </div>
     </Grow>
