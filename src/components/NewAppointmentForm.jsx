@@ -7,7 +7,6 @@ import { useContext, useState } from "react"
 import { AuthContext } from "../context/auth.context"
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
 import appointmentService from "../services/appointment.service"
-import NewAppointmentAnimation from "./NewAppointmentAnimation"
 
 const initialHours = [dayjs("2022-04-07T07:00"), dayjs("2022-04-17T19:00")]
 const initialDay = dayjs().add(48, "hour")
@@ -19,7 +18,6 @@ function NewAppointmentForm(props) {
   const [hourRange, setHourRange] = useState(() => initialHours)
   const [date, setDate] = useState(initialDay)
   const [appointmentError, setAppointmentError] = useState(null)
-  const [isVisible, setIsVisible] = useState(false)
 
   const handleCreation = async (trainerId) => {
     try {
@@ -65,95 +63,79 @@ function NewAppointmentForm(props) {
         pb: 0,
         mb: 2,
         mt: 0,
-        // border: "6px dotted purple",
-        // borderRadius: 10,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         flexWrap: "wrap",
       }}
     >
-      <Container sx={{ width: 130, margin: 0, padding: 0, marginBottom: 1 }}>
-        <IconButton onClick={() => setIsVisible(!isVisible)}>
-          <NewAppointmentAnimation />
-        </IconButton>
-      </Container>
-
-      {isVisible && (
-        <Grow
-          in={isVisible}
-          style={{ transformOrigin: "0 0 0" }}
-          {...(isVisible ? { timeout: 1000 } : {})}
+      <Paper
+        sx={{ textAlign: "center", paddingBottom: 1, marginX: 3 }}
+        elevation={5}
+      >
+        <Typography
+          component="h5"
+          variant="h6"
+          align="center"
+          color="text.primary"
+          gutterBottom
+          sx={{ maxWidth: "100%" }}
+          mt={1}
+          mb={1}
         >
-          <Paper
-            sx={{ textAlign: "center", paddingBottom: 1, marginX: 3 }}
-            elevation={5}
+          Create a New Consult Window
+        </Typography>
+        <Container maxWidth="sm">
+          <DatePicker
+            label={"month and day"}
+            sx={{
+              maxWidth: 200,
+              width: "44%",
+              padding: 0,
+              margin: 0,
+              marginRight: 0.4,
+            }}
+            views={["month", "day"]}
+            value={date}
+            onChange={(newValue) => setDate(newValue)}
+          />
+          <SingleInputTimeRangeField
+            label="Hour Range"
+            value={hourRange}
+            onChange={(newValue) => setHourRange(newValue)}
+            minTime={dayjs("T07:00")}
+            minutesStep={60}
+            ampm={false}
+            sx={{ maxWidth: 130, textAlign: "center" }}
+          />
+          <IconButton onClick={() => handleCreation(user._id)}>
+            <AddBoxIcon fontSize="large" color="info" />
+          </IconButton>
+        </Container>
+        {appointmentError && (
+          <Grow
+            in={appointmentError}
+            style={{ transformOrigin: "0 0 0" }}
+            {...(appointmentError ? { timeout: 1000 } : {})}
           >
-            <Typography
-              component="h5"
-              variant="h6"
-              align="center"
-              color="text.primary"
-              gutterBottom
-              sx={{ maxWidth: "100%" }}
-              mt={1}
-              mb={1}
+            <Grid
+              container
+              sx={{
+                color: "red",
+                display: "flex",
+                alignItems: "center",
+                // flexDirection: "column",
+                justifyContent: "center",
+                textAlign: "justify",
+                mt: 1,
+              }}
             >
-              Create a New Consult Window
-            </Typography>
-            <Container maxWidth="sm">
-              <DatePicker
-                label={"month and day"}
-                sx={{
-                  maxWidth: 200,
-                  width: "44%",
-                  padding: 0,
-                  margin: 0,
-                  marginRight: 0.4,
-                }}
-                views={["month", "day"]}
-                value={date}
-                onChange={(newValue) => setDate(newValue)}
-              />
-              <SingleInputTimeRangeField
-                label="Hour Range"
-                value={hourRange}
-                onChange={(newValue) => setHourRange(newValue)}
-                minTime={dayjs("T07:00")}
-                minutesStep={60}
-                ampm={false}
-                sx={{ maxWidth: 130, textAlign: "center" }}
-              />
-              <IconButton onClick={() => handleCreation(user._id)}>
-                <AddBoxIcon fontSize="large" color="info" />
-              </IconButton>
-            </Container>
-            {appointmentError && (
-              <Grow
-                in={appointmentError}
-                style={{ transformOrigin: "0 0 0" }}
-                {...(appointmentError ? { timeout: 1000 } : {})}
-              >
-                <Grid
-                  container
-                  sx={{
-                    color: "red",
-                    display: "flex",
-                    alignItems: "center",
-                    // flexDirection: "column",
-                    justifyContent: "center",
-                    textAlign: "justify",
-                    mt: 1,
-                  }}
-                >
-                  <ReportProblemOutlinedIcon sx={{ mr: 1 }} />
-                  <small>{appointmentError}</small>
-                </Grid>
-              </Grow>
-            )}
-          </Paper>
-        </Grow>
-      )}
+              <ReportProblemOutlinedIcon sx={{ mr: 1 }} />
+              <small>{appointmentError}</small>
+            </Grid>
+          </Grow>
+        )}
+      </Paper>
     </Box>
   )
 }
