@@ -21,22 +21,24 @@ function TraineeProfile() {
 
   const [traineeInfo, setTraineeInfo] = useState(null)
   const [traineeAppointments, setTraineeAppointments] = useState(null)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(false)
 
   const [tabNumber, setTabNumber] = useState("1")
   const [showAppointments, setShowAppointments] = useState(false)
 
   const getTraineeData = async () => {
     try {
+      setError(false)
       const traineeFromDB = await traineeService.getTrainee(traineeId)
       setTraineeInfo(traineeFromDB.data)
     } catch (error) {
-      setError(error.response.data.message)
+      setError(true)
     }
   }
 
   const getTraineeAppointments = async () => { 
     try {
+      setError(false)
       if (user && !user.isTrainer){
       const traineeAppointmentsFromDB = (
         await appointmentService.getAllAppointmentsOfTrainee(traineeId)
@@ -49,7 +51,7 @@ function TraineeProfile() {
       })
       setTraineeAppointments(traineeAppointmentsFromDB)}
     } catch (error) {
-      setError(error.response.data.message)
+      setError(true)
     }
   }
 
@@ -61,10 +63,11 @@ function TraineeProfile() {
 
   const handleUnbook = async (appointmentId, trainerId, traineeId) => {
     try {
+      setError(false)
       await appointmentService.traineeRemoveAppointment(appointmentId, trainerId, traineeId)
       getTraineeAppointments()
     } catch (error) {
-      console.log(error.response.data.message)
+      setError(true)
     }
   }
 
@@ -307,7 +310,7 @@ function TraineeProfile() {
                       </Box>
 
                       {/* Tab for Nutrition Plan */}
-                      <TabPanel value="1">
+                      <TabPanel value="1" sx={{ paddingX: 0 }}>
                         {traineeInfo.trainerId &&
                           traineeInfo.nutritionPlan.length > 0 && (
                             <Container
@@ -327,7 +330,7 @@ function TraineeProfile() {
                       </TabPanel>
 
                       {/* Tab for Exercise Plan */}
-                      <TabPanel value="2">
+                      <TabPanel value="2" sx={{ paddingX: 0 }}>
                         {traineeInfo.trainerId &&
                           traineeInfo.exercisePlan.length > 0 && (
                             <Container
