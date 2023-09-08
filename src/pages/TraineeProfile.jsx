@@ -364,67 +364,96 @@ function TraineeProfile() {
                 style={{ transformOrigin: "0 0 0" }}
                 {...(user.isTrainer ? { timeout: 1000 } : {})}
               >
-                <Box
-                  sx={{
-                    width: "100%",
-                    typography: "body1",
-                    textAlign: "center",
-                  }}
-                >
-                  <TabContext value={tabNumber} sx={{ padding: 0 }}>
-                    <Box
+                <div>
+                  <Box
+                    sx={{
+                      bgcolor: "background.paper",
+                      pt: 1,
+                      pb: 0,
+                    }}
+                  >
+                    <Container
+                      maxWidth="md"
                       sx={{
-                        borderBottom: 1,
-                        borderColor: "divider",
                         display: "flex",
-                        justifyContent: "center",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
                     >
-                      <TabList onChange={handleTabsChange}>
-                        <Tab label="Nutrition Plan" value="1" />
-                        <Tab label="Exercise Plan" value="2" />
-                      </TabList>
-                    </Box>
-
-                    {/* Tab for Nutrition Plan */}
-                    <TabPanel value="1" sx={{ padding: 0 }}>
-                      <Container
-                        maxWidth="sm"
+                      <Typography
+                        component="h5"
+                        variant="h6"
+                        align="center"
+                        color="text.primary"
+                        gutterBottom
+                      >
+                        {traineeInfo.name.firstName}{" "}
+                        {traineeInfo.name.lastName}'s plan
+                      </Typography>
+                    </Container>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      typography: "body1",
+                      textAlign: "center",
+                    }}
+                  >
+                    <TabContext value={tabNumber} sx={{ padding: 0 }}>
+                      <Box
                         sx={{
+                          borderBottom: 1,
+                          borderColor: "divider",
                           display: "flex",
-                          alignItems: "flex-start",
                           justifyContent: "center",
-                          marginY: 2,
-                          padding: 0,
                         }}
                       >
-                        <NutritionPlanList
-                          nutritionPlan={traineeInfo.nutritionPlan}
-                          traineeId={traineeId}
-                        />
-                      </Container>
-                    </TabPanel>
+                        <TabList onChange={handleTabsChange}>
+                          <Tab label="Nutrition Plan" value="1" />
+                          <Tab label="Exercise Plan" value="2" />
+                        </TabList>
+                      </Box>
 
-                    {/* Tab for Exercise Plan */}
-                    <TabPanel value="2" sx={{ padding: 0 }}>
-                      <Container
-                        maxWidth="sm"
-                        sx={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          justifyContent: "center",
-                          marginY: 2,
-                          padding: 0,
-                        }}
-                      >
-                        <ExercisePlanList
-                          exercisePlan={traineeInfo.exercisePlan}
-                          traineeId={traineeId}
-                        />
-                      </Container>
-                    </TabPanel>
-                  </TabContext>
-                </Box>
+                      {/* Tab for Nutrition Plan */}
+                      <TabPanel value="1" sx={{ padding: 0 }}>
+                        <Container
+                          maxWidth="sm"
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            marginY: 2,
+                            padding: 0,
+                          }}
+                        >
+                          <NutritionPlanList
+                            nutritionPlan={traineeInfo.nutritionPlan}
+                            traineeId={traineeId}
+                          />
+                        </Container>
+                      </TabPanel>
+
+                      {/* Tab for Exercise Plan */}
+                      <TabPanel value="2" sx={{ padding: 0 }}>
+                        <Container
+                          maxWidth="sm"
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            marginY: 2,
+                            padding: 0,
+                          }}
+                        >
+                          <ExercisePlanList
+                            exercisePlan={traineeInfo.exercisePlan}
+                            traineeId={traineeId}
+                          />
+                        </Container>
+                      </TabPanel>
+                    </TabContext>
+                  </Box>
+                </div>
               </Grow>
             )}
         </div>
