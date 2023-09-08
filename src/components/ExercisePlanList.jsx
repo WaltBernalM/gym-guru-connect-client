@@ -39,6 +39,7 @@ import ExerciseRowInfo from "./ExerciseRowInfo"
 import exerciseService from "../services/exercise.service"
 import exerciseRoutineService from '../services/exerciseRoutine.service'
 import ServerErrorAnimation from "./ServerErrorAnimation"
+import ErrorAnimation from "./ErrorAnimation"
 
 const initSwitches = {
   1: false,
@@ -71,16 +72,18 @@ function ExercisePlanList(props) {
   const [series, setSeries] = useState(4)
   const [reps, setReps] = useState(12)
   const [intensity, setIntensity] = useState(0.80)
+
+  const [errorAtGatherAllExercise, setErrorAtGatherAllExercise] = useState(false)
   
   const getAllExercises = async () => {
     try {
-      setError(false)
+      setErrorAtGatherAllExercise(false)
       const response = (await exerciseService.getAllExercises()).data
         .allExercises
       setAllExercisesDB(response)
       setAllExercises(response)
     } catch (error) {
-      setError(true)
+      setErrorAtGatherAllExercise(true)
     }
   }
 
@@ -200,7 +203,7 @@ function ExercisePlanList(props) {
                     </Button>
                   </TableCell>
                 )}
-                <TableCell size="small" align="center">
+                <TableCell size="small">
                   <Typography variant="h6">Exercise Plan</Typography>
                 </TableCell>
                 {user && user.isTrainer && <TableCell />}
@@ -389,7 +392,8 @@ function ExercisePlanList(props) {
                           )}
 
                           {/* allExercises list render */}
-                          {allExercises &&
+                          {!errorAtGatherAllExercise &&
+                            allExercises &&
                             allExercises.map((exercise) => {
                               return (
                                 <Fragment key={exercise._id}>
@@ -427,6 +431,25 @@ function ExercisePlanList(props) {
                                 </Fragment>
                               )
                             })}
+                          {errorAtGatherAllExercise && (
+                            <>
+                              <ListItem
+                                sx={{
+                                  paddingY: 0,
+                                  paddingX: 1,
+                                  display: "flex",
+                                  flexDirection: 'column',
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <small style={{color: 'red'}}>Please try again later</small>
+                                <div style={{ marginTop: 10, width: 40 }}>
+                                  <ErrorAnimation />
+                                </div>
+                              </ListItem>
+                            </>
+                          )}
                         </ul>
                       </li>
                     </List>
@@ -699,10 +722,8 @@ function ExercisePlanList(props) {
                                     )}
                                     <TableCell size="small">Name</TableCell>
                                     <TableCell size="small">Sets</TableCell>
-                                    <TableCell size="small">Reps</TableCell>
-                                    <TableCell size="small">
-                                      Intensity
-                                    </TableCell>
+                                    <TableCell size="small">Reps.</TableCell>
+                                    <TableCell size="small">Int.</TableCell>
                                     {user && user.isTrainer && (
                                       <TableCell size="small"></TableCell>
                                     )}
