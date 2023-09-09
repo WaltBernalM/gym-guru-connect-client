@@ -1,11 +1,10 @@
-import { Button, Checkbox, Container, Fade, FormControlLabel, FormGroup, Grid, IconButton, List, ListItem, ListItemText, ListSubheader, Paper, Typography, useMediaQuery, Box} from "@mui/material"
+import { Button, Checkbox, Container, Fade, FormControlLabel, FormGroup, IconButton, List, ListItem, ListItemText, ListSubheader, Paper, Typography, useMediaQuery, Box} from "@mui/material"
 
 import EventBusyIcon from "@mui/icons-material/EventBusy"
 import PersonSearchIcon from "@mui/icons-material/PersonSearch"
 import { AuthContext } from "../context/auth.context"
 import { Fragment, useContext, useEffect, useState } from "react"
 
-import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined"
 import EventAvailableIcon from "@mui/icons-material/EventAvailable"
 import LockClockIcon from "@mui/icons-material/LockClock"
 
@@ -18,7 +17,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt"
 import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined"
 
 function AppointmentsList(props) {
-  const { trainerSchedule, trainerInfo } = props
+  const { trainerSchedule, trainerInfo, handleAlert } = props
   const { user } = useContext(AuthContext)
   
   const [dateFilter, setDateFilter] = useState(null)
@@ -26,12 +25,10 @@ function AppointmentsList(props) {
   const [filtered, setFiltered] = useState(trainerSchedule.schedule)
   const [seeOnlyBooked, setSeeOnlyBooked] = useState(false)
   
-  const [deletionError, setDeletionError] = useState(null)
 
   const [filterVisible, setFilterVisible] = useState(false)
 
   const navigate = useNavigate()
-  const [appointmentStatus, setAppointmentStatus] = useState("")
 
   const options = {
     timeZone: "America/Los_Angeles",
@@ -94,14 +91,14 @@ function AppointmentsList(props) {
 
   const hanldeDelete = async (appointmentId, trainerId) => {
     try {
-      setDeletionError(null)
       const response = await appointmentService.deletAppointmentForTrainer(
         appointmentId,
         trainerId
       )
       setFiltered(response.data.schedule)
+      handleAlert('Appointment deleted', 'success')
     } catch (error) { 
-      setDeletionError(error.response.data.message)
+      handleAlert(error.response.data.message, 'error')
     }
   }
 
@@ -112,10 +109,10 @@ function AppointmentsList(props) {
         trainerId,
         traineeId
       )
-      setAppointmentStatus(response.data.message)
+      handleAlert(response.data.message, 'success')
       setTimeout(() => navigate(`/trainee/${user._id}`), 1000)
-    } catch (error) {
-      setAppointmentStatus(error.response.data.message)
+    } catch (error) {      
+      handleAlert(error.response.data.message, 'error')
     }
   }
 
@@ -339,8 +336,8 @@ function AppointmentsList(props) {
                                         sx={{ ml: 2 }}
                                         startIcon={<EventBusyIcon />}
                                         color="error"
-                                        disabled={
-                                          appointment.dayInfo > todayPlus24
+                                          disabled={
+                                          new Date(appointment.dayInfo) > new Date(todayPlus24)
                                             ? false
                                             : true
                                         }
@@ -400,39 +397,6 @@ function AppointmentsList(props) {
                         })}
                 </ul>
               </List>
-              {deletionError && (
-                <Grid
-                  container
-                  sx={{
-                    color: "red",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "justify",
-                    mt: 1,
-                  }}
-                >
-                  <ReportProblemOutlinedIcon sx={{ mr: 1 }} />
-                  <span>{deletionError}</span>
-                </Grid>
-              )}
-              {/* Appointment message */}
-              {appointmentStatus && (
-                <Grid
-                  container
-                  sx={{
-                    color: "green",
-                    display: "flex",
-                    alignItems: "center",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    textAlign: "justify",
-                    mt: 1,
-                  }}
-                >
-                  <span>{appointmentStatus}</span>
-                </Grid>
-              )}
             </Paper>
           )}
         </div>

@@ -7,7 +7,7 @@ import exerciseService from "../services/exercise.service"
 import ErrorAnimation from "./ErrorAnimation"
 
 function ExerciseRowInfo(props) {
-  const { exerciseId, traineeId, deleteExercise } = props
+  const { exerciseId, traineeId, deleteExercise, handleAlert } = props
   const [exerciseInfo, setExerciseInfo] = useState(null)
   const [intensity, setIntensity] = useState(null)
   const [series, setSeries] = useState(null)
@@ -42,8 +42,9 @@ function ExerciseRowInfo(props) {
         )
       ).data.updatedExercise
       setExerciseInfo(response)
+      handleAlert('Exercise updated', 'success')
     } catch (error) {
-      setError(true)
+      handleAlert("Something went wrong", "error")
     }
   }
 
@@ -86,7 +87,7 @@ function ExerciseRowInfo(props) {
               value={series}
               min={1}
               step={1}
-              max={30}
+              max={10}
               // scale={(servingSize) => 10 * servingSize}
               onChange={(e) => setSeries(e.target.value)}
               valueLabelDisplay="auto"

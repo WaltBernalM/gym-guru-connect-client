@@ -2,7 +2,7 @@ import { Fragment, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import traineeService from "../services/trainee.service"
 import appointmentService from "../services/appointment.service"
-import { Box, Button, Container, Divider, Grow, IconButton, Link, List, ListItem, ListItemText, Paper, Tab, Typography } from "@mui/material"
+import { Alert, Box, Button, Container, Divider, Grow, IconButton, Link, List, ListItem, ListItemText, Paper, Snackbar, Tab, Typography } from "@mui/material"
 import NutritionPlanList from "../components/NutritionPlanList"
 import ExercisePlanList from "../components/ExercisePlanList"
 import { AuthContext } from "../context/auth.context"
@@ -61,13 +61,29 @@ function TraineeProfile() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  const [alertMessage, setAlertMessage] = useState("")
+  const [alertSeverity, setAlertSeverity] = useState("")
+  const [open, setOpen] = useState(false)
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setOpen(false)
+  }
+  const handleAlert = (message, severity) => {
+    setOpen(true)
+    setAlertMessage(message)
+    setAlertSeverity(severity)
+  }
+
   const handleUnbook = async (appointmentId, trainerId, traineeId) => {
     try {
       setError(false)
       await appointmentService.traineeRemoveAppointment(appointmentId, trainerId, traineeId)
       getTraineeAppointments()
+      handleAlert('Unbooked appointment', 'success')
     } catch (error) {
-      setError(true)
+      handleAlert('Something went wrong', 'error')
     }
   }
 
@@ -365,6 +381,17 @@ function TraineeProfile() {
                 {...(user.isTrainer ? { timeout: 1000 } : {})}
               >
                 <div>
+                  {open && (
+                    <Snackbar
+                      open={open}
+                      onClose={handleClose}
+                      autoHideDuration={4000}
+                      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    >
+                      <Alert severity={alertSeverity}>{alertMessage}</Alert>
+                    </Snackbar>
+                  )}
+
                   <Box
                     sx={{
                       bgcolor: "background.paper",
@@ -387,8 +414,8 @@ function TraineeProfile() {
                         color="text.primary"
                         gutterBottom
                       >
-                        {traineeInfo.name.firstName}{" "}
-                        {traineeInfo.name.lastName}'s plan
+                        {traineeInfo.name.firstName} {traineeInfo.name.lastName}
+                        's plan
                       </Typography>
                     </Container>
                   </Box>
@@ -429,6 +456,7 @@ function TraineeProfile() {
                           <NutritionPlanList
                             nutritionPlan={traineeInfo.nutritionPlan}
                             traineeId={traineeId}
+                            handleAlert={handleAlert}
                           />
                         </Container>
                       </TabPanel>
@@ -448,6 +476,7 @@ function TraineeProfile() {
                           <ExercisePlanList
                             exercisePlan={traineeInfo.exercisePlan}
                             traineeId={traineeId}
+                            handleAlert={handleAlert}
                           />
                         </Container>
                       </TabPanel>

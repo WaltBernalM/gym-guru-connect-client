@@ -30,7 +30,7 @@ const initSwitches = {
 }
 
 function NutritionPlanList(props) {
-  const { nutritionPlan: traineeNutritionPlan, traineeId } = props
+  const { nutritionPlan: traineeNutritionPlan, traineeId, handleAlert } = props
   const { user } = useContext(AuthContext)
   const [foodQuerySearch, setFoodQuerySearch] = useState(initFoodQuery)
   const [foodQueryError, setFoodQueryError] = useState(null)
@@ -70,8 +70,9 @@ function NutritionPlanList(props) {
         traineeId
       )).data.updatedNutritionPlan
       setNutritionPlan(response)
+      handleAlert('New portion added', 'success')
     } catch (error) {
-      console.log(error)
+      handleAlert('Something went wrong', 'error')
     }
   }
 
@@ -82,8 +83,9 @@ function NutritionPlanList(props) {
       if (response.length < 6) {
         setCanAddPortion(true)
       }
+      handleAlert("Portion deleted", "success")
     } catch (error) {
-      console.log(error)
+      handleAlert("Something went wrong", "error")
     }
   }
 
@@ -122,8 +124,9 @@ function NutritionPlanList(props) {
         await foodService.createFoodForTraineePortion(traineeId, form)
       ).data.updatedNutritionPlan
       setNutritionPlan(response)
+      handleAlert('Food added successfully', 'success')
     } catch (error) {
-      console.log(error)
+      handleAlert("Something went wrong", "error")
     }
   }
 
@@ -132,8 +135,9 @@ function NutritionPlanList(props) {
       const response = (await foodService.deleteFood(foodId, traineeId)).data
         .updatedNutritionPlan
       setNutritionPlan(response)
+      handleAlert("Food deleted successfully", "success")
     } catch (error) {
-      console.log(error)
+      handleAlert("Something went wrong", "error")
     }
   }
 
@@ -469,6 +473,7 @@ function NutritionPlanList(props) {
                                       traineeId={traineeId}
                                       portionId={portionId}
                                       deleteFood={deleteFood}
+                                      handleAlert={handleAlert}
                                     />
                                   )
                                 })}

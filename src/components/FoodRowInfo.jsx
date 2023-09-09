@@ -7,7 +7,7 @@ import foodService from "../services/foods.service"
 import ErrorAnimation from "./ErrorAnimation"
 
 function FoodRowInfo(props) {
-  const {foodId, traineeId, portionId, deleteFood} = props
+  const {foodId, traineeId, portionId, deleteFood, handleAlert} = props
   const [foodInfo, setFoodInfo] = useState(null)
   const [servingSize, setServingSize] = useState(null)
   const [error, setError] = useState(false)
@@ -36,8 +36,9 @@ function FoodRowInfo(props) {
         })
       ).data.updatedFood
       setFoodInfo(response)
+      handleAlert('Food updated', 'success')
     } catch (error) {
-      setError(true)
+      handleAlert('Something went wrong', 'error')
     }
   }
 
