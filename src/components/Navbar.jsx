@@ -174,7 +174,7 @@ function Navbar() {
                 let link, text
                 if (page === "trainers" && isLoggedIn && user.isTrainer) {
                   link = `/trainers/${user._id}`
-                  text = "My Schedule"
+                  text = "My Office"
                 } else if (
                   page === "trainee" &&
                   isLoggedIn &&

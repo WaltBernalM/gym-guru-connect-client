@@ -2,7 +2,7 @@ import { Fragment, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import traineeService from "../services/trainee.service"
 import appointmentService from "../services/appointment.service"
-import { Box, Button, Container, Divider, Grow, IconButton, Link, List, ListItem, ListItemText, Paper, Tab, Typography } from "@mui/material"
+import { Alert, Box, Button, Container, Divider, Grow, IconButton, Link, List, ListItem, ListItemText, Paper, Snackbar, Tab, Typography } from "@mui/material"
 import NutritionPlanList from "../components/NutritionPlanList"
 import ExercisePlanList from "../components/ExercisePlanList"
 import { AuthContext } from "../context/auth.context"
@@ -61,13 +61,29 @@ function TraineeProfile() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  const [alertMessage, setAlertMessage] = useState("")
+  const [alertSeverity, setAlertSeverity] = useState("")
+  const [open, setOpen] = useState(false)
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setOpen(false)
+  }
+  const handleAlert = (message, severity) => {
+    setOpen(true)
+    setAlertMessage(message)
+    setAlertSeverity(severity)
+  }
+
   const handleUnbook = async (appointmentId, trainerId, traineeId) => {
     try {
       setError(false)
       await appointmentService.traineeRemoveAppointment(appointmentId, trainerId, traineeId)
       getTraineeAppointments()
+      handleAlert('Unbooked appointment', 'success')
     } catch (error) {
-      setError(true)
+      handleAlert('Something went wrong', 'error')
     }
   }
 
@@ -364,67 +380,109 @@ function TraineeProfile() {
                 style={{ transformOrigin: "0 0 0" }}
                 {...(user.isTrainer ? { timeout: 1000 } : {})}
               >
-                <Box
-                  sx={{
-                    width: "100%",
-                    typography: "body1",
-                    textAlign: "center",
-                  }}
-                >
-                  <TabContext value={tabNumber} sx={{ padding: 0 }}>
-                    <Box
+                <div>
+                  {open && (
+                    <Snackbar
+                      open={open}
+                      onClose={handleClose}
+                      autoHideDuration={4000}
+                      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    >
+                      <Alert severity={alertSeverity}>{alertMessage}</Alert>
+                    </Snackbar>
+                  )}
+
+                  <Box
+                    sx={{
+                      bgcolor: "background.paper",
+                      pt: 1,
+                      pb: 0,
+                    }}
+                  >
+                    <Container
+                      maxWidth="md"
                       sx={{
-                        borderBottom: 1,
-                        borderColor: "divider",
                         display: "flex",
-                        justifyContent: "center",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
                     >
-                      <TabList onChange={handleTabsChange}>
-                        <Tab label="Nutrition Plan" value="1" />
-                        <Tab label="Exercise Plan" value="2" />
-                      </TabList>
-                    </Box>
-
-                    {/* Tab for Nutrition Plan */}
-                    <TabPanel value="1" sx={{ padding: 0 }}>
-                      <Container
-                        maxWidth="sm"
+                      <Typography
+                        component="h5"
+                        variant="h6"
+                        align="center"
+                        color="text.primary"
+                        gutterBottom
+                      >
+                        {traineeInfo.name.firstName} {traineeInfo.name.lastName}
+                        's plan
+                      </Typography>
+                    </Container>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      typography: "body1",
+                      textAlign: "center",
+                    }}
+                  >
+                    <TabContext value={tabNumber} sx={{ padding: 0 }}>
+                      <Box
                         sx={{
+                          borderBottom: 1,
+                          borderColor: "divider",
                           display: "flex",
-                          alignItems: "flex-start",
                           justifyContent: "center",
-                          marginY: 2,
-                          padding: 0,
                         }}
                       >
-                        <NutritionPlanList
-                          nutritionPlan={traineeInfo.nutritionPlan}
-                          traineeId={traineeId}
-                        />
-                      </Container>
-                    </TabPanel>
+                        <TabList onChange={handleTabsChange}>
+                          <Tab label="Nutrition Plan" value="1" />
+                          <Tab label="Exercise Plan" value="2" />
+                        </TabList>
+                      </Box>
 
-                    {/* Tab for Exercise Plan */}
-                    <TabPanel value="2" sx={{ padding: 0 }}>
-                      <Container
-                        maxWidth="sm"
-                        sx={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          justifyContent: "center",
-                          marginY: 2,
-                          padding: 0,
-                        }}
-                      >
-                        <ExercisePlanList
-                          exercisePlan={traineeInfo.exercisePlan}
-                          traineeId={traineeId}
-                        />
-                      </Container>
-                    </TabPanel>
-                  </TabContext>
-                </Box>
+                      {/* Tab for Nutrition Plan */}
+                      <TabPanel value="1" sx={{ padding: 0 }}>
+                        <Container
+                          maxWidth="sm"
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            marginY: 2,
+                            padding: 0,
+                          }}
+                        >
+                          <NutritionPlanList
+                            nutritionPlan={traineeInfo.nutritionPlan}
+                            traineeId={traineeId}
+                            handleAlert={handleAlert}
+                          />
+                        </Container>
+                      </TabPanel>
+
+                      {/* Tab for Exercise Plan */}
+                      <TabPanel value="2" sx={{ padding: 0 }}>
+                        <Container
+                          maxWidth="sm"
+                          sx={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            marginY: 2,
+                            padding: 0,
+                          }}
+                        >
+                          <ExercisePlanList
+                            exercisePlan={traineeInfo.exercisePlan}
+                            traineeId={traineeId}
+                            handleAlert={handleAlert}
+                          />
+                        </Container>
+                      </TabPanel>
+                    </TabContext>
+                  </Box>
+                </div>
               </Grow>
             )}
         </div>
