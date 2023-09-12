@@ -45,6 +45,8 @@ function AppointmentsList(props) {
   const handleFilter = (date, seeBooked) => {
     let dateToSearch, filteredSchedule
     setFilterMessage(null)
+    
+    console.log(date)
 
     if (date) {
       setDateFilter(date)
