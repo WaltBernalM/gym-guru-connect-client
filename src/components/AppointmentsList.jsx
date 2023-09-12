@@ -155,8 +155,8 @@ function AppointmentsList(props) {
     const dayInfoArray = trainerSchedule.schedule.map(
       (appointment) => appointment.dayInfo
     )
+    console.log('date:', date)
     console.log('formattedDate:', formattedDate)
-    console.log('dayInfoArray:', dayInfoArray)
     
     return !dayInfoArray.includes(formattedDate)
   }
