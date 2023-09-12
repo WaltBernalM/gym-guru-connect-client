@@ -7,7 +7,6 @@ const foodService = {
     )
   },
   createFoodForTraineePortion: (traineeId, foodInfo) => {
-    console.log('foodInfo:', foodInfo)
     return service.post(`/api/foods/trainee/${traineeId}`, foodInfo)
   },
   getFoodInTraineePortion: (foodId, traineeId, portionId) => {
