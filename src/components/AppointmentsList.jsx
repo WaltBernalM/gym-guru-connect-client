@@ -45,8 +45,6 @@ function AppointmentsList(props) {
   const handleFilter = (date, seeBooked) => {
     let dateToSearch, filteredSchedule
     setFilterMessage(null)
-    
-    console.log(date)
 
     if (date) {
       setDateFilter(date)
@@ -157,6 +155,9 @@ function AppointmentsList(props) {
     const dayInfoArray = trainerSchedule.schedule.map(
       (appointment) => appointment.dayInfo
     )
+    console.log('formattedDate:', formattedDate)
+    console.log('dayInfoArray:', dayInfoArray)
+    
     return !dayInfoArray.includes(formattedDate)
   }
   
