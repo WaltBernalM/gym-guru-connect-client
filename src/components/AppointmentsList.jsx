@@ -152,13 +152,9 @@ function AppointmentsList(props) {
 
   const shouldDisableDate = (date) => {
     const formattedDate = `${date.$M + 1}/${date.$D}/${date.$y}`
-    // const formattedDate = new Date(date).toLocaleString("en-US", options)
     const dayInfoArray = trainerSchedule.schedule.map(
       (appointment) => appointment.dayInfo
     )
-    console.log('date:', date)
-    console.log('formattedDate:', formattedDate)
-    
     return !dayInfoArray.includes(formattedDate)
   }
   
