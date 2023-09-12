@@ -151,7 +151,8 @@ function AppointmentsList(props) {
   const maxHeight = isSmallScreen ? 360 : 300
 
   const shouldDisableDate = (date) => {
-    const formattedDate = new Date(date).toLocaleString("en-US", options)
+    const formattedDate = `${date.$M + 1}/${date.$D}/${date.$y}`
+    // const formattedDate = new Date(date).toLocaleString("en-US", options)
     const dayInfoArray = trainerSchedule.schedule.map(
       (appointment) => appointment.dayInfo
     )
