@@ -457,6 +457,7 @@ function TraineeProfile() {
                             nutritionPlan={traineeInfo.nutritionPlan}
                             traineeId={traineeId}
                             handleAlert={handleAlert}
+                            getTraineeData={getTraineeData}
                           />
                         </Container>
                       </TabPanel>
@@ -477,6 +478,7 @@ function TraineeProfile() {
                             exercisePlan={traineeInfo.exercisePlan}
                             traineeId={traineeId}
                             handleAlert={handleAlert}
+                            getTraineeData={getTraineeData}
                           />
                         </Container>
                       </TabPanel>
