@@ -50,7 +50,7 @@ const initSwitches = {
 }
 
 function ExercisePlanList(props) {
-  const { exercisePlan: traineeExercisePlan, traineeId, handleAlert } = props
+  const { exercisePlan: traineeExercisePlan, traineeId, handleAlert, getTraineeData } = props
   const { user } = useContext(AuthContext)
   const [routineIdForExercise, setRoutineIdForExercise] = useState('')
   const [exercisePlan, setExercisePlan] = useState(traineeExercisePlan)
@@ -130,6 +130,7 @@ function ExercisePlanList(props) {
         availableDayNumbers[0],
         traineeId)).data.updatedExercisePlan
       setExercisePlan(response)
+      getTraineeData()
       handleAlert('New routine day added successfully', 'success')
     } catch (error) {
       handleAlert("Something went wrong", "error")
@@ -143,6 +144,7 @@ function ExercisePlanList(props) {
       if (response.length < 6) {
         setCanAddRoutine(true)
       }
+      getTraineeData()
       handleAlert("Routine day deleted successfully", "success")
     } catch (error) {
       handleAlert("Something went wrong", "error")
@@ -164,6 +166,7 @@ function ExercisePlanList(props) {
         intensity
       )).data.updatedExercisePlan
       setExercisePlan(response)
+      getTraineeData()
       handleAlert("Exercise added to routine day successfully", "success")
     } catch (error) {
       handleAlert("Something went wrong", "error")
@@ -174,6 +177,7 @@ function ExercisePlanList(props) {
     try {
       const response = (await exerciseService.deleteExercise(exerciseId, traineeId)).data.updatedExercisePlan
       setExercisePlan(response)
+      getTraineeData()
       handleAlert("Exercise deleted from routine day successfully", "success")
     } catch (error) {
       handleAlert("Something went wrong", "error")

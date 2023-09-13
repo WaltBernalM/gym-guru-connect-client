@@ -30,7 +30,12 @@ const initSwitches = {
 }
 
 function NutritionPlanList(props) {
-  const { nutritionPlan: traineeNutritionPlan, traineeId, handleAlert } = props
+  const {
+    nutritionPlan: traineeNutritionPlan,
+    traineeId,
+    handleAlert,
+    getTraineeData,
+  } = props
   const { user } = useContext(AuthContext)
   const [foodQuerySearch, setFoodQuerySearch] = useState(initFoodQuery)
   const [foodQueryError, setFoodQueryError] = useState(null)
@@ -70,6 +75,7 @@ function NutritionPlanList(props) {
         traineeId
       )).data.updatedNutritionPlan
       setNutritionPlan(response)
+      getTraineeData()
       handleAlert('New portion added', 'success')
     } catch (error) {
       handleAlert('Something went wrong', 'error')
@@ -83,6 +89,7 @@ function NutritionPlanList(props) {
       if (response.length < 6) {
         setCanAddPortion(true)
       }
+      getTraineeData()
       handleAlert("Portion deleted", "success")
     } catch (error) {
       handleAlert("Something went wrong", "error")
@@ -124,6 +131,7 @@ function NutritionPlanList(props) {
         await foodService.createFoodForTraineePortion(traineeId, form)
       ).data.updatedNutritionPlan
       setNutritionPlan(response)
+      getTraineeData()
       handleAlert('Food added successfully', 'success')
     } catch (error) {
       handleAlert("Something went wrong", "error")
@@ -135,6 +143,7 @@ function NutritionPlanList(props) {
       const response = (await foodService.deleteFood(foodId, traineeId)).data
         .updatedNutritionPlan
       setNutritionPlan(response)
+      getTraineeData()
       handleAlert("Food deleted successfully", "success")
     } catch (error) {
       handleAlert("Something went wrong", "error")
