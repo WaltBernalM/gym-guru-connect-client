@@ -119,7 +119,7 @@ function ExerciseRowInfo(props) {
           <TableCell size="small">
             <Slider
               value={intensity * 100}
-              min={10}
+              min={30}
               step={5}
               max={95}
               scale={(intensity) => intensity / 100}
