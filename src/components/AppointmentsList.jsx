@@ -151,9 +151,10 @@ function AppointmentsList(props) {
   const maxHeight = isSmallScreen ? 360 : 300
 
   const shouldDisableDate = (date) => {
-    const formattedDate = `${date.$M + 1}/${date.$D}/${date.$y}`
-    const dayInfoArray = trainerSchedule.schedule.map(
-      (appointment) => appointment.dayInfo
+    const formattedDate = `${date.$M + 1}/${date.$D}/${date.$y}` 
+    const dayInfoArray = trainerSchedule.schedule.map(appointment => {
+      return appointment.isAvailable ? appointment.dayInfo : void 0
+    }
     )
     console.log(dayInfoArray)
     return !dayInfoArray.includes(formattedDate)
