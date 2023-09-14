@@ -328,7 +328,9 @@ function AppointmentsList(props) {
                       </Fade>
                     )}
                   </ListSubheader>
-
+                  {
+                    seeOnlyBooked && filtered && filtered.length === 0 ? setFilterMessage('No consults booked yet') : void 0
+                  }
                   {/* Render of list items */}
                   {filtered && filtered.length === 0
                     ? "No appointments"
