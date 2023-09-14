@@ -64,7 +64,12 @@ function AppointmentsList(props) {
       filteredSchedule = trainerSchedule.filter(appointment => {
         return appointment.dayInfo === dateToSearch
       })
-    } 
+    }
+    if (!date && seeBooked) {
+      filteredSchedule = trainerSchedule.filter((appointment) => {
+        return !appointment.isAvailable
+      })
+    }
 
     if (filteredSchedule.length === 0) {
       setFilterMessage("No consults for that date")
