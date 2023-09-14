@@ -589,7 +589,7 @@ function ExercisePlanList(props) {
                     </Typography>
                     <Slider
                       value={intensity * 100}
-                      min={10}
+                      min={30}
                       step={5}
                       scale={(intensity) => intensity / 100}
                       max={95}
