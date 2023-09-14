@@ -51,13 +51,6 @@ function AppointmentsList(props) {
     let dateToSearch, filteredSchedule
     setFilterMessage(null)
 
-    const upToDateSchedule = trainerSchedule.filter(a => {
-      const { dayInfo, isAvailable } = a
-      return filterAppointmentsDates(dayInfo, isAvailable)
-    })
-
-    console.log('upToDateSchedule',upToDateSchedule)
-
     if (date) {
       setDateFilter(date)
       dateToSearch = `${date.$M + 1}/${date.$D}/${date.$y}`
@@ -91,7 +84,14 @@ function AppointmentsList(props) {
     if (dateFilter) {
       handleFilter(dateFilter, e.target.checked)
     } else if (e.target.checked && !dateFilter) {
-      setFiltered(filtered.filter(a => !a.isAvailable))
+      setFiltered(filtered.filter(a => {
+        const {dayInfo} = a
+        const date = new Date(dayInfo).toLocaleString("en-US", options)
+        if (new Date(date) < today.setDate(today.getDate())) {
+          return false
+        }
+        return !a.isAvailable
+      }))
     } else {
       setFiltered(trainerSchedule)
     }
@@ -151,15 +151,7 @@ function AppointmentsList(props) {
   }
 
   const filterAppointmentsDates = (dayInfo, isAvailable) => {
-    const options = {
-      timeZone: "America/Los_Angeles",
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-    }
-    const currentDate = new Date().toLocaleString("en-US", options)
     const date = new Date(dayInfo).toLocaleString("en-US", options)
-    const today = new Date(currentDate)
 
     if (!user.isTrainer) {
       if (new Date(date) < today.setDate(today.getDate() + 2)) {
@@ -181,9 +173,6 @@ function AppointmentsList(props) {
     }
   }
 
-  const isSmallScreen = useMediaQuery("(max-width:600px)")
-  const maxHeight = isSmallScreen ? 360 : 300
-
   const shouldDisableDate = (date) => {
     const formattedDate = `${date.$M + 1}/${date.$D}/${date.$y}` 
     const dayInfoArray = trainerSchedule.map(appointment => {
@@ -197,8 +186,11 @@ function AppointmentsList(props) {
     return !dayInfoArray.includes(formattedDate)
   }
 
+  const isSmallScreen = useMediaQuery("(max-width:600px)")
+  const maxHeight = isSmallScreen ? 360 : 300
+
   console.log(filtered)
-  
+
   return (
     <Box
       sx={{
