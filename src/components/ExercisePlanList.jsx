@@ -185,7 +185,7 @@ function ExercisePlanList(props) {
   }
   
   return (
-    <TableContainer component={Paper} sx={{ maxWidth: 600 }}>
+    <TableContainer component={Paper} sx={{ maxWidth: 620 }}>
       <Table aria-label="collapsible table">
         {/* Routine content editor */}
         <TableHead size="small">
