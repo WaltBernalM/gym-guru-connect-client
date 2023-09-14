@@ -97,7 +97,7 @@ function AppointmentsList(props) {
         trainerId
       )
       setFiltered(response.data.schedule)
-      getTrainerSchedule()
+      // getTrainerSchedule()
       handleAlert('Appointment deleted', 'success')
     } catch (error) { 
       handleAlert(error.response.data.message, 'error')
