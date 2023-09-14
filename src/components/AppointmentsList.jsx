@@ -189,6 +189,8 @@ function AppointmentsList(props) {
     )
     return !dayInfoArray.includes(formattedDate)
   }
+
+  console.log(filtered)
   
   return (
     <Box
