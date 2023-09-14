@@ -155,6 +155,7 @@ function AppointmentsList(props) {
     const dayInfoArray = trainerSchedule.schedule.map(
       (appointment) => appointment.dayInfo
     )
+    console.log(dayInfoArray)
     return !dayInfoArray.includes(formattedDate)
   }
   
@@ -307,10 +308,9 @@ function AppointmentsList(props) {
                             const { dayInfo, isAvailable } = a
                             return filterAppointments(dayInfo, isAvailable)
                           }
-                          return <>{'something'}</>
+                          return <></>
                         })
                       .map((appointment) => {
-                          console.log('appointment:', appointment)
                           return (
                             <Paper key={appointment._id} sx={{ marginY: 1 }}>
                               <ListItem disableGutters>
