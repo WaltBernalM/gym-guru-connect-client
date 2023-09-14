@@ -84,14 +84,16 @@ function AppointmentsList(props) {
     if (dateFilter) {
       handleFilter(dateFilter, e.target.checked)
     } else if (e.target.checked && !dateFilter) {
-      setFiltered(filtered.filter(a => {
+      const upToDateSchedule = filtered.filter(a => {
         const {dayInfo} = a
         const date = new Date(dayInfo).toLocaleString("en-US", options)
         if (new Date(date) < today.setDate(today.getDate())) {
           return false
         }
         return !a.isAvailable
-      }))
+      })
+      if (upToDateSchedule.length === 0) setFilterMessage('No bookings yet!')
+      setFiltered(upToDateSchedule)
     } else {
       setFiltered(trainerSchedule)
     }
@@ -196,7 +198,7 @@ function AppointmentsList(props) {
         flexDirection: "column",
         alignItems: "center",
         flexWrap: "wrap",
-        mb: 2
+        mb: 2,
       }}
     >
       {
@@ -300,7 +302,7 @@ function AppointmentsList(props) {
                                 setFiltered(trainerSchedule)
                               }}
                               disabled={filterMessage ? true : false}
-                              sx={{marginLeft: 1}}
+                              sx={{ marginLeft: 1 }}
                             >
                               <CachedOutlinedIcon />
                             </IconButton>
@@ -328,12 +330,9 @@ function AppointmentsList(props) {
                       </Fade>
                     )}
                   </ListSubheader>
-                  {
-                    seeOnlyBooked && filtered && filtered.length === 0 ? setFilterMessage('No consults booked yet') : void 0
-                  }
                   {/* Render of list items */}
                   {filtered && filtered.length === 0
-                    ? "No appointments"
+                    ? "No appointments!"
                     : filtered
                         .filter((a) => {
                           if (user.isTrainer || !user.isTrainer) {
@@ -342,7 +341,7 @@ function AppointmentsList(props) {
                           }
                           return void 0
                         })
-                      .map((appointment) => {
+                        .map((appointment) => {
                           return (
                             <Paper key={appointment._id} sx={{ marginY: 1 }}>
                               <ListItem disableGutters>
@@ -369,8 +368,9 @@ function AppointmentsList(props) {
                                         sx={{ ml: 2 }}
                                         startIcon={<EventBusyIcon />}
                                         color="error"
-                                          disabled={
-                                          new Date(appointment.dayInfo) > new Date(todayPlus24)
+                                        disabled={
+                                          new Date(appointment.dayInfo) >
+                                          new Date(todayPlus24)
                                             ? false
                                             : true
                                         }
@@ -394,13 +394,10 @@ function AppointmentsList(props) {
                                     }}
                                   >
                                     <Typography>
-                                      {appointment.dayInfo} @{" "}
-                                      {appointment.hour}
+                                      {appointment.dayInfo} @ {appointment.hour}
                                       {":00"}
                                     </Typography>
-                                    {trainerInfo.trainees.includes(
-                                      user._id
-                                    ) ? (
+                                    {trainerInfo.trainees.includes(user._id) ? (
                                       <Button
                                         color="success"
                                         variant="contained"
@@ -411,9 +408,7 @@ function AppointmentsList(props) {
                                             user._id
                                           )
                                         }
-                                        disabled={
-                                          filterMessage ? true : false
-                                        }
+                                        disabled={filterMessage ? true : false}
                                         startIcon={<EventAvailableIcon />}
                                       >
                                         {" "}
