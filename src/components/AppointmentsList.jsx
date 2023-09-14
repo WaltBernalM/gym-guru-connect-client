@@ -51,6 +51,16 @@ function AppointmentsList(props) {
     let dateToSearch, filteredSchedule
     setFilterMessage(null)
 
+    const upToDateSchedule = trainerSchedule.filter(a => {
+      if (user.isTrainer || !user.isTrainer) {
+        const { dayInfo, isAvailable } = a
+        return filterAppointmentsDates(dayInfo, isAvailable)
+      }
+      return void 0
+    })
+
+    console.log(upToDateSchedule)
+
     if (date) {
       setDateFilter(date)
       dateToSearch = `${date.$M + 1}/${date.$D}/${date.$y}`
@@ -67,8 +77,7 @@ function AppointmentsList(props) {
     }
     if (!date && seeBooked) {
       filteredSchedule = trainerSchedule.filter((appointment) => {
-        // return !appointment.isAvailable
-        return filterAppointmentsDates(appointment.dayInfo, appointment.isAvailable)
+        return !appointment.isAvailable
       })
     }
 
