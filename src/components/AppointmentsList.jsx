@@ -307,10 +307,10 @@ function AppointmentsList(props) {
                             const { dayInfo, isAvailable } = a
                             return filterAppointments(dayInfo, isAvailable)
                           }
-                          return <></>
+                          return <>{'something'}</>
                         })
                       .map((appointment) => {
-                          console.log(appointment)
+                          console.log('appointment:', appointment)
                           return (
                             <Paper key={appointment._id} sx={{ marginY: 1 }}>
                               <ListItem disableGutters>
