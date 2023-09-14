@@ -52,11 +52,15 @@ function TrainerProfile() {
       setError(false)
       const scheduleFromDB =
         await appointmentService.getAppointmentsForTrainer(trainerId)
-      setTrainerSchedule(scheduleFromDB.data)
+      setTrainerSchedule(scheduleFromDB.data.schedule)
     } catch (error) {
       setAppointmentStatus(error.response.data.message)
       setError(true)
     }
+  }
+
+  const handleSetTrainerSchedule = (newSchedule) => {
+    setTrainerSchedule(newSchedule)
   }
 
   const [alertMessage, setAlertMessage] = useState("")
@@ -303,7 +307,7 @@ function TrainerProfile() {
                   </Box>
                 )}
 
-                {user && trainerSchedule && trainerSchedule.schedule && (
+                {user && trainerSchedule && (
                   <Slide
                     direction="up"
                     in={seeAppointments}
@@ -434,8 +438,7 @@ function TrainerProfile() {
                 >
                   {user &&
                     user.isTrainer &&
-                    trainerSchedule &&
-                    trainerSchedule.schedule && (
+                    trainerSchedule && (
                       <div style={{ width: "auto" }}>
                         <Slide
                           direction="up"

@@ -23,7 +23,7 @@ function AppointmentsList(props) {
   
   const [dateFilter, setDateFilter] = useState(null)
   const [filterMessage, setFilterMessage] = useState(null)
-  const [filtered, setFiltered] = useState(trainerSchedule.schedule)
+  const [filtered, setFiltered] = useState(trainerSchedule)
   const [seeOnlyBooked, setSeeOnlyBooked] = useState(false)
   
 
@@ -52,12 +52,12 @@ function AppointmentsList(props) {
       dateToSearch = `${date.$M + 1}/${date.$D}/${date.$y}`
     }
     if (date && seeBooked) {
-      filteredSchedule = trainerSchedule.schedule.filter((appointment) => {
+      filteredSchedule = trainerSchedule.filter((appointment) => {
         return appointment.dayInfo === dateToSearch && !appointment.isAvailable
       })
     }
     if (date && !seeBooked) {
-      filteredSchedule = trainerSchedule.schedule.filter(appointment => {
+      filteredSchedule = trainerSchedule.filter(appointment => {
         return appointment.dayInfo === dateToSearch
       })
     } 
@@ -77,15 +77,15 @@ function AppointmentsList(props) {
     } else if (e.target.checked && !dateFilter) {
       setFiltered(filtered.filter(a => !a.isAvailable))
     } else {
-      setFiltered(trainerSchedule.schedule)
+      setFiltered(trainerSchedule)
     }
   }
 
   useEffect(() => {
-    !filterMessage && setFiltered(trainerSchedule.schedule)
+    !filterMessage && setFiltered(trainerSchedule)
     filterMessage && setTimeout(() => {
       setFilterMessage("")
-      setFiltered(trainerSchedule.schedule)
+      setFiltered(trainerSchedule)
       setSeeOnlyBooked(false)
     }, 2000)
   }, [trainerSchedule, filterMessage])
@@ -153,7 +153,7 @@ function AppointmentsList(props) {
 
   const shouldDisableDate = (date) => {
     const formattedDate = `${date.$M + 1}/${date.$D}/${date.$y}` 
-    const dayInfoArray = trainerSchedule.schedule.map(appointment => {
+    const dayInfoArray = trainerSchedule.map(appointment => {
       if (user.isTrainer) {
         return appointment.dayInfo
       } else {
@@ -272,7 +272,7 @@ function AppointmentsList(props) {
                             <IconButton
                               onClick={() => {
                                 setDateFilter(null)
-                                setFiltered(trainerSchedule.schedule)
+                                setFiltered(trainerSchedule)
                               }}
                               disabled={filterMessage ? true : false}
                               sx={{marginLeft: 1}}
