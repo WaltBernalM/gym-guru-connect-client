@@ -445,6 +445,7 @@ function TrainerProfile() {
                         >
                           <div style={{ width: "auto" }}>
                             <NewAppointmentForm
+                              getTrainer={getTrainer}
                               getTrainerSchedule={getTrainerSchedule}
                               handleAlert={handleAlert}
                             />
@@ -472,8 +473,6 @@ function TrainerProfile() {
                               trainerSchedule={trainerSchedule}
                               trainerInfo={trainerInfo}
                               handleAlert={handleAlert}
-                              getTrainer={getTrainer}
-                              getTrainerSchedule={getTrainerSchedule}
                             />
                           </div>
                         </Slide>

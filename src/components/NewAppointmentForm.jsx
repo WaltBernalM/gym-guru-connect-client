@@ -12,7 +12,7 @@ const initialHours = [dayjs("2022-04-07T07:00"), dayjs("2022-04-17T19:00")]
 const initialDay = dayjs().add(48, "hour")
 
 function NewAppointmentForm(props) {
-  const { getTrainerSchedule, handleAlert } = props
+  const { getTrainerSchedule, handleAlert, getTrainer } = props
   const { user } = useContext(AuthContext)
 
   const [hourRange, setHourRange] = useState(() => initialHours)
@@ -49,6 +49,7 @@ function NewAppointmentForm(props) {
           h
         )
       }
+      getTrainer()
       getTrainerSchedule()
       handleAlert('New appointment(s) added', 'success')
     } catch (error) {
