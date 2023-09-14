@@ -67,7 +67,8 @@ function AppointmentsList(props) {
     }
     if (!date && seeBooked) {
       filteredSchedule = trainerSchedule.filter((appointment) => {
-        return !appointment.isAvailable
+        // return !appointment.isAvailable
+        return filterAppointmentsDates(appointment.dayInfo, appointment.isAvailable)
       })
     }
 
