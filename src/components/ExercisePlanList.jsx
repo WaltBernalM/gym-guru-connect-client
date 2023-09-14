@@ -228,7 +228,7 @@ function ExercisePlanList(props) {
                   size="small"
                 >
                   {/* Exercise Name */}
-                  <FormControl sx={{ m: 1, minWidth: 100 }} size="small">
+                  <FormControl sx={{ m: 1, width: 100 }} size="small">
                     <TextField
                       label="Name"
                       value={nameFilter}
@@ -458,7 +458,7 @@ function ExercisePlanList(props) {
               {/* Customize Exercise to add to Routine */}
               <TableCell
                 align="center"
-                sx={{ maxWidth: 150, paddingX: 1 }}
+                sx={{ maxWidth: 150, paddingX: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}
                 size="small"
               >
                 {/* Action button to add to exerciseRoutine */}
