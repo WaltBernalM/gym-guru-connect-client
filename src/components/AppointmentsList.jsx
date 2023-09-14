@@ -65,11 +65,6 @@ function AppointmentsList(props) {
         return appointment.dayInfo === dateToSearch
       })
     }
-    if (!date && seeBooked) {
-      filteredSchedule = trainerSchedule.filter((appointment) => {
-        return !appointment.isAvailable
-      })
-    }
 
     if (filteredSchedule.length === 0) {
       setFilterMessage("No consults for that date")
@@ -92,7 +87,7 @@ function AppointmentsList(props) {
         }
         return !a.isAvailable
       })
-      if (upToDateSchedule.length === 0) setFilterMessage('No bookings yet!')
+      if (upToDateSchedule.length === 0) setFilterMessage('No bookings registered yet!')
       setFiltered(upToDateSchedule)
     } else {
       setFiltered(trainerSchedule)
