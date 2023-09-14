@@ -309,7 +309,8 @@ function AppointmentsList(props) {
                           }
                           return <></>
                         })
-                        .map((appointment) => {
+                      .map((appointment) => {
+                          console.log(appointment)
                           return (
                             <Paper key={appointment._id} sx={{ marginY: 1 }}>
                               <ListItem disableGutters>
