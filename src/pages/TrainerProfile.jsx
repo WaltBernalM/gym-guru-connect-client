@@ -472,6 +472,8 @@ function TrainerProfile() {
                               trainerSchedule={trainerSchedule}
                               trainerInfo={trainerInfo}
                               handleAlert={handleAlert}
+                              getTrainer={getTrainer}
+                              getTrainerSchedule={getTrainerSchedule}
                             />
                           </div>
                         </Slide>
