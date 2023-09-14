@@ -87,8 +87,12 @@ function AppointmentsList(props) {
         }
         return !a.isAvailable
       })
-      if (upToDateSchedule.length === 0) setFilterMessage('No bookings registered yet!')
-      setFiltered(upToDateSchedule)
+      if (upToDateSchedule.length === 0) {
+        setFilterMessage('No bookings registered yet!')
+        setFiltered([])
+      } else {
+        setFiltered(upToDateSchedule)
+      }
     } else {
       setFiltered(trainerSchedule)
     }
