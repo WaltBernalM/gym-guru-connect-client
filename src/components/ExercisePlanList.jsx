@@ -185,7 +185,7 @@ function ExercisePlanList(props) {
   }
   
   return (
-    <TableContainer component={Paper} sx={{ width: '100%' }}>
+    <TableContainer component={Paper} sx={{ width: "100%" }}>
       <Table aria-label="collapsible table">
         {/* Routine content editor */}
         <TableHead size="small">
@@ -234,11 +234,7 @@ function ExercisePlanList(props) {
                       value={nameFilter}
                       onChange={(e) => {
                         setNameFilter(e.target.value)
-                        handleFilter(
-                          muscleFilter,
-                          typeFilter,
-                          e.target.value
-                        )
+                        handleFilter(muscleFilter, typeFilter, e.target.value)
                       }}
                       size="small"
                     />
@@ -246,9 +242,7 @@ function ExercisePlanList(props) {
 
                   {/* Exercise's Muscle */}
                   <FormControl sx={{ m: 1, minWidth: 100 }} size="small">
-                    <InputLabel id="demo-select-small-label">
-                      Muscle
-                    </InputLabel>
+                    <InputLabel id="demo-select-small-label">Muscle</InputLabel>
                     <Select
                       labelId="demo-select-small-label"
                       id="demo-select-small"
@@ -286,9 +280,7 @@ function ExercisePlanList(props) {
 
                   {/* Exercise's Type */}
                   <FormControl sx={{ m: 1, minWidth: 100 }} size="small">
-                    <InputLabel id="demo-select-small-label">
-                      Type
-                    </InputLabel>
+                    <InputLabel id="demo-select-small-label">Type</InputLabel>
                     <Select
                       labelId="demo-select-small-label"
                       id="demo-select-small"
@@ -296,11 +288,7 @@ function ExercisePlanList(props) {
                       label="Type"
                       onChange={(e) => {
                         setTypeFilter(e.target.value)
-                        handleFilter(
-                          muscleFilter,
-                          e.target.value,
-                          nameFilter
-                        )
+                        handleFilter(muscleFilter, e.target.value, nameFilter)
                       }}
                     >
                       <MenuItem value="">
@@ -329,136 +317,148 @@ function ExercisePlanList(props) {
               </TableCell>
 
               {/* Exercise List */}
-              <TableCell size="small" sx={{ paddingX: 0 }}>
-                <List
-                  size="small"
-                  sx={{
-                    minWidth: 80,
-                    width: "auto",
-                    overflow: "auto",
-                    height: 140,
-                    border: "1px solid",
-                    borderColor: "rgb(0,0,0,0.4)",
-                    borderRadius: "10px",
-                  }}
-                  subheader={<li />}
-                >
-                  <li>
-                    <ul style={{ padding: 0 }}>
-                      {/* Exercises list title */}
-                      <ListSubheader
-                        size="small"
-                        sx={{
-                          padding: 0,
-                          margin: 0,
-                          textAlign: "center",
-                          height: 40,
-                          borderBottom: "1px solid",
-                          borderColor: "rgb(0,0,0,0.4)",
-                        }}
-                      >
-                        {exerciseChosen ? (
-                          <div
-                            style={{
-                              height: "100%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Typography
-                              fontSize={14}
-                              padding={1}
-                              margin={0}
-                              textAlign={"left"}
+              <TableCell size="small" sx={{ paddingX: 0, width: '100%' }}>
+                <div style={{ width: '100%',display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <List
+                    size="small"
+                    sx={{
+                      minWidth: 80,
+                      width: "auto",
+                      maxWidth: 400,
+                      overflow: "auto",
+                      height: 140,
+                      border: "1px solid",
+                      borderColor: "rgb(0,0,0,0.4)",
+                      borderRadius: "10px",
+                    }}
+                    subheader={<li />}
+                  >
+                    <li>
+                      <ul style={{ padding: 0, minWidth: 180 }}>
+                        {/* Exercises list title */}
+                        <ListSubheader
+                          size="small"
+                          sx={{
+                            padding: 0,
+                            margin: 0,
+                            textAlign: "center",
+                            height: 40,
+                            borderBottom: "1px solid",
+                            borderColor: "rgb(0,0,0,0.4)",
+                          }}
+                        >
+                          {exerciseChosen ? (
+                            <div
+                              style={{
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
                             >
-                              {exerciseChosen}
-                            </Typography>{" "}
-                            <FitnessCenterIcon sx={{ fontSize: 14 }} />
-                          </div>
-                        ) : (
-                          "Exercises"
-                        )}
-                      </ListSubheader>
-
-                      {/* Error if filter finds none */}
-                      {allExercises && allExercises.length === 0 && (
-                        <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                          <ListItemText
-                            sx={{ color: "red" }}
-                            primary={`No matches`}
-                          />
-                        </ListItem>
-                      )}
-
-                      {/* allExercises list render */}
-                      {!errorAtGatherAllExercise &&
-                        allExercises &&
-                        allExercises.map((exercise) => {
-                          return (
-                            <Fragment key={exercise._id}>
-                              <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
-                                <ListItemText>
-                                  <Typography
-                                    variant="body1"
-                                    style={{ fontSize: "14px" }}
-                                  >
-                                    {`${exercise.name}`}
-                                  </Typography>
-                                </ListItemText>
-                                <Button
-                                  onClick={() => {
-                                    if (exerciseId === exercise._id) {
-                                      setExerciseId("")
-                                      setExerciseChosen("")
-                                    } else {
-                                      setExerciseId(exercise._id)
-                                      setExerciseChosen(exercise.name)
-                                    }
-                                  }}
-                                  variant="text"
-                                  color={
-                                    exercise._id === exerciseId
-                                      ? "success"
-                                      : "primary"
-                                  }
-                                  size="small"
-                                >
-                                  <FitnessCenterIcon />
-                                </Button>
-                              </ListItem>
-                              <Divider />
-                            </Fragment>
-                          )
-                        })}
-                      {errorAtGatherAllExercise && (
-                        <>
-                          <ListItem
-                            sx={{
-                              paddingY: 0,
-                              paddingX: 1,
-                              display: "flex",
-                              flexDirection: 'column',
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <small style={{color: 'red'}}>Please try again later</small>
-                            <div style={{ marginTop: 10, width: 40 }}>
-                              <ErrorAnimation />
+                              <Typography
+                                fontSize={14}
+                                padding={1}
+                                margin={0}
+                                textAlign={"left"}
+                              >
+                                {exerciseChosen}
+                              </Typography>{" "}
+                              <FitnessCenterIcon sx={{ fontSize: 14 }} />
                             </div>
+                          ) : (
+                            "Exercises"
+                          )}
+                        </ListSubheader>
+
+                        {/* Error if filter finds none */}
+                        {allExercises && allExercises.length === 0 && (
+                          <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
+                            <ListItemText
+                              sx={{ color: "red" }}
+                              primary={`No matches`}
+                            />
                           </ListItem>
-                        </>
-                      )}
-                    </ul>
-                  </li>
-                </List>
+                        )}
+
+                        {/* allExercises list render */}
+                        {!errorAtGatherAllExercise &&
+                          allExercises &&
+                          allExercises.map((exercise) => {
+                            return (
+                              <Fragment key={exercise._id}>
+                                <ListItem sx={{ paddingY: 0, paddingX: 1 }}>
+                                  <ListItemText>
+                                    <Typography
+                                      variant="body1"
+                                      style={{ fontSize: "14px" }}
+                                    >
+                                      {`${exercise.name}`}
+                                    </Typography>
+                                  </ListItemText>
+                                  <Button
+                                    onClick={() => {
+                                      if (exerciseId === exercise._id) {
+                                        setExerciseId("")
+                                        setExerciseChosen("")
+                                      } else {
+                                        setExerciseId(exercise._id)
+                                        setExerciseChosen(exercise.name)
+                                      }
+                                    }}
+                                    variant="text"
+                                    color={
+                                      exercise._id === exerciseId
+                                        ? "success"
+                                        : "primary"
+                                    }
+                                    size="small"
+                                  >
+                                    <FitnessCenterIcon />
+                                  </Button>
+                                </ListItem>
+                                <Divider />
+                              </Fragment>
+                            )
+                          })}
+                        {errorAtGatherAllExercise && (
+                          <>
+                            <ListItem
+                              sx={{
+                                paddingY: 0,
+                                paddingX: 1,
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <small style={{ color: "red" }}>
+                                Please try again later
+                              </small>
+                              <div style={{ marginTop: 10, width: 40 }}>
+                                <ErrorAnimation />
+                              </div>
+                            </ListItem>
+                          </>
+                        )}
+                      </ul>
+                    </li>
+                  </List>
+                </div>
               </TableCell>
 
               {/* Customize Exercise to add to Routine */}
               <TableCell
                 align="center"
-                sx={{ maxWidth: 150, paddingX: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}
+                sx={{
+                  maxWidth: 150,
+                  paddingX: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
                 size="small"
               >
                 {/* Action button to add to exerciseRoutine */}
@@ -474,10 +474,7 @@ function ExercisePlanList(props) {
                 </Button>
 
                 {/* Series slider */}
-                <FormControl
-                  sx={{ minWidth: 100, marginY: 0 }}
-                  size="small"
-                >
+                <FormControl sx={{ minWidth: 100, marginY: 0 }} size="small">
                   <Container
                     sx={{
                       width: "100%",
@@ -523,10 +520,7 @@ function ExercisePlanList(props) {
                 </FormControl>
 
                 {/* Reps slider */}
-                <FormControl
-                  sx={{ minWidth: 100, marginY: 0 }}
-                  size="small"
-                >
+                <FormControl sx={{ minWidth: 100, marginY: 0 }} size="small">
                   <Container
                     sx={{
                       width: "100%",
@@ -572,10 +566,7 @@ function ExercisePlanList(props) {
                 </FormControl>
 
                 {/* Intensity slider */}
-                <FormControl
-                  sx={{ minWidth: 100, marginY: 0 }}
-                  size="small"
-                >
+                <FormControl sx={{ minWidth: 100, marginY: 0 }} size="small">
                   <Container
                     sx={{
                       width: "100%",
@@ -703,16 +694,8 @@ function ExercisePlanList(props) {
                     )}
                   </TableRow>
                   <TableRow key={exerciseRoutine._id}>
-                    <TableCell
-                      style={{ padding: 0 }}
-                      colSpan={6}
-                      size="small"
-                    >
-                      <Collapse
-                        in={switches[day]}
-                        timeout="auto"
-                        unmountOnExit
-                      >
+                    <TableCell style={{ padding: 0 }} colSpan={6} size="small">
+                      <Collapse in={switches[day]} timeout="auto" unmountOnExit>
                         <Box sx={{ marginY: 1 }}>
                           <Table size="small" aria-label="foods">
                             <TableHead>
@@ -734,10 +717,7 @@ function ExercisePlanList(props) {
                                 !user.isTrainer &&
                                 exerciseList.map((exercise) => {
                                   return (
-                                    <TableRow
-                                      key={exercise._id}
-                                      size="small"
-                                    >
+                                    <TableRow key={exercise._id} size="small">
                                       <TableCell
                                         component="th"
                                         scope="row"
