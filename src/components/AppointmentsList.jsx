@@ -189,8 +189,6 @@ function AppointmentsList(props) {
   const isSmallScreen = useMediaQuery("(max-width:600px)")
   const maxHeight = isSmallScreen ? 360 : 300
 
-  console.log(filtered)
-
   return (
     <Box
       sx={{
