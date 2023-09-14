@@ -52,14 +52,11 @@ function AppointmentsList(props) {
     setFilterMessage(null)
 
     const upToDateSchedule = trainerSchedule.filter(a => {
-      if (user.isTrainer || !user.isTrainer) {
-        const { dayInfo, isAvailable } = a
-        return filterAppointmentsDates(dayInfo, isAvailable)
-      }
-      return void 0
+      const { dayInfo, isAvailable } = a
+      return filterAppointmentsDates(dayInfo, isAvailable)
     })
 
-    console.log(upToDateSchedule)
+    console.log('upToDateSchedule',upToDateSchedule)
 
     if (date) {
       setDateFilter(date)
