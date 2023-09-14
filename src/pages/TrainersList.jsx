@@ -47,9 +47,9 @@ function TrainersList() {
                           <Typography gutterBottom variant="h5" component="h2">
                             {trainer.name.firstName} {trainer.name.lastName}
                           </Typography>
-                          <Typography>
+                          {/* <Typography>
                             About me: {trainer.personalInfo.bio}
-                          </Typography>
+                          </Typography> */}
                         </CardContent>
                         <CardActions>
                           <Link href={`/trainers/${trainer._id}`}>
