@@ -17,7 +17,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt"
 import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined"
 
 function AppointmentsList(props) {
-  const { trainerSchedule, trainerInfo, handleAlert } =
+  const { trainerSchedule, trainerInfo, handleAlert, handleSetTrainerSchedule } =
     props
   const { user } = useContext(AuthContext)
   
@@ -96,6 +96,7 @@ function AppointmentsList(props) {
         appointmentId,
         trainerId
       )
+      handleSetTrainerSchedule(response.data.schedule)
       setFiltered(response.data.schedule)
       handleAlert('Appointment deleted', 'success')
     } catch (error) { 
