@@ -99,6 +99,9 @@ function AppointmentsList(props) {
   }
 
   useEffect(() => {
+    if (!user.isTrainer) {
+      setFilterVisible(true)
+    }
     setTrainerSchedule(trainerScheduleDB)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
