@@ -88,7 +88,7 @@ function AppointmentsList(props) {
         return !a.isAvailable
       })
       if (upToDateSchedule.length === 0) {
-        setFilterMessage('No bookings registered yet!')
+        setFilterMessage('No bookings yet')
         setFiltered([])
       } else {
         setFiltered(upToDateSchedule)
