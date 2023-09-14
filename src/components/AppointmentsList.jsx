@@ -153,7 +153,11 @@ function AppointmentsList(props) {
   const shouldDisableDate = (date) => {
     const formattedDate = `${date.$M + 1}/${date.$D}/${date.$y}` 
     const dayInfoArray = trainerSchedule.schedule.map(appointment => {
-      return appointment.isAvailable ? appointment.dayInfo : void 0
+      if (user.isTrainer) {
+        return appointment.dayInfo
+      } else {
+        return appointment.isAvailable ? appointment.dayInfo : void 0
+      }
     }
     )
     console.log(dayInfoArray)
