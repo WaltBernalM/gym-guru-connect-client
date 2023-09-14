@@ -465,7 +465,7 @@ function TraineeProfile() {
                       {/* Tab for Exercise Plan */}
                       <TabPanel value="2" sx={{ padding: 0 }}>
                         <Container
-                          maxWidth="sm"
+                          maxWidth="md"
                           sx={{
                             display: "flex",
                             alignItems: "flex-start",
