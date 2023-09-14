@@ -59,10 +59,6 @@ function TrainerProfile() {
     }
   }
 
-  const handleSetTrainerSchedule = (newSchedule) => {
-    setTrainerSchedule(newSchedule)
-  }
-
   const [alertMessage, setAlertMessage] = useState("")
   const [alertSeverity, setAlertSeverity] = useState("info")
   const [open, setOpen] = useState(false)
@@ -76,6 +72,10 @@ function TrainerProfile() {
     setOpen(true)
     setAlertMessage(message)
     setAlertSeverity(severity)
+  }
+
+  const handleSetTrainerSchedule = (updatedSchedule) => {
+    setTrainerSchedule(updatedSchedule)
   }
 
   useEffect(() => {
@@ -319,7 +319,7 @@ function TrainerProfile() {
                         trainerSchedule={trainerSchedule}
                         trainerInfo={trainerInfo}
                         handleAlert={handleAlert}
-                        handleSetTrainerSchedule={handleSetTrainerSchedule}
+                        getTrainerSchedule={getTrainerSchedule}
                       />
                     </div>
                   </Slide>
@@ -437,51 +437,50 @@ function TrainerProfile() {
                   justifyContent={"space-around"}
                   width={"100%"}
                 >
-                  {user &&
-                    user.isTrainer &&
-                    trainerSchedule && (
-                      <div style={{ width: "auto" }}>
-                        <Slide
-                          direction="up"
-                          in={seeAddForm}
-                          mountOnEnter
-                          unmountOnExit
-                        >
-                          <div style={{ width: "auto" }}>
-                            <NewAppointmentForm
-                              getTrainer={getTrainer}
-                              getTrainerSchedule={getTrainerSchedule}
-                              handleAlert={handleAlert}
-                            />
-                          </div>
-                        </Slide>
+                  {user && user.isTrainer && trainerSchedule && (
+                    <div style={{ width: "auto" }}>
+                      <Slide
+                        direction="up"
+                        in={seeAddForm}
+                        mountOnEnter
+                        unmountOnExit
+                      >
+                        <div style={{ width: "auto" }}>
+                          <NewAppointmentForm
+                            getTrainer={getTrainer}
+                            getTrainerSchedule={getTrainerSchedule}
+                            handleAlert={handleAlert}
+                          />
+                        </div>
+                      </Slide>
 
-                        <Slide
-                          direction="up"
-                          in={seeTrainees}
-                          mountOnEnter
-                          unmountOnExit
-                        >
-                          <div style={{ width: "auto" }}>
-                            <TraineesList trainees={trainerInfo.trainees} />
-                          </div>
-                        </Slide>
-                        <Slide
-                          direction="up"
-                          in={seeAppointments}
-                          mountOnEnter
-                          unmountOnExit
-                        >
-                          <div style={{ width: "auto" }}>
-                            <AppointmentsList
-                              trainerSchedule={trainerSchedule}
-                              trainerInfo={trainerInfo}
-                              handleAlert={handleAlert}
-                            />
-                          </div>
-                        </Slide>
-                      </div>
-                    )}
+                      <Slide
+                        direction="up"
+                        in={seeTrainees}
+                        mountOnEnter
+                        unmountOnExit
+                      >
+                        <div style={{ width: "auto" }}>
+                          <TraineesList trainees={trainerInfo.trainees} />
+                        </div>
+                      </Slide>
+                      <Slide
+                        direction="up"
+                        in={seeAppointments}
+                        mountOnEnter
+                        unmountOnExit
+                      >
+                        <div style={{ width: "auto" }}>
+                          <AppointmentsList
+                            trainerSchedule={trainerSchedule}
+                            trainerInfo={trainerInfo}
+                            handleAlert={handleAlert}
+                            handleSetTrainerSchedule={handleSetTrainerSchedule}
+                          />
+                        </div>
+                      </Slide>
+                    </div>
+                  )}
                 </Box>
               </Fragment>
             )}

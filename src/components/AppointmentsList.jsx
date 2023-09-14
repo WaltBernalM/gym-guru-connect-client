@@ -3,7 +3,7 @@ import { Button, Checkbox, Container, Fade, FormControlLabel, FormGroup, IconBut
 import EventBusyIcon from "@mui/icons-material/EventBusy"
 import PersonSearchIcon from "@mui/icons-material/PersonSearch"
 import { AuthContext } from "../context/auth.context"
-import { Fragment, useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 
 import EventAvailableIcon from "@mui/icons-material/EventAvailable"
 import LockClockIcon from "@mui/icons-material/LockClock"
@@ -17,17 +17,21 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt"
 import CachedOutlinedIcon from "@mui/icons-material/CachedOutlined"
 
 function AppointmentsList(props) {
-  const { trainerSchedule, trainerInfo, handleAlert, handleSetTrainerSchedule } =
-    props
+  const {
+    trainerSchedule: trainerScheduleDB,
+    trainerInfo,
+    handleAlert,
+    handleSetTrainerSchedule,
+  } = props
   const { user } = useContext(AuthContext)
   
   const [dateFilter, setDateFilter] = useState(null)
   const [filterMessage, setFilterMessage] = useState(null)
-  const [filtered, setFiltered] = useState(trainerSchedule)
+  const [filtered, setFiltered] = useState(trainerScheduleDB)
   const [seeOnlyBooked, setSeeOnlyBooked] = useState(false)
-  
-
   const [filterVisible, setFilterVisible] = useState(false)
+
+  const [trainerSchedule, setTrainerSchedule] = useState(trainerScheduleDB)
 
   const navigate = useNavigate()
 
@@ -82,24 +86,38 @@ function AppointmentsList(props) {
   }
 
   useEffect(() => {
+    setTrainerSchedule(trainerScheduleDB)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Resets if the filter finds nothing matches
+  useEffect(() => {
     !filterMessage && setFiltered(trainerSchedule)
     filterMessage && setTimeout(() => {
-      setFilterMessage("")
+      setFilterMessage(null)
       setFiltered(trainerSchedule)
+      setDateFilter(null)
       setSeeOnlyBooked(false)
     }, 2000)
   }, [trainerSchedule, filterMessage])
 
   const hanldeDelete = async (appointmentId, trainerId) => {
     try {
-      const response = await appointmentService.deletAppointmentForTrainer(
+      const response = (await appointmentService.deletAppointmentForTrainer(
         appointmentId,
         trainerId
-      )
-      console.log(response.data.schedule)
-      handleSetTrainerSchedule(response.data.schedule)
-      console.log('ok from here')
-      setFiltered(response.data.schedule)
+      )).data.schedule
+      handleSetTrainerSchedule(response)
+
+      if (dateFilter) {
+        const filteredResponse = response.filter(appointment => {
+          const dateToFilter = `${dateFilter.$M + 1}/${dateFilter.$D}/${dateFilter.$y}`
+          return appointment.dayInfo === dateToFilter
+        })
+        setFiltered(filteredResponse)
+      } else {
+        setFiltered(response)
+      }
       handleAlert('Appointment deleted', 'success')
     } catch (error) { 
       handleAlert(error.response.data.message, 'error')
@@ -120,7 +138,7 @@ function AppointmentsList(props) {
     }
   }
 
-  const filterAppointments = (dayInfo, isAvailable) => {
+  const filterAppointmentsDates = (dayInfo, isAvailable) => {
     const options = {
       timeZone: "America/Los_Angeles",
       year: "numeric",
@@ -308,15 +326,15 @@ function AppointmentsList(props) {
                   </ListSubheader>
 
                   {/* Render of list items */}
-                  {filtered.length === 0
+                  {filtered && filtered.length === 0
                     ? "No appointments"
                     : filtered
                         .filter((a) => {
                           if (user.isTrainer || !user.isTrainer) {
                             const { dayInfo, isAvailable } = a
-                            return filterAppointments(dayInfo, isAvailable)
+                            return filterAppointmentsDates(dayInfo, isAvailable)
                           }
-                          return <></>
+                          return void 0
                         })
                       .map((appointment) => {
                           return (
