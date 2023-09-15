@@ -75,11 +75,13 @@ function ExercisePlanList(props) {
   
   const getAllExercises = async () => {
     try {
-      setErrorAtGatherAllExercise(false)
-      const response = (await exerciseService.getAllExercises()).data
-        .allExercises
-      setAllExercisesDB(response)
-      setAllExercises(response)
+      if (user.isTrainer){
+        setErrorAtGatherAllExercise(false)
+        const response = (await exerciseService.getAllExercises()).data
+          .allExercises
+        setAllExercisesDB(response)
+        setAllExercises(response)
+      }
     } catch (error) {
       setErrorAtGatherAllExercise(true)
     }
