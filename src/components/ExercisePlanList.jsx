@@ -687,7 +687,7 @@ function ExercisePlanList(props) {
                       </IconButton>
                     </TableCell>
                     <TableCell component="th" scope="row" size="small">
-                      day #{exerciseRoutine.day}
+                      Day #{exerciseRoutine.day}
                     </TableCell>
                     {user && user.isTrainer && (
                       <TableCell component="th" scope="row" size="small">
