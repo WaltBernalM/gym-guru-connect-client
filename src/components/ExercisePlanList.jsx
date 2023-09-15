@@ -50,7 +50,14 @@ const initSwitches = {
 }
 
 function ExercisePlanList(props) {
-  const { exercisePlan: traineeExercisePlan, traineeId, handleAlert, getTraineeData } = props
+  const {
+    exercisePlan: traineeExercisePlan,
+    traineeId,
+    handleAlert,
+    getTraineeData,
+    handleOpenModal,
+    handleSetModalInstructions,
+  } = props
   const { user } = useContext(AuthContext)
   const [routineIdForExercise, setRoutineIdForExercise] = useState('')
   const [exercisePlan, setExercisePlan] = useState(traineeExercisePlan)
@@ -724,8 +731,22 @@ function ExercisePlanList(props) {
                                         component="th"
                                         scope="row"
                                         size="small"
+                                        sx={{maxWidth: 160}}
                                       >
-                                        {exercise.exerciseData.name}
+                                        <Button
+                                          variant="outlined"
+                                          size="sm"
+                                          sx={{paddingX: 0.5}}
+                                          onClick={() => {
+                                            handleOpenModal()
+                                            handleSetModalInstructions({
+                                              name: exercise.exerciseData.name,
+                                              instructions: exercise.exerciseData.instructions
+                                            })
+                                          }}
+                                        >
+                                          {exercise.exerciseData.name}
+                                        </Button>
                                       </TableCell>
                                       <TableCell
                                         component="th"
