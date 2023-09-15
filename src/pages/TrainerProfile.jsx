@@ -115,6 +115,11 @@ function TrainerProfile() {
       }, user.isTrainer ? 500 : 0)
     }
   }
+
+  const [isDisabeled, setIsDisabeled] = useState(false)
+  const handleButtonIsDisabeled = (status) => {
+    setIsDisabeled(status)
+  }
   
   return (
     <>
@@ -390,6 +395,7 @@ function TrainerProfile() {
                       }}
                     >
                       <IconButton
+                        disabled={isDisabeled}
                         sx={{ padding: 0 }}
                         onClick={() =>
                           switchButtonsController("addAppointmentForm")
@@ -407,6 +413,7 @@ function TrainerProfile() {
                       }}
                     >
                       <IconButton
+                        disabled={isDisabeled}
                         sx={{ padding: 0 }}
                         onClick={() => switchButtonsController("traineesList")}
                       >
@@ -422,6 +429,7 @@ function TrainerProfile() {
                       }}
                     >
                       <IconButton
+                        disabled={isDisabeled}
                         sx={{ padding: 0 }}
                         onClick={() => switchButtonsController("scheduleList")}
                       >
@@ -450,6 +458,7 @@ function TrainerProfile() {
                             getTrainer={getTrainer}
                             getTrainerSchedule={getTrainerSchedule}
                             handleAlert={handleAlert}
+                            handleButtonIsDisabeled={handleButtonIsDisabeled}
                           />
                         </div>
                       </Slide>

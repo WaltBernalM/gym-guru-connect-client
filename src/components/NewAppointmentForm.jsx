@@ -13,7 +13,7 @@ const initialDay = dayjs().add(48, "hour")
 
 function NewAppointmentForm(props) {
   const { getTrainerSchedule, handleAlert, getTrainer } = props
-  const { user, handleSetIsLoading } = useContext(AuthContext)
+  const { user, handleButtonIsDisabeled } = useContext(AuthContext)
 
   const [hourRange, setHourRange] = useState(() => initialHours)
   const [date, setDate] = useState(initialDay)
@@ -42,8 +42,8 @@ function NewAppointmentForm(props) {
         return
       }
       
-      // handleSetIsLoading(true)
       for (let h = hourStart; h <= hourEnd; h++) { 
+        handleButtonIsDisabeled(true)
         await appointmentService.createAppointment(
           trainerId,
           dayInfo,
@@ -51,11 +51,11 @@ function NewAppointmentForm(props) {
         )
         handleAlert(`New appointment: ${dayInfo} @ ${h}`, "success")
       }
-      // handleSetIsLoading(false)
+      handleButtonIsDisabeled(false)
       getTrainer()
       getTrainerSchedule()
-      handleAlert('New appointment(s) added', 'success')
     } catch (error) {
+      handleButtonIsDisabeled(false)
       handleAlert(error.response.data.message, 'error')
     }
   }
