@@ -22,6 +22,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Link,
 } from "@mui/material"
 import { Fragment, useContext, useEffect, useState } from "react"
 
@@ -731,22 +732,26 @@ function ExercisePlanList(props) {
                                         component="th"
                                         scope="row"
                                         size="small"
-                                        sx={{maxWidth: 160}}
+                                        sx={{ maxWidth: 160 }}
                                       >
-                                        <Button
+                                        <Link
                                           variant="outlined"
                                           size="sm"
-                                          sx={{paddingX: 0.5}}
+                                          color="primary"
+                                          sx={{cursor: "pointer"}}
+                                          underline="none"
                                           onClick={() => {
                                             handleOpenModal()
                                             handleSetModalInstructions({
                                               name: exercise.exerciseData.name,
-                                              instructions: exercise.exerciseData.instructions
+                                              instructions:
+                                                exercise.exerciseData
+                                                  .instructions,
                                             })
                                           }}
                                         >
                                           {exercise.exerciseData.name}
-                                        </Button>
+                                        </Link>
                                       </TableCell>
                                       <TableCell
                                         component="th"
