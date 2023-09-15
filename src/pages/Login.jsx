@@ -32,20 +32,19 @@ function Login() {
       try {
         handleSetIsLoading(true)
         await authService.login(formData)
+        handleSetIsLoading(false)
+        
         const userInfo = await authenticateUser()
+        handleSetIsLoading(false)
         const { isTrainer, _id } = userInfo
         if (isTrainer) {
-          handleSetIsLoading(false)
           navigate(`/trainers/${_id}`)
         } else if (!isTrainer) {
-          handleSetIsLoading(false)
           navigate(`/trainee/${_id}`)
         } else {
-          handleSetIsLoading(false)
           navigate('/')
         }
       } catch (error) {
-        handleSetIsLoading(false)
         setErrorMessage(error.response.data.message)
       }
     }
