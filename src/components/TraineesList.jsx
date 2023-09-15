@@ -41,6 +41,13 @@ function TraineesList(props) {
             <ListSubheader sx={{ width: "auto" }}>
               My Trainees
             </ListSubheader>
+            {trainees.length === 0 && (
+              <div>
+                <ListItem component="div" disablePadding>
+                  This list is empty (for now)
+                </ListItem>
+              </div>
+            )}
             {trainees.map((traineeInfo) => {
               return (
                 <div key={traineeInfo._id}>
