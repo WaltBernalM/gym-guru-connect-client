@@ -31,19 +31,19 @@ function Login() {
     const submitForm = async () => { 
       try {
         const response = (await authService.login(formData)).data
-        await authenticateUser()
-        setTimeout(() => {
-          const {
-            userData: { _id, isTrainer },
-          } = response
-          if (isTrainer) {
-            navigate(`/trainers/${_id}`)
-          } else if (!isTrainer) {
-            navigate(`/trainee/${_id}`)
-          } else {
-            navigate('/')
-          }
-        }, 2000)
+        const userInfo = await authenticateUser()
+        console.log(userInfo)
+        
+        const {
+          userData: { _id, isTrainer },
+        } = response
+        if (isTrainer) {
+          navigate(`/trainers/${_id}`)
+        } else if (!isTrainer) {
+          navigate(`/trainee/${_id}`)
+        } else {
+          navigate('/')
+        }
       } catch (error) {
         setErrorMessage(error.response.data.message)
       }

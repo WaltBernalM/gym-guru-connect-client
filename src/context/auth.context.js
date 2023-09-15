@@ -16,6 +16,7 @@ const AuthProvider = (props) => {
       setIsLoggedIn(true)
       setIsLoading(false)
       setUser(userInfo)
+      return userInfo
     } catch (error) {
       setIsLoggedIn(false)
       setIsLoading(false)
