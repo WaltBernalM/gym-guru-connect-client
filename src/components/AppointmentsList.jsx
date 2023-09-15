@@ -66,6 +66,8 @@ function AppointmentsList(props) {
       })
     }
 
+    console.log('filteredSchedule:',filteredSchedule)
+
     if (filteredSchedule.length === 0) {
       setFilterMessage("No consults for that date")
       setFiltered([])
@@ -73,6 +75,8 @@ function AppointmentsList(props) {
       setFiltered(filteredSchedule)
     }
   }
+
+  console.log("filtered:", filtered)
 
   const handleCheckbox = (e) => {
     setSeeOnlyBooked(e.target.checked)
