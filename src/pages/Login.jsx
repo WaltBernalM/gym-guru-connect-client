@@ -35,10 +35,13 @@ function Login() {
         const userInfo = await authenticateUser()
         const { isTrainer, _id } = userInfo
         if (isTrainer) {
+          handleSetIsLoading(false)
           navigate(`/trainers/${_id}`)
         } else if (!isTrainer) {
+          handleSetIsLoading(false)
           navigate(`/trainee/${_id}`)
         } else {
+          handleSetIsLoading(false)
           navigate('/')
         }
       } catch (error) {
