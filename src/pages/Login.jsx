@@ -42,6 +42,7 @@ function Login() {
           navigate('/')
         }
       } catch (error) {
+        handleSetIsLoading(false)
         setErrorMessage(error.response.data.message)
       }
     }
