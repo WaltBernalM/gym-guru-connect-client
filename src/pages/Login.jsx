@@ -30,8 +30,8 @@ function Login() {
     e.preventDefault()
     const submitForm = async () => { 
       try {
-        handleSetIsLoading(true)
         await authService.login(formData)
+        handleSetIsLoading(true)
         const userInfo = await authenticateUser()
         const { isTrainer, _id } = userInfo
         if (isTrainer) {
@@ -41,7 +41,6 @@ function Login() {
         } else {
           navigate('/')
         }
-        handleSetIsLoading(false)
       } catch (error) {
         setErrorMessage(error.response.data.message)
         handleSetIsLoading(false)
