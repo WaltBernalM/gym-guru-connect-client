@@ -42,15 +42,16 @@ function NewAppointmentForm(props) {
         return
       }
       
-      handleSetIsLoading(true)
+      // handleSetIsLoading(true)
       for (let h = hourStart; h <= hourEnd; h++) { 
         await appointmentService.createAppointment(
           trainerId,
           dayInfo,
           h
         )
+        handleAlert(`New appointment: ${dayInfo} @ ${h}`, "success")
       }
-      handleSetIsLoading(false)
+      // handleSetIsLoading(false)
       getTrainer()
       getTrainerSchedule()
       handleAlert('New appointment(s) added', 'success')
