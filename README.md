@@ -1,6 +1,35 @@
-# Getting Started with Create React App
+# gym-guru-connect-client
 
+## Introduction
+
+### `Description`
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a one page website and uses Material UI components quite proficient with some animations using JSON files, and of course React components in jsx format.
+
+### `Design justifications`
+It was designed for two kinds of user and for a very specific application.
+The goal is to serve as the common portal between the trainers/nutritionists and their customers, where they can both set appointments, hanlde nutrition plans and exercise plans.
+
+### `Design application`
+The two kind of users, as you may suspect, are Trainers and Trainees.
+For a trainer, the application will provide a quite confortable interface working with medium to big screens, but, the trainer can still use it with a mobile device.
+For a trainee, since is more often to them to consult in a mobile device, the interface will perform quite good in mobile, nevertheless, will look nice also in higher resolutions.
+
+## Install
+
+Dependencies:
+- node 20.x
+- npm 9.x
+
+```sh
+$ npm i
+```
+
+## Release
+
+You can deploy this project with any host. But need to be careful with the process environment variables.
+This project also need to have an API linked, which can be located at
+[GymGuru server](https://github.com/WaltBernalM/gym-guru-connect-server)
 
 ## Available Scripts
 
@@ -39,32 +68,12 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Pages
+| Page      | URL                  | Description           |
+| --------- | -------------------- | --------------------- |
+| HOME      | /                    | homepage              |
+| SIGNUP    | /signup              | signup page           |
+| LOGIN     | /login               | login page            |
+| EXERCISES | /exercises           | exercise page         |
+| MY OFFICE | /trainers/:trainerId | trainer's office page |
+| MY PLAN   | /trainee/:traineeId  | trainee's plan page   |
