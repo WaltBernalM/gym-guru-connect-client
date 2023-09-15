@@ -19,7 +19,7 @@ const initForm = {
 function Login() {
   const [formData, setFormData] = useState(initForm)
   const [ errorMessage, setErrorMessage] = useState(undefined)
-  const { authenticateUser } = useContext(AuthContext)
+  const { authenticateUser, handleSetIsLoading } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const handleOnChange = (field, value) => {
@@ -30,9 +30,9 @@ function Login() {
     e.preventDefault()
     const submitForm = async () => { 
       try {
+        handleSetIsLoading(true)
         await authService.login(formData)
         const userInfo = await authenticateUser()
-        console.log(userInfo)
         const { isTrainer, _id } = userInfo
         if (isTrainer) {
           navigate(`/trainers/${_id}`)
