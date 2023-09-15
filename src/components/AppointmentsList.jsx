@@ -154,14 +154,12 @@ function AppointmentsList(props) {
     }
   }
 
-  console.log("filtered:", filtered)
-
   const filterAppointmentsDates = (dayInfo, isAvailable) => {
-    const date = new Date(dayInfo).toLocaleString("en-US", options)
-    const currentDate = new Date().toLocaleString("en-US", options)
-    const today = new Date(currentDate)
+    const dayInfoDate = new Date(dayInfo).toLocaleString("en-US", options)
+    const rightNow = new Date().toLocaleString("en-US", options)
+    const todayDate = new Date(rightNow)
     if (!user.isTrainer) {
-      if (new Date(date) < today.setDate(today.getDate() + 2)) {
+      if (new Date(dayInfoDate) < todayDate.setDate(todayDate.getDate() + 2)) {
         return false
       } else {
         if (isAvailable) {
@@ -171,7 +169,7 @@ function AppointmentsList(props) {
         }
       }
     } else if (user.isTrainer) {
-      if (new Date(date) < today.setDate(today.getDate())) {
+      if (new Date(dayInfoDate) < todayDate.setDate(todayDate.getDate())) {
         return false
       } else {
         return true
