@@ -30,8 +30,9 @@ function Login() {
     e.preventDefault()
     const submitForm = async () => { 
       try {
-        await authService.login(formData)
+        const response = await authService.login(formData)
         authenticateUser()
+        console.log(response)
         navigate('/')
       } catch (error) {
         setErrorMessage(error.response.data.message)
