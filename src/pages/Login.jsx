@@ -30,13 +30,10 @@ function Login() {
     e.preventDefault()
     const submitForm = async () => { 
       try {
-        const response = (await authService.login(formData)).data
+        await authService.login(formData)
         const userInfo = await authenticateUser()
         console.log(userInfo)
-        
-        const {
-          userData: { _id, isTrainer },
-        } = response
+        const { isTrainer, _id } = userInfo
         if (isTrainer) {
           navigate(`/trainers/${_id}`)
         } else if (!isTrainer) {
