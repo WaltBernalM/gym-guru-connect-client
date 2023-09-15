@@ -32,10 +32,7 @@ function Login() {
       try {
         handleSetIsLoading(true)
         await authService.login(formData)
-        handleSetIsLoading(false)
-        
         const userInfo = await authenticateUser()
-        handleSetIsLoading(false)
         const { isTrainer, _id } = userInfo
         if (isTrainer) {
           navigate(`/trainers/${_id}`)
@@ -44,8 +41,10 @@ function Login() {
         } else {
           navigate('/')
         }
+        handleSetIsLoading(false)
       } catch (error) {
         setErrorMessage(error.response.data.message)
+        handleSetIsLoading(false)
       }
     }
     submitForm()
