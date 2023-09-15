@@ -19,7 +19,7 @@ const initForm = {
 function Login() {
   const [formData, setFormData] = useState(initForm)
   const [ errorMessage, setErrorMessage] = useState(undefined)
-  const { authenticateUser } = useContext(AuthContext)
+  const { authenticateUser, user } = useContext(AuthContext)
   const navigate = useNavigate()
 
   const handleOnChange = (field, value) => {
@@ -33,6 +33,7 @@ function Login() {
         const response = await authService.login(formData)
         authenticateUser()
         console.log(response)
+        console.log(user)
         navigate('/')
       } catch (error) {
         setErrorMessage(error.response.data.message)
