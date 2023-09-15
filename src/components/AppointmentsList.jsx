@@ -66,8 +66,6 @@ function AppointmentsList(props) {
       })
     }
 
-    console.log('filteredSchedule:',filteredSchedule)
-
     if (filteredSchedule.length === 0) {
       setFilterMessage("No consults for that date")
       setFiltered([])
@@ -75,8 +73,6 @@ function AppointmentsList(props) {
       setFiltered(filteredSchedule)
     }
   }
-
-  console.log("filtered:", filtered)
 
   const handleCheckbox = (e) => {
     setSeeOnlyBooked(e.target.checked)
@@ -158,9 +154,12 @@ function AppointmentsList(props) {
     }
   }
 
+  console.log("filtered:", filtered)
+
   const filterAppointmentsDates = (dayInfo, isAvailable) => {
     const date = new Date(dayInfo).toLocaleString("en-US", options)
-
+    const currentDate = new Date().toLocaleString("en-US", options)
+    const today = new Date(currentDate)
     if (!user.isTrainer) {
       if (new Date(date) < today.setDate(today.getDate() + 2)) {
         return false
@@ -171,8 +170,7 @@ function AppointmentsList(props) {
           return false
         }
       }
-    }
-    if (user.isTrainer) {
+    } else if (user.isTrainer) {
       if (new Date(date) < today.setDate(today.getDate())) {
         return false
       } else {
