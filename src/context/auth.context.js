@@ -38,6 +38,10 @@ const AuthProvider = (props) => {
     authenticateUser()
   }, [])
 
+  const handleSetIsLoading = (state) => {
+    setIsLoading(state)
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -46,6 +50,7 @@ const AuthProvider = (props) => {
         isLoading,
         authenticateUser,
         logout,
+        handleSetIsLoading
       }}
     >
       {props.children}
