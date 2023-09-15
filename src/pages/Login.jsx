@@ -32,12 +32,18 @@ function Login() {
       try {
         const response = (await authService.login(formData)).data
         await authenticateUser()
-        const { userData: { _id, isTrainer } } = response
-        if (isTrainer) {
-          navigate(`/trainers/${_id}`)
-        } else if (!isTrainer) {
-          navigate(`/trainee/${_id}`)
-        }
+        setTimeout(() => {
+          const {
+            userData: { _id, isTrainer },
+          } = response
+          if (isTrainer) {
+            navigate(`/trainers/${_id}`)
+          } else if (!isTrainer) {
+            navigate(`/trainee/${_id}`)
+          } else {
+            navigate('/')
+          }
+        }, 2000)
       } catch (error) {
         setErrorMessage(error.response.data.message)
       }
